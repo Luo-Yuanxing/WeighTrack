@@ -8,7 +8,7 @@
         <version>3.3.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>io.github.lyx12344321</groupId>
+    <groupId>io.github.weightrack</groupId>
     <artifactId>WeighTrack</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>WeighTrack</name>
@@ -44,6 +44,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
     </dependencies>
 

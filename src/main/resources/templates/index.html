@@ -1,107 +1,80 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>码匠社区</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script src="/js/jQuery-3.7.1.js" type="application/javascript"></script>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="/css/community.css"/>
-    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Bootstrap 101 Template</title>
 
-    <script src="/js/jq-paginator.js" type="application/javascript"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/bootstrap-datetimepicker.css">
 
-</head>
-<body>
-<div th:insert="~{nav :: nav}"></div>
-
-<div class="container-fluid main">
-    <div class="row">
-
-        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-
-            <!-- 提问列表-->
-            <h3><span class="glyphicon glyphicon-list" aria-hidden="true"></span> 发现 </h3>
-            <div class="media" th:each="question : ${pageDTO.questions}">
-
-                <div class="media-left">
-                    <a href="#">
-                        <img class="media-object img-rounded"
-                             th:src="${question.user.avatarUrl}" alt="...">
-                    </a>
-                </div>
-                <div class="media-body">
-                    <h5 class="media-heading">
-                        <a th:href="@{'/question/'+ ${question.id}}" th:text="${question.title}"></a>
-                    </h5>
-                    <h6 class="media-heading">
-                        <a th:href="@{'/question/'+ ${question.id}}" th:text="${question.description}"></a>
-                    </h6>
-                    <span class="text-desc">
-                        <a th:text="${question.user.name}"></a> •
-                        <span th:text="${question.commentCount}"></span> 个回复 •
-                        <span th:text="${question.viewCount}"></span> 次浏览 •
-                        <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>
-                    </span>
-
-                </div>
-            </div>
-
-            <!-- 页面分页-->
-            <nav aria-label="Page navigation">
-                <ul class="pagination" id="pagination">
-                    <li>
-                        <a href="#" aria-label="上一页">
-                            <span aria-hidden="true">上一页</span>
-                        </a>
-                    </li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li>
-                        <a href="#" aria-label="下一页">
-                            <span aria-hidden="true">下一页</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-
-        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-            <!--相关问题-->
-            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <h4>热门标签</h4>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script th:inline="javascript">
-    let totalPages = [[${pageDTO.questionPageInfo.pages}]];
-    let currentPage = [[${pageDTO.questionPageInfo.pageNum}]];
-    let visiblePages = [[${pageDTO.questionPageInfo.pageSize}]];
-    $('#pagination').jqPaginator({
-        totalPages: totalPages,
-        visiblePages: visiblePages,
-        currentPage: currentPage,
-        first: '<li class="first"><a href="javascript:void(0);">首页</a></li>',
-        prev: '<li class="prev"><a href="javascript:void(0);">上一页</a></li>',
-        next: '<li class="next"><a href="javascript:void(0);">下一页</a></li>',
-        last: '<li class="last"><a href="javascript:void(0);">末页</a></li>',
-        page: '<li class="page"><a href="javascript:void(0);">{{page}}</a></li>',
-        onPageChange: function (num, type) {
-
-            if (num === currentPage) {
-                return;
-            }
-            window.location.href = '/?page=' + num;
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <style>
+        #formed {
+            text-align: center;
         }
-    });
-</script>
+    </style>
+</head>
 
+<body>
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="/js/jQuery-3.7.1.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="/js/bootstrap.js"></script>
+<script src="/js/bootstrap-datetimepicker.js"></script>
+<script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+
+
+<form action="" class="col-lg-8 col-xs-8" id="formed">
+    <div class="input-group">
+        <span class="input-group-addon">煤种</span>
+        <input type="text" class="form-control" name="coal-type" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon">车牌号</span>
+        <input type="text" class="form-control" name="plate-number" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" >毛重</span>
+        <input type="text" class="form-control" name="tare" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" >原发</span>
+        <input type="text" class="form-control" name="primary-weight" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group">
+        <script src='./js/form-date.js'> </script>
+        <span class="input-group-text">过空时间</span>
+        <input class="form-control" type="text" id="emptyload-time" aria-label="选择时间">
+    </div>
+    <div class="input-group">
+        <script src='./js/form-date.js'> </script>
+        <span class="input-group-text">过重时间</span>
+        <input class="form-control" type="text" id="fullload-time" aria-label="选择时间">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" >发货单位</span>
+        <input type="text" class="form-control" name="output-unit" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" >收货单位</span>
+        <input type="text" class="form-control" name="input-unit" aria-describedby="basic-addon3">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" >司磅员</span>
+        <input type="text" class="form-control" name="weighter" aria-describedby="basic-addon3">
+    </div>
+
+
+</form>
+<div class="col-lg-4 col-xs-4" style="height: 500px; background-color: red;"></div>
 </body>
+
 </html>
+
