@@ -10,9 +10,7 @@ public class IndexController {
     public String index(
             Model model
     ) {
-        model.addAttribute("name", "lyx");
-        System.out.println("index into");
-        System.out.println(model.getAttribute("name"));
+
         return "index";
     }
 }

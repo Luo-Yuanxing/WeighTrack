@@ -4,7 +4,8 @@ $(document).ready(function () {
     var now = new Date();
 
 
-    $('#emptyload-time').datetimepicker({
+    $('#empty-load-time').datetimepicker({
+        bootcssVer:3,
         language: 'zh-CN', // 中文语言包
         autoclose: 1, // 选中时间后自动关闭
         format: 'hh:ii', // 时间格式，只显示小时和分钟
@@ -12,7 +13,8 @@ $(document).ready(function () {
         minView: 'hour', // 最小显示单位为小时，选择到分钟
         minuteStep: 1, // 时间选择间隔为5分钟
     });
-    $('#fullload-time').datetimepicker({
+    $('#full-load-time').datetimepicker({
+        bootcssVer:3,
         language: 'zh-CN', // 中文语言包
         autoclose: 1, // 选中时间后自动关闭
         format: 'hh:ii', // 时间格式，只显示小时和分钟
