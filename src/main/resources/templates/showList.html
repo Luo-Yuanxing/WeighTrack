@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>鸿聚一号煤场出库明细</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css">
+
+    <!-- nav.css   -->
+    <link rel="stylesheet" href="/css/nav.css">
+
+    <script src="/js/html5shiv.js"></script>
+    <script src="/js/respond.js"></script>
+
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #f8f9fa; /* 背景颜色 */
+            color: #333; /* 全局字体颜色 */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 表格样式 */
+        table {
+            margin: 50px 20px;
+            width: 100%;
+            max-width: 1200px;
+            border-collapse: collapse;
+            background-color: #fff; /* 表格背景 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+            border-radius: 8px; /* 圆角 */
+            overflow: hidden;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd; /* 表格分隔线 */
+        }
+
+        table thead {
+            background-color: #007bff; /* 表头背景颜色 */
+            color: #fff; /* 表头文字颜色 */
+        }
+
+        table tbody tr:hover {
+            background-color: #f1f1f1; /* 鼠标悬浮行的背景色 */
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* 偶数行背景色 */
+        }
+
+        /* 链接样式 */
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+
+        td:not(.time, .options), th:not(.time, .options) {
+            white-space: nowrap; /* 防止换行 */
+            //overflow: hidden; /* 如果文本溢出，隐藏多余部分 */
+            text-overflow: ellipsis; /* 超出部分用省略号表示 */
+        }
+
+        /* 按钮样式 */
+        td a {
+            display: block;
+            white-space: nowrap;
+            margin-top: 3px;
+            padding: 0 10px;
+            border-radius: 5px;
+            background-color: #28a745; /* 按钮背景色 */
+            color: white;
+            margin-right: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        td a:hover {
+            background-color: #218838;
+        }
+
+        .time span {
+            white-space: nowrap;
+        }
+
+        /* 边栏样式 */
+        .desc {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+
+<script src="/js/jQuery-3.7.1.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/bootstrap-datetimepicker.js"></script>
+<script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<div class="container-fluid">
+    <div th:insert="~{nav :: nav}"></div>
+    <table>
+        <thead>
+        <tr>
+            <th>操作</th>
+            <th>出入库<br>类型</th>
+            <th>煤种</th>
+            <th>车牌号</th>
+            <th>毛重</th>
+            <th>皮重</th>
+            <th>净重</th>
+            <th>原发</th>
+            <th>盈亏</th>
+            <th class="time">过空<br>时间</th>
+            <th class="time">过重<br>时间</th>
+            <th>发货<br>单位</th>
+            <th>收货<br>单位</th>
+            <th>司磅员</th>
+            <th style="display: none">id</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="poundBillModel : ${poundBillModels}">
+            <td class="options">
+                <a th:href="@{/update/{id}(id=${poundBillModel.id})}">修改</a>
+                <a href="#">删除</a>
+            </td>
+            <td th:text="${poundBillModel.IOType} == 1 ? '入库' : '出库'"></td>
+            <td th:text="${poundBillModel.coalType}"></td>
+            <td th:text="${poundBillModel.plateNumber}"></td>
+            <td th:text="${poundBillModel.grossWeight}"></td>
+            <td th:text="${poundBillModel.tareWeight}"></td>
+            <td th:text="${poundBillModel.netWeight}"></td>
+            <td th:text="${poundBillModel.primaryWeight}"></td>
+            <td th:text="${poundBillModel.profitLossWeight}"></td>
+            <td class="time">
+                <span th:if="${#strings.isEmpty(poundBillModel.emptyLoadTime)}">未设置</span>
+                <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}" th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd')}"></span><br/>
+                <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}" th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'HH:mm')}"></span>
+            </td>
+            <td class="time">
+                <span th:if="${#strings.isEmpty(poundBillModel.fullLoadTime)}">未设置</span>
+                <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}" th:text="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd')}"></span><br/>
+                <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}" th:text="${#temporals.format(poundBillModel.fullLoadTime, 'HH:mm')}"></span>
+            </td>
+            <td th:text="${poundBillModel.outputUnit}"></td>
+            <td th:text="${poundBillModel.inputUnit}"></td>
+            <td th:text="${poundBillModel.weigher}"></td>
+            <td th:text="${poundBillModel.id}" style="display: none"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="desc">
+        <span>一些说明</span>
+        <span>还没想好写啥</span>
+    </div>
+
+</div>
+
+
+</body>
+
+</html>
+
