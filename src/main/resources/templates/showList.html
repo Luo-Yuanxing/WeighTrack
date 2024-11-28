@@ -141,7 +141,7 @@
         <tr th:each="poundBillModel : ${poundBillModels}">
             <td class="options">
                 <a th:href="@{/update/{id}(id=${poundBillModel.id})}">修改</a>
-                <a href="#">删除</a>
+                <a th:href="@{/print/{id}(id=${poundBillModel.id})}">打印</a>
             </td>
             <td th:text="${poundBillModel.IOType} == 1 ? '入库' : '出库'"></td>
             <td th:text="${poundBillModel.coalType}"></td>

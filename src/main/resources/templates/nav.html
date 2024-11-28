@@ -1,25 +1,33 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
 
-<body>
-<div th:fragment="nav">
-    <nav class="navbar navbar-default">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css"> <!-- 引入外部CSS文件 -->
+    <title>煤场出库明细</title>
+    <style>
+        .nav {
+            height: ;
+        }
+    </style>
+</head>
 
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="navbar-header col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <a class="navbar-brand" href="/">鸿聚一号煤场出库明细</a>
-                    </div>
-                    <div class="navbar-header col-lg-3 col-md-3 col-sm-3 col-xs-12 col-lg-offset-3 col-md-offset-3 col-sm-offset-3 col-xs-offset-0">
-                        <a class="navbar-brand" href="/showList">查看历史记录</a>
-                    </div>
+<body>
+<div th:fragment="nav" class="nav">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="navbar-header col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <a class="navbar-brand" href="/">鸿聚一号煤场出库明细</a>
+                </div>
+                <div th:if="${session.user}" class="history navbar-header col-lg-3 col-md-3 col-sm-3 col-xs-12 col-lg-offset-3 col-md-offset-3 col-sm-offset-3 col-xs-offset-0">
+                    <a class="navbar-brand" href="/showList">查看历史记录</a>
                 </div>
             </div>
-        </nav>
-
+        </div>
     </nav>
 </div>
 </body>
+
 </html>

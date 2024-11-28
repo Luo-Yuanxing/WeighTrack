@@ -2,6 +2,8 @@ package io.github.weightrack.controller;
 
 import io.github.weightrack.Service.PoundBillService;
 import io.github.weightrack.module.PoundBillModel;
+import io.github.weightrack.module.User;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,33 +14,6 @@ public class PoundBillController {
 
     @Autowired
     private PoundBillService poundBillService;
-
-    // 提取公共代码的方法
-    private PoundBillModel createPoundBillModel(String IOType,
-                                                String coalType,
-                                                String plateNumber,
-                                                String grossWeight,
-                                                String tare,
-                                                String primaryWeight,
-                                                String emptyLoadTime,
-                                                String fullLoadTime,
-                                                String outputUnit,
-                                                String inputUnit,
-                                                String weigher) {
-        PoundBillModel poundBillModel = new PoundBillModel();
-        poundBillModel.setIOType(IOType);
-        poundBillModel.setCoalType(coalType);
-        poundBillModel.setPlateNumber(plateNumber);
-        poundBillModel.setGrossWeightString(grossWeight);
-        poundBillModel.setTareWeightString(tare);
-        poundBillModel.setPrimaryWeightString(primaryWeight);
-        poundBillModel.setEmptyLoadTimeString(emptyLoadTime);
-        poundBillModel.setFullLoadTimeString(fullLoadTime);
-        poundBillModel.setOutputUnit(outputUnit);
-        poundBillModel.setInputUnit(inputUnit);
-        poundBillModel.setWeigher(weigher);
-        return poundBillModel;
-    }
 
     @PostMapping("/commit")
     public String getForm(
@@ -52,11 +27,18 @@ public class PoundBillController {
             @RequestParam("full-load-time") String fullLoadTime,
             @RequestParam("output-unit") String outputUnit,
             @RequestParam("input-unit") String inputUnit,
-            @RequestParam("weigher") String weigher ) {
+            @RequestParam("weigher") String weigher,
+            HttpServletRequest request) {
 
-        PoundBillModel poundBillModel = createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare,
+        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare,
                 primaryWeight, emptyLoadTime, fullLoadTime,
                 outputUnit, inputUnit, weigher);
+        Object user = request.getSession().getAttribute("user");
+        if (user instanceof User) {
+            poundBillModel.setCreatorId(((User) user).getId());
+        } else {
+            throw new RuntimeException("用户未登录");
+        }
 
         poundBillService.insertPoundBill(poundBillModel);
 
@@ -86,7 +68,7 @@ public class PoundBillController {
                                       @RequestParam("input-unit") String inputUnit,
                                       @RequestParam("weigher") String weigher) {
 
-        PoundBillModel poundBillModel = createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare,
+        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare,
                 primaryWeight, emptyLoadTime, fullLoadTime,
                 outputUnit, inputUnit, weigher);
 

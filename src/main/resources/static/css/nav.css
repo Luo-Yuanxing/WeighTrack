@@ -1,7 +1,80 @@
-
-nav > .container-fluid {
-    margin: 20px;
+/* 通用样式 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
 }
-nav {
-    height: 100px;
+
+/* Navbar 样式 */
+.navbar {
+    height: 50px;
+    background-color: #343a40;
+    border: none;
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+.navbar-default .navbar-brand {
+    color: #fff !important;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 15px 20px;
+}
+
+.navbar-default .navbar-brand:hover {
+    color: #f8f9fa !important;
+    background-color: #495057;
+}
+
+/* 固定顶部导航栏 */
+.navbar-fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+/* 响应式布局 */
+@media (max-width: 767px) {
+    .navbar-header {
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    .navbar-brand {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .history {
+        text-align: center;
+    }
+}
+
+/* 添加历史记录链接的样式 */
+.history .navbar-brand {
+    background-color: #5bc0de;
+    color: #fff;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.history .navbar-brand:hover {
+    background-color: #31b0d5;
+}
+
+/* 优化容器的间距 */
+.container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* 居中对齐 */
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

@@ -1,8 +1,6 @@
 package io.github.weightrack.module;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -42,6 +40,36 @@ public class PoundBillModel {
 
     private LocalDateTime creatTime;
     private LocalDateTime modifyTime;
+    private LocalDateTime printTime;
 
-    private User creator;
+    private int creatorId;
+
+    private String poundID;
+
+    public static PoundBillModel createPoundBillModel(String IOType,
+                                                String coalType,
+                                                String plateNumber,
+                                                String grossWeight,
+                                                String tare,
+                                                String primaryWeight,
+                                                String emptyLoadTime,
+                                                String fullLoadTime,
+                                                String outputUnit,
+                                                String inputUnit,
+                                                String weigher) {
+        PoundBillModel poundBillModel = new PoundBillModel();
+        poundBillModel.setIOType(IOType);
+        poundBillModel.setCoalType(coalType);
+        poundBillModel.setPlateNumber(plateNumber);
+        poundBillModel.setGrossWeightString(grossWeight);
+        poundBillModel.setTareWeightString(tare);
+        poundBillModel.setPrimaryWeightString(primaryWeight);
+        poundBillModel.setEmptyLoadTimeString(emptyLoadTime);
+        poundBillModel.setFullLoadTimeString(fullLoadTime);
+        poundBillModel.setOutputUnit(outputUnit);
+        poundBillModel.setInputUnit(inputUnit);
+        poundBillModel.setWeigher(weigher);
+        return poundBillModel;
+    }
+
 }
