@@ -29,7 +29,7 @@
 
         /* 表格样式 */
         table {
-            margin: 50px 20px;
+            margin: 70px 20px;
             width: 100%;
             max-width: 1200px;
             border-collapse: collapse;
@@ -103,6 +103,27 @@
             color: #666;
         }
 
+        .deleteRecord a {
+            color: red; /* 设置字体颜色为红色 */
+            font-weight: bold; /* 设置字体加粗 */
+            text-decoration: none; /* 去除下划线 */
+            padding: 5px 10px; /* 设置内边距 */
+            background-color: #f8d7da; /* 背景色为浅红色 */
+            border: 1px solid #f5c6cb; /* 边框为红色 */
+            border-radius: 4px; /* 圆角边框 */
+            transition: background-color 0.3s ease, color 0.3s ease; /* 添加平滑过渡效果 */
+        }
+
+        .deleteRecord a:hover {
+            background-color: #f5c6cb; /* 鼠标悬停时背景色变浅 */
+            color: #721c24; /* 鼠标悬停时文字颜色变深 */
+            cursor: pointer; /* 鼠标悬停时变成指针 */
+        }
+
+        .deleteRecord a:active {
+            background-color: #f1b0b7; /* 点击时背景色变浅 */
+            color: #721c24; /* 点击时文字颜色变深 */
+        }
     </style>
 
 
@@ -114,6 +135,25 @@
 <script src="/js/bootstrap.js"></script>
 <script src="/js/bootstrap-datetimepicker.js"></script>
 <script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+    function confirmDelete(id) {
+        if (confirm("确定要删除这条记录吗？")) {
+            $.ajax({
+                url: '/delete/' + id, // 请求的URL
+                type: 'GET', // 请求方式，GET 或 POST
+                success: function() {
+                    // 请求成功后的回调函数
+                    alert('删除成功');
+                    window.location.reload(); // 刷新页面
+                },
+                error: function() {
+                    // 请求失败后的回调函数
+                    alert('删除失败');
+                }
+            });
+        }
+    }
+</script>
 
 <div class="container-fluid">
     <div th:insert="~{nav :: nav}"></div>
@@ -134,6 +174,7 @@
             <th>发货<br>单位</th>
             <th>收货<br>单位</th>
             <th>司磅员</th>
+            <th>删除记录</th>
             <th style="display: none">id</th>
         </tr>
         </thead>
@@ -153,18 +194,26 @@
             <td th:text="${poundBillModel.profitLossWeight}"></td>
             <td class="time">
                 <span th:if="${#strings.isEmpty(poundBillModel.emptyLoadTime)}">未设置</span>
-                <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}" th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd')}"></span><br/>
-                <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}" th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'HH:mm')}"></span>
+                <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}"
+                      th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd')}"></span><br/>
+                <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}"
+                      th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'HH:mm')}"></span>
             </td>
             <td class="time">
                 <span th:if="${#strings.isEmpty(poundBillModel.fullLoadTime)}">未设置</span>
-                <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}" th:text="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd')}"></span><br/>
-                <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}" th:text="${#temporals.format(poundBillModel.fullLoadTime, 'HH:mm')}"></span>
+                <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}"
+                      th:text="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd')}"></span><br/>
+                <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}"
+                      th:text="${#temporals.format(poundBillModel.fullLoadTime, 'HH:mm')}"></span>
             </td>
             <td th:text="${poundBillModel.outputUnit}"></td>
             <td th:text="${poundBillModel.inputUnit}"></td>
             <td th:text="${poundBillModel.weigher}"></td>
-            <td th:text="${poundBillModel.id}" style="display: none"></td>
+            <td class="deleteRecord">
+                <a href="#" th:onclick="'confirmDelete(' + ${poundBillModel.id} + ')'">删除记录</a>
+            </td>
+
+            <td th:id="${poundBillModel.id}" th:text="${poundBillModel.id}" style="display: none"></td>
         </tr>
         </tbody>
     </table>
@@ -174,7 +223,6 @@
     </div>
 
 </div>
-
 
 </body>
 

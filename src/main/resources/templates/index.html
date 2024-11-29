@@ -22,12 +22,18 @@
             background-color: #f8f9fa; /* 背景颜色可选 */
         }
 
+        a {
+            // 去除所有格式
+            text-decoration: none;
+            color: #343a40;
+        }
+
         .row {
             margin-top: 0;
         }
 
         .form-div {
-
+            margin-top: 50px;
         }
 
         form {
@@ -73,11 +79,6 @@
             background-color: #0056b3; /* 按钮悬停颜色 */
         }
 
-        .desc {
-            margin: 0 auto;
-            padding: 0;
-            border: 0;
-        }
     </style>
 
 </head>
@@ -105,16 +106,29 @@
                 </div>
 
                 <div class="input-group">
-                    <span class="input-group-addon input-desc">煤种</span>
-                    <select class="form-control" name="coal-type" aria-describedby="basic-addon3">
-                        <option value="4-1水洗煤">4-1水洗煤</option>
-                        <option value="4-2水洗煤">4-2水洗煤</option>
-                        <option value="4-2原煤">4-2原煤</option>
-                        <option value="5-1水洗煤">5-1水洗煤</option>
-                        <option value="5-1原煤">5-1原煤</option>
-                        <option value=">6-1水洗煤">6-1水洗煤</option>
-                        <option value="6-1原煤">6-1原煤</option>
+                    <span class="input-group-addon input-desc"><a href="/coalTypeEdit">煤种</a></span>
+                    <select class="form-control" name="coal-type" id="coal-type" aria-describedby="basic-addon3"
+                            onchange="function toggleOtherInput() {
+                        const coalTypeSelect = document.getElementById('coal-type');
+                        const otherInput = document.getElementById('other-coal-type');
+                        if (coalTypeSelect.value === 'other') {
+                            otherInput.style.display = 'table';  // 显示输入框
+                        } else {
+                            otherInput.style.display = 'none';   // 隐藏输入框
+                        }
+                    }
+                    toggleOtherInput()">
+                        <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}"
+                                th:text="${coalType.name}">
+                        </option>
+
+                        <option value="other">其他</option>
                     </select>
+                </div>
+                <!-- 新增一个输入框，当选择"其他"时显示 -->
+                <div class="input-group" id="other-coal-type" style="display:none;">
+                    <span class="input-group-addon input-desc">请输入新煤种</span>
+                    <input type="text" class="form-control" name="other-coal-type" aria-describedby="basic-addon3">
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon input-desc">车牌号</span>
@@ -166,10 +180,6 @@
 
             </form>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
-            <span>一些说明</span>
-            <span>还没想好写啥</span>
-        </div>
     </div>
 
 </div>
@@ -177,6 +187,101 @@
 </body>
 
 <script src="/js/form-date.js"></script>
+<script>
+    // 初始化实时验证
+    function initializeRealTimeValidation() {
+        const form = document.getElementById('pound_form');
+
+        // 为每个输入框绑定实时验证事件
+        form['plate-number'].addEventListener('input', () => validateField(form['plate-number']));
+        form['gross-weight'].addEventListener('input', () => validateField(form['gross-weight']));
+        form['tare'].addEventListener('input', () => validateField(form['tare']));
+        form['primary-weight'].addEventListener('input', () => validateField(form['primary-weight']));
+        form['empty-load-time'].addEventListener('input', () => validateField(form['empty-load-time']));
+        form['full-load-time'].addEventListener('input', () => validateField(form['full-load-time']));
+        form['output-unit'].addEventListener('input', () => validateField(form['output-unit']));
+        form['input-unit'].addEventListener('input', () => validateField(form['input-unit']));
+        form['coal-type'].addEventListener('change', () => validateField(form['coal-type']));
+        form['other-coal-type'].addEventListener('input', () => validateField(form['other-coal-type']));
+    }
+
+    // 验证单个字段
+    function validateField(field) {
+        resetFieldError(field);  // 清除之前的错误样式
+
+        // 验证毛重、皮重和原发是否为数字（适用于相应字段）
+        if (['gross-weight', 'tare', 'primary-weight'].includes(field.name) && isNaN(field.value)) {
+            markFieldError(field, '必须为数字');
+            return;
+        }
+
+        // 验证必填字段是否为空
+        // if (!field.value.trim()) {
+        //     markFieldError(field, '该字段不能为空');
+        //     return;
+        // }
+
+        // 特定字段的验证（例如煤种选择）
+        if (field.name === 'coal-type' && field.value === '') {
+            markFieldError(field, '请选择煤种');
+        }
+
+        if (field.name === 'other-coal-type' && document.getElementById('coal-type').value === 'other' && !field.value.trim()) {
+            markFieldError(field, '请输入新煤种');
+        }
+    }
+
+    // 标记错误的输入框并显示错误信息
+    function markFieldError(field, message) {
+        field.style.borderColor = 'red';  // 给字段添加红色边框
+        // const errorSpan = document.createElement('span');
+        // errorSpan.classList.add('error-message');
+        // errorSpan.style.color = 'red';
+        // errorSpan.style.float = 'left';
+        // errorSpan.style.display = 'block';
+        // errorSpan.textContent = message;
+        // field.parentNode.appendChild(errorSpan);
+    }
+
+    // 清除字段的错误样式
+    function resetFieldError(field) {
+        field.style.borderColor = '';  // 清除边框颜色
+        const errorMessages = field.parentNode.querySelectorAll('.error-message');
+        errorMessages.forEach(msg => msg.remove());  // 删除错误信息
+    }
+
+    // 提交前检查所有字段
+    function validateForm() {
+        let isValid = true;
+        const form = document.getElementById('pound_form');
+
+        // 遍历所有字段，进行验证
+        const inputs = form.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            if (input.name !== 'coal-type' && input.name !== 'other-coal-type') {
+                validateField(input);  // 进行实时验证
+                if (input.style.borderColor === 'red') {
+                    isValid = false;  // 如果发现红色边框，表示有错误
+                }
+            }
+        });
+
+        // 如果表单无误，弹出确认框
+        if (!isValid) {
+            const confirmation = confirm('存在错误的输入，请确认后继续提交。');
+            return confirmation;
+        }
+
+        return true;  // 如果所有字段都通过验证，则允许提交
+    }
+
+    // 绑定表单提交事件
+    document.getElementById('pound_form').onsubmit = validateForm;
+
+    // 初始化实时验证
+    initializeRealTimeValidation();
+</script>
+
 
 </html>
 

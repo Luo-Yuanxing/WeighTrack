@@ -42,23 +42,6 @@ public class PoundBillService {
 
     // 数据校验方法
     private void validate(PoundBillModel poundBillModel) {
-        // 煤种校验
-        if (!Set.of("4-1水洗煤", "4-2水洗煤", "4-2原煤", "5-1水洗煤", "5-1原煤", ">6-1水洗煤", "6-1原煤")
-                .contains(poundBillModel.getCoalType())) {
-            poundBillModel.setCoalType("");
-        }
-
-        // 车牌号校验
-        String plateNumber = "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1})";
-        Pattern pattern = Pattern.compile(plateNumber);
-        Matcher matcher = pattern.matcher(poundBillModel.getPlateNumber());
-        boolean plateNumberFound = false;
-        while (matcher.find()) {
-            plateNumberFound = true;
-        }
-        if (!plateNumberFound) {
-            poundBillModel.setPlateNumber("");
-        }
 
         // 毛重校验
         if (!poundBillModel.getGrossWeightString().isEmpty()) {
@@ -114,4 +97,7 @@ public class PoundBillService {
         System.out.println(poundBillModel);
     }
 
+    public void deleteById(int id) {
+        poundBillMapper.deleteById(id);
+    }
 }

@@ -16,4 +16,7 @@ public interface PoundBillMapper {
 
     @Select("select * from poundbill where id = #{id}")
     PoundBillModel selectById(int id);
+
+    @Delete("delete from poundbill where id = #{id}")
+    void deleteById(int id);
 }

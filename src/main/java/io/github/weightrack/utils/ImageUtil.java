@@ -2,16 +2,20 @@ package io.github.weightrack.utils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.PrinterJob;
 
 public class ImageUtil {
+
     public static BufferedImage createImage(String[] data) {
         int dpi = 300; // 打印机的DPI
         int widthMm = 80; // 图纸宽度，单位毫米
         int heightMm = 200; // 图纸高度，单位毫米
 
         // 将图纸尺寸转换为像素
-        int widthPx = (int) (widthMm * dpi / 25.4);
-        int heightPx = (int) (heightMm * dpi / 25.4) - 1000;
+        int widthPx = (int) (widthMm * dpi / 25.4) + 70;
+        int heightPx = (int) (heightMm * dpi / 25.4) - 800;
 
         BufferedImage image = new BufferedImage(widthPx, heightPx, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = image.createGraphics();
@@ -58,13 +62,13 @@ public class ImageUtil {
 
         // 表格单元格的宽度和高度
         int cellWidth = widthPx / cols - 20;
-        int cellHeight = 100;  // 单元格高度增大
+        int cellHeight = 121;  // 单元格高度增大
 
         font = new Font("Microsoft YaHei", Font.PLAIN, 40);
         g2d.setFont(font);
 
         // 设置表格的线条宽度
-        g2d.setStroke(new BasicStroke(10)); // 设置线条粗细为10像素
+        g2d.setStroke(new BasicStroke(5)); // 设置线条粗细为10像素
 
         // 绘制表格的内容
         for (int i = 0; i < rows; i++) {
@@ -89,7 +93,7 @@ public class ImageUtil {
             g2d.drawRect(x + cellWidth, y + i * cellHeight, cellWidth, cellHeight);
 
             // 计算数据文本的宽度和位置，确保文本左对齐
-            stringWidth = fm.stringWidth(data[i]);
+            fm.stringWidth(data[i]);
             stringX = x + cellWidth + 10;  // 水平左对齐，距离左边10像素
             stringY = y + i * cellHeight + (cellHeight + stringHeight) / 2 - fm.getDescent();  // 垂直居中
 
@@ -100,4 +104,31 @@ public class ImageUtil {
         return image;
     }
 
+
+    public static void printRun(BufferedImage image) {
+        try {
+            // 设置打印纸张大小为80mm * 120mm
+            PrinterJob printerJob = PrinterJob.getPrinterJob();
+            PageFormat pageFormat = printerJob.defaultPage();
+            Paper paper = new Paper();
+
+            // 80mm * 120mm转换为像素 (300 DPI)
+            double width = 80 * 300 / 25.4;  // 80mm to pixels
+            double height = 120 * 300 / 25.4; // 120mm to pixels
+            paper.setSize(width, height);
+            paper.setImageableArea(0, 0, width, height); // 设置页边距为0
+
+            pageFormat.setPaper(paper);
+
+            // 创建打印对象并设置打印内容
+            ImagePrinter imagePrinter = new ImagePrinter(image);
+            printerJob.setPrintable(imagePrinter, pageFormat);
+
+            printerJob.print();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

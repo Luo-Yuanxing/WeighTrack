@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>鸿聚一号煤场出库明细 - 修改煤种</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" href="/css/nav.css">
+    <script src="/js/html5shiv.js"></script>
+    <script src="/js/respond.js"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 100px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .checkbox {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .checkbox label {
+            cursor: pointer;
+        }
+
+        .form-group input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .form-group input[type="submit"]:focus {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>修改煤种</h1>
+    <div th:insert="~{nav :: nav}"></div>
+    <form action="/coalType/delete" method="post">
+        <div class="form-group">
+            <label>选择要删除的煤种：</label>
+            <div th:each="coalType : ${coalTypes}">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" th:value="${coalType.name}" th:name="coalTypes" />
+                        <span th:text="${coalType.name}"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group text-center">
+            <input type="submit" value="提交">
+        </div>
+    </form>
+
+</div>
+
+<!-- JS Scripts -->
+<script src="/js/jQuery-3.7.1.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/bootstrap-datetimepicker.js"></script>
+<script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+</body>
+</html>

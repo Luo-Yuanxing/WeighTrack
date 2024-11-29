@@ -1,5 +1,6 @@
 package io.github.weightrack.controller;
 
+import io.github.weightrack.Service.CoalTypeService;
 import io.github.weightrack.Service.PoundBillService;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.User;
@@ -15,6 +16,9 @@ public class PoundBillController {
     @Autowired
     private PoundBillService poundBillService;
 
+    @Autowired
+    private CoalTypeService coalTypeService;
+
     @PostMapping("/commit")
     public String getForm(
             @RequestParam("IOType") String IOType,
@@ -28,7 +32,14 @@ public class PoundBillController {
             @RequestParam("output-unit") String outputUnit,
             @RequestParam("input-unit") String inputUnit,
             @RequestParam("weigher") String weigher,
-            HttpServletRequest request) {
+            @RequestParam("other-coal-type") String otherCoalType,
+            HttpServletRequest request,
+            Model model) {
+
+        if (coalType.equals("other")) {
+            coalType = otherCoalType;
+            coalTypeService.insertCoalType(coalType);
+        }
 
         PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare,
                 primaryWeight, emptyLoadTime, fullLoadTime,
@@ -37,13 +48,13 @@ public class PoundBillController {
         if (user instanceof User) {
             poundBillModel.setCreatorId(((User) user).getId());
         } else {
-            throw new RuntimeException("用户未登录");
+            model.addAttribute("error", "用户未登录");
         }
 
         poundBillService.insertPoundBill(poundBillModel);
 
         // 返回视图名称
-        return "redirect:/";
+        return "index";
     }
 
     @GetMapping("/update/{id}")
@@ -75,5 +86,11 @@ public class PoundBillController {
         // 此处应该调用更新的服务方法，例如 poundBillService.updatePoundBill(poundBillModel);
         poundBillService.updateById(poundBillModel, id);
         return "redirect:/showList";
+    }
+
+    @ResponseBody
+    @GetMapping("/delete/{id}")
+    public void deletePoundBillById(@PathVariable("id") int id) {
+        poundBillService.deleteById(id);
     }
 }

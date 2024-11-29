@@ -3,6 +3,7 @@ package io.github.weightrack.controller;
 import io.github.weightrack.Service.PoundBillService;
 import io.github.weightrack.Service.PrintService;
 import io.github.weightrack.module.PoundBillModel;
+import io.github.weightrack.utils.ImagePrinter;
 import io.github.weightrack.utils.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -52,11 +56,7 @@ public class PrintController {
         data[10] = poundBillModel.getWeigher();
 
         BufferedImage image = ImageUtil.createImage(data);
-        try {
-            ImageIO.write(image, "PNG", new File("image.png"));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        ImageUtil.printRun(image);
 
         model.addAttribute("message", "已请求打印任务");
         model.addAttribute("poundBillModel", poundBillModel);

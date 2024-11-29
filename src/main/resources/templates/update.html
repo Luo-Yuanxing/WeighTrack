@@ -27,7 +27,7 @@
         }
 
         .form-div {
-
+            margin-top: 50px;
         }
 
         form {
@@ -97,7 +97,7 @@
                 <span class="form-title">修改磅单数据</span>
 
                 <!-- 隐藏的ID字段，用于标识修改的记录 -->
-                <input type="hidden" name="id" th:value="${poundBillModel.id}" /> <!-- 假设12345是要修改的记录ID -->
+                <input type="hidden" name="id" th:value="${poundBillModel.id}" />
 
                 <div class="input-group">
                     <span class="input-group-addon input-desc">出入库类型</span>
@@ -177,10 +177,7 @@
             </form>
 
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 desc">
-            <span>一些说明</span>
-            <span>还没想好写啥</span>
-        </div>
+
     </div>
 
 </div>

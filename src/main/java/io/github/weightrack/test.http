@@ -5,3 +5,17 @@ GET https://examples.http-client.intellij.net/get
 ###
 GET localhost:8080/getPoundBill?id=13
 
+###
+POST localhost:8080/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "username": "admin",
+  "password": "123357789ll"
+}
+
+
+###
+DELETE localhost:8080/coalType/111
+
