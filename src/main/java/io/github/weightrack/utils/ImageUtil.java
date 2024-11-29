@@ -84,7 +84,7 @@ public class ImageUtil {
             g2d.drawRect(x, y + i * cellHeight, cellWidth, cellHeight);
 
             // 计算文本的宽度和位置，确保文本左对齐
-            stringWidth = fm.stringWidth(columnHeaders[i]);
+            fm.stringWidth(columnHeaders[i]);
             int stringX = x + 10;  // 水平左对齐，距离左边10像素
             int stringHeight = fm.getHeight();
             int stringY = y + i * cellHeight + (cellHeight + stringHeight) / 2 - fm.getDescent();  // 垂直居中

@@ -26,14 +26,6 @@
             color: #343a40;
         }
 
-        .row {
-            margin-top: 0;
-        }
-
-        .form-div {
-            margin-top: 50px;
-        }
-
         form {
             background-color: #ffffff;
             margin: 10px;
@@ -228,15 +220,8 @@
     }
 
     // 标记错误的输入框并显示错误信息
-    function markFieldError(field, message) {
+    function markFieldError(field) {
         field.style.borderColor = 'red';  // 给字段添加红色边框
-        // const errorSpan = document.createElement('span');
-        // errorSpan.classList.add('error-message');
-        // errorSpan.style.color = 'red';
-        // errorSpan.style.float = 'left';
-        // errorSpan.style.display = 'block';
-        // errorSpan.textContent = message;
-        // field.parentNode.appendChild(errorSpan);
     }
 
     // 清除字段的错误样式

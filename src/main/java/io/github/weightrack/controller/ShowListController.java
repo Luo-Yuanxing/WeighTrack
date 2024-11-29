@@ -1,6 +1,5 @@
 package io.github.weightrack.controller;
 
-import io.github.weightrack.Mapper.ShowListMapper;
 import io.github.weightrack.Service.ShowListService;
 import io.github.weightrack.module.PoundBillModel;
 import org.springframework.beans.factory.annotation.Autowired;

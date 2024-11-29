@@ -2,12 +2,8 @@ package io.github.weightrack.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import okhttp3.Interceptor;
-import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import java.io.IOException;
 
 public class NoCacheInterceptor implements HandlerInterceptor {
     @Override
