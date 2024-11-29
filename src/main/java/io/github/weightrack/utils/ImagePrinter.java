@@ -30,7 +30,7 @@ public class ImagePrinter implements Printable {
 
         // 计算图片绘制的尺寸
         int newWidth = (int) (image.getWidth() * scale);
-        int newHeight = (int) (image.getHeight() * scale);
+        int newHeight = (int) (image.getHeight() * scale) ;
 
         // 绘制图片
         g2d.drawImage(image, 0, 0, newWidth, newHeight, null);

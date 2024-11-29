@@ -41,6 +41,7 @@ public class PoundBillModel {
     private LocalDateTime creatTime;
     private LocalDateTime modifyTime;
     private LocalDateTime printTime;
+    private boolean isPrinted;
 
     private int creatorId;
 

@@ -25,7 +25,12 @@ public class PrintService {
         String dateStr = dateFormat.format(new Date(System.currentTimeMillis()));
 
         String countStr = String.format("%04d", count + 1);
-        String poundID = "R" + dateStr + countStr;
+        String poundID;
+        if (poundBillModel.getIOType().equals("1")) {
+            poundID = "R" + dateStr + countStr;
+        } else {
+            poundID = "C" + dateStr + countStr;
+        }
         poundBillModel.setPoundID(poundID);
         return poundBillModel;
     }

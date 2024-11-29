@@ -8,8 +8,8 @@
     <title>鸿聚一号煤场出库明细</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css">
+    <!--css-->
+    <link rel="stylesheet" href="/css/bootstrap.css">
 
     <link rel="stylesheet" href="/css/nav.css">
 
@@ -86,9 +86,9 @@
 <body>
 
 <script src="/js/jQuery-3.7.1.js"></script>
-<script src="/js/bootstrap.js"></script>
-<script src="/js/bootstrap-datetimepicker.js"></script>
-<script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<!--js-->
+<!--其中/是相对于web路径 = web/js/bootstrap.bundle.js-->
+<script src="/js/bootstrap.bundle.js"></script>
 
 <div class="container-fluid">
     <div th:insert="~{nav :: nav}"></div>
@@ -268,8 +268,7 @@
 
         // 如果表单无误，弹出确认框
         if (!isValid) {
-            const confirmation = confirm('存在错误的输入，请确认后继续提交。');
-            return confirmation;
+            return confirm('存在错误的输入，请确认后继续提交。');
         }
 
         return true;  // 如果所有字段都通过验证，则允许提交

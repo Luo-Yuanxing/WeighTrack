@@ -9,13 +9,19 @@ import java.awt.print.PrinterJob;
 public class ImageUtil {
 
     public static BufferedImage createImage(String[] data) {
+
+        // 6、7、8保留两位小数点
+        data[6] = String.format("%.2f", Double.parseDouble(data[6]));
+        data[7] = String.format("%.2f", Double.parseDouble(data[7]));
+        data[8] = String.format("%.2f", Double.parseDouble(data[8]));
+
         int dpi = 300; // 打印机的DPI
         int widthMm = 80; // 图纸宽度，单位毫米
         int heightMm = 200; // 图纸高度，单位毫米
 
         // 将图纸尺寸转换为像素
-        int widthPx = (int) (widthMm * dpi / 25.4) + 70;
-        int heightPx = (int) (heightMm * dpi / 25.4) - 800;
+        int widthPx = (int) (widthMm * dpi / 25.4) + 230;
+        int heightPx = (int) (heightMm * dpi / 25.4) - 530;
 
         BufferedImage image = new BufferedImage(widthPx, heightPx, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = image.createGraphics();
@@ -25,7 +31,7 @@ public class ImageUtil {
         g2d.fillRect(0, 0, widthPx, heightPx);
 
         // 设置支持中文的加粗字体
-        Font font = new Font("Microsoft YaHei", Font.BOLD, 60);  // 微软雅黑字体，加粗
+        Font font = new Font("FangSong", Font.BOLD, 100);  // 微软雅黑字体，加粗
         g2d.setFont(font);
 
         // 设置文本颜色
@@ -36,7 +42,7 @@ public class ImageUtil {
         FontMetrics fm = g2d.getFontMetrics();
         int stringWidth = fm.stringWidth(header1);
         int xHeader1 = (widthPx - stringWidth) / 2;  // 水平居中
-        int yHeader1 = 80;  // 调整垂直位置
+        int yHeader1 = 110;  // 调整垂直位置
 
         g2d.drawString(header1, xHeader1, yHeader1);  // 绘制第一行标题
 
@@ -49,8 +55,7 @@ public class ImageUtil {
         g2d.drawString(header2, xHeader2, yHeader2);  // 绘制第二行标题
 
         // 表格的标题和数据
-        String[] columnHeaders = {"日期", "榜单编号", "车牌号", "煤种", "发货单位", "收货单位", "毛重", "皮重", "净重", "打印时间", "司磅员"};
-
+        String[] columnHeaders = {"日期：", "榜单编号：", "车牌号：", "煤种：", "发货单位：", "收货单位：", "毛重（吨）：", "皮重（吨）：", "净重（吨）：", "打印时间：", "司磅员："};
 
         // 表格的行数和列数
         int cols = 2;  // 1列表头，1列数据
@@ -62,9 +67,9 @@ public class ImageUtil {
 
         // 表格单元格的宽度和高度
         int cellWidth = widthPx / cols - 20;
-        int cellHeight = 121;  // 单元格高度增大
+        int cellHeight = 130 + 10;  // 单元格高度增大
 
-        font = new Font("Microsoft YaHei", Font.PLAIN, 40);
+        font = new Font("FangSong", Font.BOLD, 70);
         g2d.setFont(font);
 
         // 设置表格的线条宽度
@@ -84,7 +89,7 @@ public class ImageUtil {
             int stringHeight = fm.getHeight();
             int stringY = y + i * cellHeight + (cellHeight + stringHeight) / 2 - fm.getDescent();  // 垂直居中
 
-            g2d.drawString(columnHeaders[i], stringX + 40, stringY);  // 表头内容
+            g2d.drawString(columnHeaders[i], stringX + 40, stringY - 10);  // 表头内容
 
             // 第二列（数据）
             g2d.setColor(Color.WHITE);
@@ -96,8 +101,12 @@ public class ImageUtil {
             fm.stringWidth(data[i]);
             stringX = x + cellWidth + 10;  // 水平左对齐，距离左边10像素
             stringY = y + i * cellHeight + (cellHeight + stringHeight) / 2 - fm.getDescent();  // 垂直居中
+            if (columnHeaders[i].equals("净重（吨）：")) {
+                g2d.setFont(new Font("FangSong", Font.BOLD, 100));
+            }
+            g2d.drawString(data[i], stringX + 40, stringY - 10);
+            g2d.setFont(new Font("FangSong", Font.BOLD, 70));
 
-            g2d.drawString(data[i], stringX + 40, stringY);  // 数据内容
         }
 
         g2d.dispose(); // 释放资源
