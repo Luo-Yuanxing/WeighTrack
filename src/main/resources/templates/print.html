@@ -32,7 +32,7 @@
 
         table {
             width: 100%;
-            margin-top: 20px;
+            margin: 20px auto;
             border-collapse: collapse;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -96,8 +96,8 @@
 
 <div class="container">
     <div th:insert="~{nav :: nav}"></div>
-    <h4 class="text-center">打印预览</h4>
-    <a class="checkout" th:if="${message}" th:href="@{/showList}" th:text="${message}+' 点击返回查询列表'"></a>
+    <h4 class="text-left">打印预览</h4>
+    <a class="checkout" th:if="${message}" href="javascript:history.go(-2)" th:text="${message}+' 点击返回查询列表'"></a>
     <h3 class="text-center">鸿聚一号煤场</h3>
     <h3 class="text-center">过磅单</h3>
 

@@ -62,6 +62,8 @@ public class PoundBillController {
             Model model,
             @PathVariable("id") int id) {
         model.addAttribute("poundBillModel", poundBillService.selectById(id));
+        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+
         return "update";
     }
 

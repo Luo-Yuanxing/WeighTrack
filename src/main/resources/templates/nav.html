@@ -10,31 +10,38 @@
 
 <body>
 <div th:fragment="nav" class="nav">
-    <nav class="navbar navbar-default navbar-fixed-top">
+    <nav class="navbar navbar-light">
         <div class="container-fluid">
-            <div class="row">
-                <div class="navbar-header col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <a class="navbar-brand" href="/">鸿聚一号煤场出库明细</a>
-                </div>
-                <div th:if="${session.user}" class="history navbar-header col-lg-3 col-md-3 col-sm-3 col-xs-12 col-lg-offset-3 col-md-offset-3 col-sm-offset-3 col-xs-offset-0">
-                    <!-- Example single danger button -->
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            查看记录
-                        </button>
+            <div class="navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">鸿聚一号煤场出入库明细</a></li>
+                    <li><a href="/">添加新纪录</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">查看记录 <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="/showList/in">入库表</a></li>
-                            <li><a href="/showList/out">出库表</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a href="/showList">总表</a></li>
+                            <li><a href="/showList/in">入库记录</a></li>
+                            <li><a href="/showList/out">出库记录</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/showList">合并记录</a></li>
                         </ul>
-                    </div>
-
-                </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">数据汇总 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/data-summary/today">今日汇总</a></li>
+                            <li><a href="/data-summary/month">本月汇总</a></li>
+                            <li><a href="/data-summary/quarter">季度汇总</a></li>
+                            <li><a href="/data-summary/year">年度汇总</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
 </div>
+
 </body>
 
 </html>

@@ -135,9 +135,8 @@ public class ImageUtil {
 
             printerJob.print();
 
-
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 }

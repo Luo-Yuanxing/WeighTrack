@@ -1,80 +1,61 @@
-/* 通用样式 */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
 }
 
-/* Navbar 样式 */
 .navbar {
-    height: 50px;
-    background-color: #343a40;
-    border: none;
-    margin-bottom: 0;
+    background-color: #007bff;
     border-radius: 0;
 }
-
-.navbar-default .navbar-brand {
+.nav .open > a {
+    background-color: #007bff !important;
+}
+.nav>li>a:focus, .nav>li>a:hover {
+    background-color: #007bff;
+}
+.navbar a {
     color: #fff !important;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 15px 20px;
+    font-size: 16px;
 }
 
-.navbar-default .navbar-brand:hover {
-    color: #f8f9fa !important;
-    background-color: #495057;
+.navbar a:hover {
+    color: #007bff !important;
+    background-color: #42baca !important;
 }
 
-/* 固定顶部导航栏 */
-.navbar-fixed-top {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+.navbar .dropdown-menu {
+    background-color: #3b78ba;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* 响应式布局 */
-@media (max-width: 767px) {
-    .navbar-header {
-        text-align: center;
-        margin: 10px 0;
-    }
-
-    .navbar-brand {
-        font-size: 16px;
-        padding: 10px;
-    }
-
-    .history {
-        text-align: center;
-    }
+.navbar .dropdown-menu a {
+    color: #007bff;
 }
 
-/* 添加历史记录链接的样式 */
-.history .navbar-brand {
-    background-color: #5bc0de;
-    color: #fff;
-    padding: 15px 20px;
-    font-size: 18px;
-    font-weight: normal;
+.navbar .dropdown-menu a:hover {
+    color: #007bff;
+    background-color: #007bff;
 }
 
-.history .navbar-brand:hover {
-    background-color: #31b0d5;
+.nav > li {
+    margin-right: 20px;
 }
 
-/* 优化容器的间距 */
+.navbar-right {
+    margin-left: auto;
+}
+
 .container-fluid {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 0 0;
 }
 
-/* 居中对齐 */
-.row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Responsive design */
+@media (max-width: 768px) {
+    .navbar-nav {
+        text-align: center;
+    }
+    .navbar .dropdown-menu {
+        text-align: center;
+    }
 }

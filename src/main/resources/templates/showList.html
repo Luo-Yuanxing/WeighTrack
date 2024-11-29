@@ -9,7 +9,6 @@
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css">
 
     <!-- nav.css   -->
     <link rel="stylesheet" href="/css/nav.css">
@@ -27,11 +26,16 @@
             padding: 0;
         }
 
+        h2 {
+            text-align: center;
+            margin: 10px auto;
+            padding: 0;
+        }
+
         /* 表格样式 */
         table {
-            margin: 70px 20px;
+            margin: 10px auto;
             width: 100%;
-            max-width: 1200px;
             border-collapse: collapse;
             background-color: #fff; /* 表格背景 */
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影 */
@@ -95,14 +99,6 @@
             white-space: nowrap;
         }
 
-        /* 边栏样式 */
-        .desc {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 1.1rem;
-            color: #666;
-        }
-
         .deleteRecord a {
             color: red; /* 设置字体颜色为红色 */
             font-weight: bold; /* 设置字体加粗 */
@@ -132,21 +128,21 @@
 <body>
 
 <script src="/js/jQuery-3.7.1.js"></script>
-<script src="/js/bootstrap.js"></script>
-<script src="/js/bootstrap-datetimepicker.js"></script>
-<script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/html5shiv.js"></script>
+<script src="/js/respond.js"></script>
 <script>
     function confirmDelete(id) {
         if (confirm("确定要删除这条记录吗？")) {
             $.ajax({
                 url: '/delete/' + id, // 请求的URL
                 type: 'GET', // 请求方式，GET 或 POST
-                success: function() {
+                success: function () {
                     // 请求成功后的回调函数
                     alert('删除成功');
                     window.location.reload(); // 刷新页面
                 },
-                error: function() {
+                error: function () {
                     // 请求失败后的回调函数
                     alert('删除失败');
                 }
@@ -155,74 +151,82 @@
     }
 </script>
 
-<div class="container-fluid">
-    <div th:insert="~{nav :: nav}"></div>
-    <table>
-        <thead>
-        <tr>
-            <th>操作</th>
-            <th>出入库<br>类型</th>
-            <th>煤种</th>
-            <th>车牌号</th>
-            <th>毛重</th>
-            <th>皮重</th>
-            <th>净重</th>
-            <th>原发</th>
-            <th>盈亏</th>
-            <th class="time">过空<br>时间</th>
-            <th class="time">过重<br>时间</th>
-            <th>发货<br>单位</th>
-            <th>收货<br>单位</th>
-            <th>司磅员</th>
-            <th>删除记录</th>
-            <th style="display: none">id</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="poundBillModel : ${poundBillModels}">
-            <td class="options">
-                <a th:href="@{/update/{id}(id=${poundBillModel.id})}">修改</a>
-                <a th:href="@{/print/{id}(id=${poundBillModel.id})}">打印</a>
-            </td>
-            <td th:text="${poundBillModel.IOType} == 1 ? '入库' : '出库'"></td>
-            <td th:text="${poundBillModel.coalType}"></td>
-            <td th:text="${poundBillModel.plateNumber}"></td>
-            <td th:text="${poundBillModel.grossWeight}"></td>
-            <td th:text="${poundBillModel.tareWeight}"></td>
-            <td th:text="${poundBillModel.netWeight}"></td>
-            <td th:text="${poundBillModel.primaryWeight}"></td>
-            <td th:text="${poundBillModel.profitLossWeight}"></td>
-            <td class="time">
-                <span th:if="${#strings.isEmpty(poundBillModel.emptyLoadTime)}">未设置</span>
-                <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}"
-                      th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd')}"></span><br/>
-                <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}"
-                      th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'HH:mm')}"></span>
-            </td>
-            <td class="time">
-                <span th:if="${#strings.isEmpty(poundBillModel.fullLoadTime)}">未设置</span>
-                <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}"
-                      th:text="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd')}"></span><br/>
-                <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}"
-                      th:text="${#temporals.format(poundBillModel.fullLoadTime, 'HH:mm')}"></span>
-            </td>
-            <td th:text="${poundBillModel.outputUnit}"></td>
-            <td th:text="${poundBillModel.inputUnit}"></td>
-            <td th:text="${poundBillModel.weigher}"></td>
-            <td class="deleteRecord">
-                <a href="#" th:onclick="'confirmDelete(' + ${poundBillModel.id} + ')'">删除记录</a>
-            </td>
-
-            <td th:id="${poundBillModel.id}" th:text="${poundBillModel.id}" style="display: none"></td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="desc">
-        <span>一些说明</span>
-        <span>还没想好写啥</span>
+<div th:insert="~{nav :: nav}"></div>
+<div th:switch="${IOType}">
+    <div th:case="in">
+        <h2>入库记录表</h2>
     </div>
-
+    <div th:case="out">
+        <h2>出库记录表</h2>
+    </div>
+    <div th:case="all">
+        <h2>出入库总记录</h2>
+    </div>
 </div>
+
+<table>
+    <thead>
+    <tr>
+        <th>操作</th>
+        <th>出入库<br>类型</th>
+        <th>煤种</th>
+        <th>车牌号</th>
+        <th>毛重</th>
+        <th>皮重</th>
+        <th>净重</th>
+        <th>原发</th>
+        <th>盈亏</th>
+        <th class="time">过空<br>时间</th>
+        <th class="time">过重<br>时间</th>
+        <th>发货<br>单位</th>
+        <th>收货<br>单位</th>
+        <th>司磅员</th>
+        <th>删除记录</th>
+        <th style="display: none">id</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="poundBillModel : ${poundBillModels}">
+        <td class="options">
+            <a th:href="@{/update/{id}(id=${poundBillModel.id})}">修改</a>
+            <a th:href="@{/print/{id}(id=${poundBillModel.id})}">打印</a>
+        </td>
+        <td th:text="${poundBillModel.IOType} == 1 ? '入库' : '出库'"></td>
+        <td th:text="${poundBillModel.coalType}"></td>
+        <td th:text="${poundBillModel.plateNumber}"></td>
+        <td th:text="${poundBillModel.grossWeight}"></td>
+        <td th:text="${poundBillModel.tareWeight}"></td>
+        <td th:text="${poundBillModel.netWeight}"></td>
+        <td th:text="${poundBillModel.primaryWeight}"></td>
+        <td th:text="${poundBillModel.profitLossWeight}"></td>
+        <td class="time">
+            <span th:if="${#strings.isEmpty(poundBillModel.emptyLoadTime)}">未设置</span>
+            <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}"
+                  th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd')}"></span><br/>
+            <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}"
+                  th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'HH:mm')}"></span>
+        </td>
+        <td class="time">
+            <span th:if="${#strings.isEmpty(poundBillModel.fullLoadTime)}">未设置</span>
+            <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}"
+                  th:text="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd')}"></span><br/>
+            <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}"
+                  th:text="${#temporals.format(poundBillModel.fullLoadTime, 'HH:mm')}"></span>
+        </td>
+        <td th:text="${poundBillModel.outputUnit}"></td>
+        <td th:text="${poundBillModel.inputUnit}"></td>
+        <td th:text="${poundBillModel.weigher}"></td>
+        <td class="deleteRecord">
+            <a href="#" th:onclick="'confirmDelete(' + ${poundBillModel.id} + ')'">删除记录</a>
+        </td>
+
+        <td th:id="${poundBillModel.id}" th:text="${poundBillModel.id}" style="display: none"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${#lists.isEmpty(poundBillModels)}">没有数据</div>
+
 
 </body>
 

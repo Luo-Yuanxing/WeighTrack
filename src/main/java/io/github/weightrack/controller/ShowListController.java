@@ -16,9 +16,25 @@ public class ShowListController {
 
     @GetMapping("/showList")
     public String showList(Model model) {
-        PoundBillModel[] poundBillModels = showListService.showList();
+        PoundBillModel[] poundBillModels = showListService.showList("all");
         model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "all");
+        return "showList";
+    }
 
+    @GetMapping("/showList/in")
+    public String showListIn(Model model) {
+        PoundBillModel[] poundBillModels = showListService.showList("in");
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "in");
+        return "showList";
+    }
+
+    @GetMapping("/showList/out")
+    public String showListOut(Model model) {
+        PoundBillModel[] poundBillModels = showListService.showList("out");
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "out");
         return "showList";
     }
 
