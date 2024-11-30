@@ -85,7 +85,6 @@ public class PoundBillController {
                 primaryWeight, emptyLoadTime, fullLoadTime,
                 outputUnit, inputUnit, weigher);
 
-        // 此处应该调用更新的服务方法，例如 poundBillService.updatePoundBill(poundBillModel);
         poundBillService.updateById(poundBillModel, id);
         return "redirect:/showList";
     }

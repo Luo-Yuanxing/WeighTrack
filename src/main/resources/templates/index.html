@@ -68,6 +68,9 @@
         input[type="submit"]:hover {
             background-color: #0056b3; /* 按钮悬停颜色 */
         }
+        .exclude-border {
+            border-left: 0;
+        }
 
     </style>
 
@@ -117,7 +120,7 @@
         </div>
         <!-- 新增一个输入框，当选择"其他"时显示 -->
         <div class="input-group" id="other-coal-type" style="display:none;">
-            <span class="input-group-addon input-desc">请输入新煤种</span>
+            <span class="input-group-addon input-desc">新煤种</span>
             <input type="text" class="form-control" name="other-coal-type" aria-describedby="basic-addon3">
         </div>
         <div class="input-group">
@@ -125,30 +128,45 @@
             <input type="text" class="form-control" name="plate-number" aria-describedby="basic-addon3">
         </div>
         <div class="input-group">
-            <span class="input-group-addon input-desc">毛重</span>
+            <div class="input-group-addon input-desc">毛重</div>
             <input type="text" class="form-control" name="gross-weight" aria-describedby="basic-addon3">
-            <span class="input-group-addon">吨</span>
+            <div class="exclude-border input-group-addon">
+                <span>吨</span>
+            </div>
+            <div class="exclude-border input-group-addon">
+                <span>自动追加两位小数点</span>
+            </div>
         </div>
         <div class="input-group">
-            <span class="input-group-addon input-desc">皮重</span>
+            <div class="input-group-addon input-desc">皮重</div>
             <input type="text" class="form-control" name="tare" aria-describedby="basic-addon3">
-            <span class="input-group-addon">吨</span>
+            <div class="exclude-border input-group-addon">
+                <span>吨</span>
+            </div>
+            <div class="exclude-border input-group-addon">
+                <span>自动追加两位小数点</span>
+            </div>
         </div>
         <div class="input-group">
-            <span class="input-group-addon input-desc">原发</span>
+            <div class="input-group-addon input-desc">原发</div>
             <input type="text" class="form-control" name="primary-weight" aria-describedby="basic-addon3">
-            <span class="input-group-addon">吨</span>
+            <div class="exclude-border input-group-addon">
+                <span>吨</span>
+            </div>
+            <div class="exclude-border input-group-addon">
+                <span>自动追加两位小数点</span>
+            </div>
         </div>
         <div class="input-group">
             <script src='/js/form-date.js'></script>
             <span class="input-group-addon input-desc">过空时间</span>
-            <input class="form-control" type="text" id="empty-load-time" name="empty-load-time"
+            <input class="exclude-border form-control" type="text" id="empty-load-time" name="empty-load-time"
                    aria-label="选择时间">
         </div>
         <div class="input-group">
             <script src='/js/form-date.js'></script>
             <span class="input-group-addon input-desc">过重时间</span>
-            <input class="form-control" type="text" id="full-load-time" name="full-load-time"
+            <input class="exclude-border form-control" type="text" id="full-load-time" name="full-load-time"
                    aria-label="选择时间">
         </div>
         <div class="input-group">
@@ -175,6 +193,7 @@
 </body>
 
 <script src="/js/form-date.js"></script>
+<!-- 验证-->
 <script>
     // 初始化实时验证
     function initializeRealTimeValidation() {
@@ -261,7 +280,38 @@
     // 初始化实时验证
     initializeRealTimeValidation();
 </script>
+<!-- 自动追加两位小数点-->
+<script>
+    $(document).ready(function() {
+        // 定义一个函数来处理输入值并更新
+        function formatInputValue(input) {
+            let value = input.val().trim(); // 获取输入框内容并去除首尾空格
+            if (value === "" || isNaN(Number(value))) {
+                // 如果值为空或非数字，清空输入框
+                input.val('');
+                return;
+            }
 
+            console.log(input.val())
+            // 获取input.val()字符串最后一位字符
+            let current_input = value.slice(-1);
+            console.log(current_input);
+            let new_value;
+            if (value.length === 1) {
+                new_value = value * 0.01;
+            } else {
+                new_value = parseFloat(value.slice(0, -1)) * 10 + 0.01 * current_input;
+            }
 
+            // 更新输入框的值
+            input.val(new_value.toFixed(2));
+        }
+
+        // 给所有输入框绑定实时监控
+        $('input[name="gross-weight"], input[name="tare"], input[name="primary-weight"]').on('input', function() {
+            formatInputValue($(this)); // 处理当前输入框的值
+        });
+    });
+</script>
 </html>
 

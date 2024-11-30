@@ -120,6 +120,7 @@
             background-color: #f1b0b7; /* 点击时背景色变浅 */
             color: #721c24; /* 点击时文字颜色变深 */
         }
+
     </style>
 
 
@@ -194,11 +195,11 @@
         <td th:text="${poundBillModel.IOType} == 1 ? '入库' : '出库'"></td>
         <td th:text="${poundBillModel.coalType}"></td>
         <td th:text="${poundBillModel.plateNumber}"></td>
-        <td th:text="${poundBillModel.grossWeight}"></td>
-        <td th:text="${poundBillModel.tareWeight}"></td>
-        <td th:text="${poundBillModel.netWeight}"></td>
-        <td th:text="${poundBillModel.primaryWeight}"></td>
-        <td th:text="${poundBillModel.profitLossWeight}"></td>
+        <td class="weights" th:text="${poundBillModel.grossWeight}"></td>
+        <td class="weights" th:text="${poundBillModel.tareWeight}"></td>
+        <td class="weights" th:text="${poundBillModel.netWeight}"></td>
+        <td class="weights" th:text="${poundBillModel.primaryWeight}"></td>
+        <td class="weights profit-loss-weight" th:text="${poundBillModel.profitLossWeight}"></td>
         <td class="time">
             <span th:if="${#strings.isEmpty(poundBillModel.emptyLoadTime)}">未设置</span>
             <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}"
@@ -227,6 +228,41 @@
 
 <div th:if="${#lists.isEmpty(poundBillModels)}">没有数据</div>
 
+<script>
+
+    $(function() {
+        $('.profit-loss-weight').each(function() {
+            // 获取该元素的数值
+            let value = parseFloat($(this).text()); // 使用 jQuery 的 .text() 获取文本内容
+
+            // 如果值小于 -0.2，添加红色醒目
+            if (value < -0.2 && value !== 0) {
+                $(this).css({
+                    "color": "#d32f2f",  // 使用更深的红色，增加可读性
+                    "background-color": "#f8d7da",  // 使用柔和的粉红色背景
+                    "border": "1px solid #f5c6cb",  // 添加边框，使背景颜色更有层次感
+                    "padding": "0.2em 0.4em",  // 适当增加内边距，使内容更加舒适
+                    "border-radius": "5px",  // 使背景块更圆润
+                    "transition": "all 0.3s ease-in-out"  // 添加过渡效果，使样式更平滑
+                });
+            }
+        });
+        $('.weights').each(function() {
+            // 获取该元素的数值
+            let value = parseFloat($(this).text());
+            if (value === 0) {
+                $(this).text("")
+            } else {
+                // 保留两位小数点
+                $(this).text(value.toFixed(2));
+            }
+        });
+    })
+
+
+
+
+</script>
 
 </body>
 
