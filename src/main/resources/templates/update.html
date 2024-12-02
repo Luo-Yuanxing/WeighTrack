@@ -98,7 +98,7 @@
 
     <div class="input-group">
         <span class="input-group-addon input-desc">煤种</span>
-        <select th:field="*{poundBillModel.coalType}" class="form-control" name="coal-type" id="coal-type" aria-describedby="basic-addon3">
+        <select th:field="*{poundBillModel.coalType}" class="form-control" name="coalType" id="coalType" aria-describedby="basic-addon3">
             <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}"
                     th:text="${coalType.name}">
             </option>

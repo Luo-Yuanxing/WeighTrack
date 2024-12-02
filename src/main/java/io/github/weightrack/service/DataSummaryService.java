@@ -86,7 +86,7 @@ public class DataSummaryService {
         LinkedHashMap<String, LinkedHashMap<String, Double>> summary = new LinkedHashMap<>();
         PoundBillModel[] poundBillModels;
         // 生成本日报表
-        summaryTable.setColumnNames(Arrays.asList("煤种", "总毛重", "总皮重", "总净重", "总盈亏", "车次"));
+        summaryTable.setColumnNames(Arrays.asList("煤种", "总毛重", "总皮重", "总净重", "总盈亏", "车次")); // 煤种、实收、原发、盈亏、车次
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         if (IOType.equals("in")) {
             summaryTable.setTableName("入库报表");

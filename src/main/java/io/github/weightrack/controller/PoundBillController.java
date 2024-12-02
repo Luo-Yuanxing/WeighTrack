@@ -22,7 +22,7 @@ public class PoundBillController {
     @PostMapping("/creat")
     public String getForm(
             @RequestParam("IOType") String IOType,
-            @RequestParam("coal-type") String coalType,
+            @RequestParam("coalType") String coalType,
             @RequestParam("plate-number") String plateNumber,
             @RequestParam("gross-weight") String grossWeight,
             @RequestParam("tare") String tare,
@@ -70,7 +70,7 @@ public class PoundBillController {
     @PostMapping("/update/{id}")
     public String updatePoundBillById(@PathVariable("id") int id,
                                       @RequestParam("IOType") String IOType,
-                                      @RequestParam("coal-type") String coalType,
+                                      @RequestParam("coalType") String coalType,
                                       @RequestParam("plate-number") String plateNumber,
                                       @RequestParam("gross-weight") String grossWeight,
                                       @RequestParam("tare") String tare,
