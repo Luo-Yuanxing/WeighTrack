@@ -66,6 +66,10 @@
             background-color: #0056b3; /* 按钮悬停颜色 */
         }
 
+        .exclude-border {
+            border-left: 0;
+        }
+
     </style>
 
 </head>
@@ -83,19 +87,18 @@
 
     <!-- 隐藏的ID字段，用于标识修改的记录 -->
     <input type="hidden" name="id" th:value="${poundBillModel.id}"/>
-
     <div class="input-group">
         <span class="input-group-addon input-desc">出入库类型</span>
-        <select th:selected="${poundBillModel.IOType}" class="form-control" name="IOType"
+        <select th:field="*{poundBillModel.IOType}" class="form-control" name="IOType"
                 aria-describedby="basic-addon3">
-            <option value="1" selected>入库</option>
+            <option value="1">入库</option>
             <option value="0">出库</option>
         </select>
     </div>
 
     <div class="input-group">
         <span class="input-group-addon input-desc">煤种</span>
-        <select class="form-control" name="coal-type" id="coal-type" aria-describedby="basic-addon3">
+        <select th:field="*{poundBillModel.coalType}" class="form-control" name="coal-type" id="coal-type" aria-describedby="basic-addon3">
             <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}"
                     th:text="${coalType.name}">
             </option>
@@ -131,7 +134,7 @@
 
     <div class="input-group">
         <script src='/js/form-date.js'></script>
-        <span class="input-group-addon input-desc">过空时间</span>
+        <span class="exclude-border input-group-addon input-desc">过空时间</span>
         <input th:value="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd hh:mm')}"
                class="form-control" type="text" id="empty-load-time" name="empty-load-time"
                value="2024-11-27 10:00" aria-label="选择时间">
@@ -139,7 +142,7 @@
 
     <div class="input-group">
         <script src='/js/form-date.js'></script>
-        <span class="input-group-addon input-desc">过重时间</span>
+        <span class="exclude-border input-group-addon input-desc">过重时间</span>
         <input th:value="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd hh:mm')}"
                class="form-control" type="text" id="full-load-time" name="full-load-time"
                value="2024-11-27 11:00" aria-label="选择时间">
@@ -173,6 +176,38 @@
 </body>
 
 <script src="/js/form-date.js"></script>
+<script>
+    $(document).ready(function() {
+        // 定义一个函数来处理输入值并更新
+        function formatInputValue(input) {
+            let value = input.val().trim(); // 获取输入框内容并去除首尾空格
+            if (value === "" || isNaN(Number(value))) {
+                // 如果值为空或非数字，清空输入框
+                input.val('');
+                return;
+            }
+
+            console.log(input.val())
+            // 获取input.val()字符串最后一位字符
+            let current_input = value.slice(-1);
+            console.log(current_input);
+            let new_value;
+            if (value.length === 1) {
+                new_value = value * 0.01;
+            } else {
+                new_value = parseFloat(value.slice(0, -1)) * 10 + 0.01 * current_input;
+            }
+
+            // 更新输入框的值
+            input.val(new_value.toFixed(2));
+        }
+
+        // 给所有输入框绑定实时监控
+        $('input[name="gross-weight"], input[name="tare"], input[name="primary-weight"]').on('input', function() {
+            formatInputValue($(this)); // 处理当前输入框的值
+        });
+    });
+</script>
 
 </html>
 

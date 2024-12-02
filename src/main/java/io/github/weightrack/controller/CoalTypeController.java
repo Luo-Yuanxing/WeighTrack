@@ -1,9 +1,8 @@
 package io.github.weightrack.controller;
 
 import com.alibaba.fastjson2.JSON;
-import io.github.weightrack.Service.CoalTypeService;
+import io.github.weightrack.service.CoalTypeService;
 import io.github.weightrack.module.CoalType;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +28,7 @@ public class CoalTypeController {
         for (String coalType : coalTypes) {
             coalTypeService.deleteCoalTypeByName(coalType);
         }
-        return "index";
+        return "redirect:/";
     }
 
 

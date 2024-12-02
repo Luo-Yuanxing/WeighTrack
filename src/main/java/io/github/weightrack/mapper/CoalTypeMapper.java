@@ -1,8 +1,7 @@
-package io.github.weightrack.Mapper;
+package io.github.weightrack.mapper;
 
 import io.github.weightrack.module.CoalType;
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Service;
 
 @Mapper
 public interface CoalTypeMapper {

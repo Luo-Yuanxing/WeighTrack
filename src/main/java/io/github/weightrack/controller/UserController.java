@@ -1,8 +1,7 @@
 package io.github.weightrack.controller;
 
-import io.github.weightrack.Service.UserService;
+import io.github.weightrack.service.UserService;
 import io.github.weightrack.exception.UserNotFound;
-import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class UserController {
             request.getSession().setAttribute("user", user);
         } catch (UserNotFound userNotFound) {
             model.addAttribute("error", userNotFound.getMessage());
-            return "/login";
+            return "login";
         }
         return "redirect:/";
     }

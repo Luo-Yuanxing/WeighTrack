@@ -1,7 +1,7 @@
 package io.github.weightrack.controller;
 
-import io.github.weightrack.Service.CoalTypeService;
-import io.github.weightrack.Service.PoundBillService;
+import io.github.weightrack.service.CoalTypeService;
+import io.github.weightrack.service.PoundBillService;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ public class PoundBillController {
     @Autowired
     private CoalTypeService coalTypeService;
 
-    @PostMapping("/commit")
+    @PostMapping("/creat")
     public String getForm(
             @RequestParam("IOType") String IOType,
             @RequestParam("coal-type") String coalType,
@@ -54,7 +54,7 @@ public class PoundBillController {
         poundBillService.insertPoundBill(poundBillModel);
 
         // 返回视图名称
-        return "index";
+        return "redirect:/";
     }
 
     @GetMapping("/update/{id}")

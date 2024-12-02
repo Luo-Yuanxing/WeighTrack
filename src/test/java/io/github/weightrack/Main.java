@@ -1,13 +1,11 @@
 package io.github.weightrack;
 
 import io.github.weightrack.utils.ImagePrinter;
-import org.jetbrains.annotations.NotNull;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.print.*;
-import java.io.File;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.PrinterJob;
 import java.io.IOException;
 
 import static io.github.weightrack.utils.ImageUtil.createImage;
@@ -19,7 +17,7 @@ public class Main {
                 "2024年11月28日", "R2411280001", "陕A12345", "4-1水洗煤", "是", "是", "121.0", "22.0", "99.0", "17:12", "罗亚平"
         };
         BufferedImage image = createImage(data);// 打印图片
-        ImageIO.write(image, "png", new File("image.png"));
+//        ImageIO.write(image, "png", new File("image.png"));
 
         try {
             // 设置打印纸张大小为80mm * 120mm
@@ -45,7 +43,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
 
 
 }

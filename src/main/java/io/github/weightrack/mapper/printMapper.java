@@ -1,15 +1,13 @@
-package io.github.weightrack.Mapper;
+package io.github.weightrack.mapper;
 
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
-import java.time.LocalDateTime;
-
 @Mapper
 public interface printMapper {
 
-    @Select("SELECT COUNT(*) FROM poundbill WHERE DATE(printTime) = CURDATE() AND isPrinted = 1")
+    @Select("SELECT COUNT(*) FROM poundbill WHERE DATE(printTime) = CURDATE() AND printed = 1")
     int getTodayPrintedCount();
 
 }

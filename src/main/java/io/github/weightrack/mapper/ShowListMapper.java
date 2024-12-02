@@ -1,4 +1,4 @@
-package io.github.weightrack.Mapper;
+package io.github.weightrack.mapper;
 
 import io.github.weightrack.module.PoundBillModel;
 import org.apache.ibatis.annotations.Mapper;

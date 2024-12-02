@@ -182,6 +182,7 @@
         <th>发货<br>单位</th>
         <th>收货<br>单位</th>
         <th>司磅员</th>
+        <th>已打印</th>
         <th>删除记录</th>
         <th style="display: none">id</th>
     </tr>
@@ -217,6 +218,7 @@
         <td th:text="${poundBillModel.outputUnit}"></td>
         <td th:text="${poundBillModel.inputUnit}"></td>
         <td th:text="${poundBillModel.weigher}"></td>
+        <td th:text="${poundBillModel.printed}==true?'是':'否'"></td>
         <td class="deleteRecord">
             <a href="#" th:onclick="'confirmDelete(' + ${poundBillModel.id} + ')'">删除记录</a>
         </td>

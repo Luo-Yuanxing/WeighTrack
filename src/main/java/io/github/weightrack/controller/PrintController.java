@@ -1,25 +1,17 @@
 package io.github.weightrack.controller;
 
-import io.github.weightrack.Service.PoundBillService;
-import io.github.weightrack.Service.PrintService;
+import io.github.weightrack.service.PoundBillService;
+import io.github.weightrack.service.PrintService;
 import io.github.weightrack.module.PoundBillModel;
-import io.github.weightrack.utils.ImagePrinter;
 import io.github.weightrack.utils.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.PrinterJob;
-import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.SimpleFormatter;
 
 @Controller
 public class PrintController {
@@ -34,7 +26,7 @@ public class PrintController {
     public String print(@PathVariable("id") int id, Model model) {
         PoundBillModel poundBillModel = printService.selectById(id);
         model.addAttribute("poundBillModel", poundBillModel);
-        return "/print";
+        return "print";
     }
 
     @PostMapping("/print/{id}")
@@ -55,7 +47,7 @@ public class PrintController {
         }
 
         String[] data = new String[11];
-        data[0] = now.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"));;
+        data[0] = now.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"));
         data[1] = poundBillModel.getPoundID();
         data[2] = poundBillModel.getPlateNumber();
         data[3] = poundBillModel.getCoalType();
@@ -69,12 +61,12 @@ public class PrintController {
 
         BufferedImage image = ImageUtil.createImage(data);
         ImageUtil.printRun(image);
-
+        poundBillModel.setPrinted(true);
         poundBillService.updateById(poundBillModel, poundBillModel.getId());
 
         model.addAttribute("message", "已请求打印任务");
         model.addAttribute("poundBillModel", poundBillModel);
 
-        return "/print";
+        return "print";
     }
 }

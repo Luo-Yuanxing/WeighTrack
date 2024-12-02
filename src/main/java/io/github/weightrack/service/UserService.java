@@ -1,6 +1,6 @@
-package io.github.weightrack.Service;
+package io.github.weightrack.service;
 
-import io.github.weightrack.Mapper.UserMapper;
+import io.github.weightrack.mapper.UserMapper;
 import io.github.weightrack.exception.UserNotFound;
 import io.github.weightrack.module.User;
 import org.springframework.stereotype.Service;

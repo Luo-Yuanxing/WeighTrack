@@ -1,6 +1,6 @@
-package io.github.weightrack.Service;
+package io.github.weightrack.service;
 
-import io.github.weightrack.Mapper.CoalTypeMapper;
+import io.github.weightrack.mapper.CoalTypeMapper;
 import io.github.weightrack.module.CoalType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

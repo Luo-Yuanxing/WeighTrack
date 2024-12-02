@@ -1,6 +1,6 @@
-package io.github.weightrack.Service;
+package io.github.weightrack.service;
 
-import io.github.weightrack.Mapper.ShowListMapper;
+import io.github.weightrack.mapper.ShowListMapper;
 import io.github.weightrack.module.PoundBillModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

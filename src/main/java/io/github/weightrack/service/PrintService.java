@@ -1,9 +1,8 @@
-package io.github.weightrack.Service;
+package io.github.weightrack.service;
 
-import io.github.weightrack.Mapper.PoundBillMapper;
-import io.github.weightrack.Mapper.printMapper;
+import io.github.weightrack.mapper.PoundBillMapper;
+import io.github.weightrack.mapper.printMapper;
 import io.github.weightrack.module.PoundBillModel;
-import org.springframework.beans.PropertyMatches;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +31,7 @@ public class PrintService {
             poundID = "C" + dateStr + countStr;
         }
         poundBillModel.setPoundID(poundID);
+        poundBillModel.setPrinted(true);
         return poundBillModel;
     }
 }
