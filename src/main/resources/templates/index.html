@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>鸿聚一号煤场出库明细</title>
+    <title>鸿聚一号煤场出入库明细</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -100,7 +100,7 @@
 
         <div class="input-group">
             <span class="input-group-addon input-desc"><a href="/coalTypeEdit">煤种</a></span>
-            <select class="form-control" name="coal-type" id="coal-type" aria-describedby="basic-addon3"
+            <select class="form-control" name="coalType" id="coal-type" aria-describedby="basic-addon3"
                     onchange="function toggleOtherInput() {
                         const coalTypeSelect = document.getElementById('coal-type');
                         const otherInput = document.getElementById('other-coal-type');
