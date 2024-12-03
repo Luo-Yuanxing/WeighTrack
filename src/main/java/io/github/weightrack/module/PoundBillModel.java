@@ -3,13 +3,12 @@ package io.github.weightrack.module;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Data
 public class PoundBillModel {
 
     private int id;
-    private LocalTime date;
+    //    private LocalTime date;
     private String IOType;
     private String coalType;
     private String plateNumber;

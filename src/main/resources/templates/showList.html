@@ -171,18 +171,18 @@
         <th>操作</th>
         <th>出入库<br>类型</th>
         <th>煤种</th>
+        <th>磅单编号</th>
         <th>车牌号</th>
         <th>毛重</th>
         <th>皮重</th>
         <th>净重</th>
         <th>原发</th>
         <th>盈亏</th>
-        <th class="time">过空<br>时间</th>
-        <th class="time">过重<br>时间</th>
+        <th class="time">打印<br>时间</th>
         <th>发货<br>单位</th>
         <th>收货<br>单位</th>
         <th>司磅员</th>
-        <th>已打印</th>
+        <th th:if="${today} == true">已打印</th>
         <th>删除记录</th>
         <th style="display: none">id</th>
     </tr>
@@ -193,32 +193,28 @@
             <a th:href="@{/update/{id}(id=${poundBillModel.id})}">修改</a>
             <a th:href="@{/print/{id}(id=${poundBillModel.id})}">打印</a>
         </td>
-        <td th:text="${poundBillModel.IOType} == 1 ? '入库' : '出库'"></td>
+        <td th:text="${poundBillModel.IOType} == '1' ? '入库' : '出库'"></td>
         <td th:text="${poundBillModel.coalType}"></td>
+        <td th:text="${poundBillModel.poundID}"></td>
         <td th:text="${poundBillModel.plateNumber}"></td>
         <td class="weights" th:text="${poundBillModel.grossWeight}"></td>
         <td class="weights" th:text="${poundBillModel.tareWeight}"></td>
         <td class="weights" th:text="${poundBillModel.netWeight}"></td>
-        <td class="weights" th:text="${poundBillModel.primaryWeight}"></td>
-        <td class="weights profit-loss-weight" th:text="${poundBillModel.profitLossWeight}"></td>
+        <td th:if="${poundBillModel.IOType} == '1'" class="primaryWeight" th:text="${poundBillModel.primaryWeight}"></td>
+        <td th:if="${poundBillModel.IOType} == '0'" class="primaryWeight">NaN</td>
+
+        <td th:if="${poundBillModel.IOType} == '1'" class="weights profit-loss-weight" th:text="${poundBillModel.profitLossWeight}"></td>
+        <td th:if="${poundBillModel.IOType} == '0'" class="weights profit-loss-weight">NaN</td>
         <td class="time">
-            <span th:if="${#strings.isEmpty(poundBillModel.emptyLoadTime)}">未设置</span>
-            <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}"
-                  th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd')}"></span><br/>
-            <span th:if="${not#strings.isEmpty(poundBillModel.emptyLoadTime)}"
-                  th:text="${#temporals.format(poundBillModel.emptyLoadTime, 'HH:mm')}"></span>
+            <span th:if="${#strings.isEmpty(poundBillModel.printTime)}">未打印</span>
+            <span th:if="${not#strings.isEmpty(poundBillModel.printTime)}"
+                  th:text="${#temporals.format(poundBillModel.printTime, 'HH:mm')}"></span><br/>
         </td>
-        <td class="time">
-            <span th:if="${#strings.isEmpty(poundBillModel.fullLoadTime)}">未设置</span>
-            <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}"
-                  th:text="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd')}"></span><br/>
-            <span th:if="${not#strings.isEmpty(poundBillModel.fullLoadTime)}"
-                  th:text="${#temporals.format(poundBillModel.fullLoadTime, 'HH:mm')}"></span>
-        </td>
+
         <td th:text="${poundBillModel.outputUnit}"></td>
         <td th:text="${poundBillModel.inputUnit}"></td>
         <td th:text="${poundBillModel.weigher}"></td>
-        <td th:text="${poundBillModel.printed}==true?'是':'否'"></td>
+        <td th:if="${today} == true" th:text="${poundBillModel.printed}==true?'是':'否'"></td>
         <td class="deleteRecord">
             <a href="#" th:onclick="'confirmDelete(' + ${poundBillModel.id} + ')'">删除记录</a>
         </td>
@@ -232,9 +228,14 @@
 
 <script>
     $(function () {
+
         $('.profit-loss-weight').each(function () {
+            let value = $(this).text();
+            if ($(this).text() === 'NaN') {
+                return;
+            }
             // 获取该元素的数值
-            let value = parseFloat($(this).text()); // 使用 jQuery 的 .text() 获取文本内容
+            value = parseFloat(value); // 使用 jQuery 的 .text() 获取文本内容
 
             // 如果值小于 -0.2，添加红色醒目
             if (value < -0.2 && value !== 0) {
@@ -267,6 +268,7 @@
                 $(this).text(value.toFixed(2));
             }
         });
+
     })
 </script>
 

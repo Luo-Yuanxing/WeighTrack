@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class DataSummaryService {
@@ -63,8 +60,14 @@ public class DataSummaryService {
         for (PoundBillModel poundBillModel : poundBillModels) {
             String creatTime = poundBillModel.getCreatTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             summary.putIfAbsent(creatTime, new LinkedHashMap<>());
-            summary.get(creatTime).merge(poundBillModel.getCoalType(), String.valueOf(poundBillModel.getNetWeight()), (o, n) -> String.valueOf(Double.parseDouble(o) + Double.parseDouble(n)));
-            summary.get(creatTime).merge("unit", poundBillModel.getOutputUnit(), (o, n) -> o + "," + n);
+            try {
+                summary.get(creatTime).merge(poundBillModel.getCoalType(), String.valueOf(poundBillModel.getNetWeight()), (o, n) -> String.valueOf(Double.parseDouble(o) + Double.parseDouble(n)));
+                summary.get(creatTime).merge("unit", poundBillModel.getOutputUnit(), (o, n) -> o + "," + n);
+            } catch (Exception e) {
+                System.out.println(creatTime);
+                System.out.println(summary);
+
+            }
         }
         summary.forEach((key, value) -> {
             List<String> row = new ArrayList<>();
@@ -74,10 +77,10 @@ public class DataSummaryService {
                 row.add(value.getOrDefault(coalType.getName(), "0"));
             }
             row.add(value.getOrDefault("unit", ""));
-            System.out.println(value);
             summaryTable.addRow(row);
         });
-        System.out.println(summaryTable);
+        // 按日期排序，反转
+        Collections.reverse(summaryTable.getTable());
         return summaryTable;
     }
 
@@ -110,9 +113,9 @@ public class DataSummaryService {
             row.add(key);
             value.forEach((columnName, total) -> row.add(total.toString()));
             summaryTable.addRow(row);
-            System.out.println(row);
         });
-        System.out.println(summaryTable);
+        // 按日期排序，反转
+        Collections.reverse(summaryTable.getTable());
         return summaryTable;
     }
 }

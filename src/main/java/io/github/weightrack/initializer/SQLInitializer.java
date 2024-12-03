@@ -2,6 +2,7 @@ package io.github.weightrack.initializer;
 
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.service.CoalTypeService;
+import io.github.weightrack.service.PoundBillService;
 import io.github.weightrack.service.ShowListService;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -16,14 +17,22 @@ public class SQLInitializer {
     CoalTypeService coalTypeService;
     @Autowired
     ShowListService showListService;
+    @Autowired
+    PoundBillService poundBillService;
 
     @PostConstruct
-    public void init() {
+    public void initCoalType() {
         PoundBillModel[] poundBillModels = showListService.showList("all");
         for (PoundBillModel poundBillModel : poundBillModels) {
             coalTypeService.insertCoalType(poundBillModel.getCoalType());
         }
         Logger logger = LoggerFactory.getLogger(SQLInitializer.class);
         logger.info("煤种初始化完成");
+    }
+
+    @PostConstruct
+    public void cleanPoundBill() {
+        // 清除未打印数据
+        poundBillService.cleanPoundBill();
     }
 }

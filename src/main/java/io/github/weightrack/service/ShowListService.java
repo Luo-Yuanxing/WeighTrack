@@ -14,7 +14,16 @@ public class ShowListService {
         return switch (option) {
             case "in" -> showListMapper.showList("1");
             case "out" -> showListMapper.showList("0");
-            case "all" -> showListMapper.showList(null);
+            case "all" -> showListMapper.showListAll();
+            default -> throw new RuntimeException("option error");
+        };
+    }
+
+    public PoundBillModel[] showTodayList(String option) {
+        return switch (option) {
+            case "in" -> showListMapper.showTodayList("1");
+            case "out" -> showListMapper.showTodayList("0");
+            case "all" -> showListMapper.showTodayListAll();
             default -> throw new RuntimeException("option error");
         };
     }

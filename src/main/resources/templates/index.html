@@ -110,7 +110,7 @@
 
         <div class="input-group">
             <span class="input-group-addon input-desc">出入库类型</span>
-            <select class="form-control" name="IOType" aria-describedby="basic-addon3">
+            <select class="IOType form-control" name="IOType" aria-describedby="basic-addon3">
                 <option value="1">入库</option>
                 <option value="0">出库</option>
             </select>
@@ -153,7 +153,7 @@
                 <span>自动追加两位小数点</span>
             </div>
         </div>
-        <div class="input-group">
+        <div class="input-group primary-weight">
             <div class="input-group-addon input-desc">原发</div>
             <input type="text" class="form-control" name="primary-weight" aria-describedby="basic-addon3">
             <div class="exclude-border input-group-addon">
@@ -210,8 +210,6 @@
         form['gross-weight'].addEventListener('input', () => validateField(form['gross-weight']));
         form['tare'].addEventListener('input', () => validateField(form['tare']));
         form['primary-weight'].addEventListener('input', () => validateField(form['primary-weight']));
-        form['empty-load-time'].addEventListener('input', () => validateField(form['empty-load-time']));
-        form['full-load-time'].addEventListener('input', () => validateField(form['full-load-time']));
         form['output-unit'].addEventListener('input', () => validateField(form['output-unit']));
         form['input-unit'].addEventListener('input', () => validateField(form['input-unit']));
         form['coal-type'].addEventListener('change', () => validateField(form['coal-type']));
@@ -227,18 +225,10 @@
             markFieldError(field, '必须为数字');
             return;
         }
-
-        // 验证必填字段是否为空
-        // if (!field.value.trim()) {
-        //     markFieldError(field, '该字段不能为空');
-        //     return;
-        // }
-
         // 特定字段的验证（例如煤种选择）
         if (field.name === 'coal-type' && field.value === '') {
             markFieldError(field, '请选择煤种');
         }
-
         if (field.name === 'other-coal-type' && document.getElementById('coal-type').value === 'other' && !field.value.trim()) {
             markFieldError(field, '请输入新煤种');
         }
@@ -348,6 +338,20 @@
         });
     });
 
+</script>
+<!-- 选择出库后隐藏原发-->
+<script>
+    $(document).ready(function() {
+        let $primary_weight = $('.primary-weight');
+        let $IOType = $('.IOType');
+        $IOType.on('change', function() {
+           if ($IOType.val() === '0') {
+               $primary_weight.hide();
+           } else if ($IOType.val() === '1') {
+               $primary_weight.show();
+           }
+        });
+    });
 </script>
 </html>
 

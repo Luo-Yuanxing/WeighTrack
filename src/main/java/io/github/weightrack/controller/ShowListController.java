@@ -18,6 +18,7 @@ public class ShowListController {
         PoundBillModel[] poundBillModels = showListService.showList("all");
         model.addAttribute("poundBillModels", poundBillModels);
         model.addAttribute("IOType", "all");
+        model.addAttribute("today", false);
         return "showList";
     }
 
@@ -26,6 +27,7 @@ public class ShowListController {
         PoundBillModel[] poundBillModels = showListService.showList("in");
         model.addAttribute("poundBillModels", poundBillModels);
         model.addAttribute("IOType", "in");
+        model.addAttribute("today", false);
         return "showList";
     }
 
@@ -34,6 +36,34 @@ public class ShowListController {
         PoundBillModel[] poundBillModels = showListService.showList("out");
         model.addAttribute("poundBillModels", poundBillModels);
         model.addAttribute("IOType", "out");
+        model.addAttribute("today", false);
+        return "showList";
+    }
+
+    @GetMapping("/showList/today/in")
+    public String showListTodayIn(Model model) {
+        PoundBillModel[] poundBillModels = showListService.showTodayList("in");
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "todayIn");
+        model.addAttribute("today", true);
+        return "showList";
+    }
+
+    @GetMapping("/showList/today/out")
+    public String showListTodayOut(Model model) {
+        PoundBillModel[] poundBillModels = showListService.showTodayList("out");
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "todayOut");
+        model.addAttribute("today", true);
+        return "showList";
+    }
+
+    @GetMapping("/showList/today/")
+    public String showListTodayAll(Model model) {
+        PoundBillModel[] poundBillModels = showListService.showTodayList("all");
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "todayAll");
+        model.addAttribute("today", true);
         return "showList";
     }
 

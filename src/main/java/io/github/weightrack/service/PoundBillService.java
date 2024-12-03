@@ -1,6 +1,7 @@
 package io.github.weightrack.service;
 
 import io.github.weightrack.mapper.PoundBillMapper;
+import io.github.weightrack.mapper.ShowListMapper;
 import io.github.weightrack.module.PoundBillModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ public class PoundBillService {
 
     @Autowired
     PoundBillMapper poundBillMapper;
+    @Autowired
+    private ShowListMapper showListMapper;
 
     public static void parseString(PoundBillModel poundBillModel) {
         // grossWeightString
@@ -70,8 +73,18 @@ public class PoundBillService {
 
     public void insertPoundBill(PoundBillModel poundBillModel) {
         parseString(poundBillModel);
-        poundBillModel.setCreatTime(LocalDateTime.now());
-        poundBillModel.setModifyTime(LocalDateTime.now());
+
+        if (poundBillModel.getCreatTime() == null) {
+            poundBillModel.setCreatTime(LocalDateTime.now());
+        }
+        if (poundBillModel.getModifyTime() == null) {
+            poundBillModel.setModifyTime(LocalDateTime.now());
+        }
+
+        if (poundBillModel.getPrimaryWeight() == 0) {
+            poundBillModel.setProfitLossWeight(0);
+        }
+
         poundBillMapper.insert(poundBillModel);
     }
 
@@ -96,5 +109,14 @@ public class PoundBillService {
 
     public void deleteById(int id) {
         poundBillMapper.deleteById(id);
+    }
+
+    public void cleanPoundBill() {
+        PoundBillModel[] poundBillModels = showListMapper.showListAll();
+        for (PoundBillModel poundBillModel : poundBillModels) {
+            if (poundBillModel.getPrintTime() == null) {
+                poundBillMapper.deleteById(poundBillModel.getId());
+            }
+        }
     }
 }

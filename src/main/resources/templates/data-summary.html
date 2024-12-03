@@ -173,6 +173,8 @@
                         let value = $(this).text();
                         // 逗号分割字符串
                         let values = value.split(',');
+                        values = [...new Set(values)]
+                        console.log(values);
                         if (values.length > 1) {
                             // 创建下拉菜单
                             $(this).text("")
@@ -181,14 +183,14 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">` + values[0] + ` <span class="caret"></span></a>
                                 <ul class="dropdown-menu">`
 
-
-
                             let unit_lis = '';
                             for (const unit of values) {
                                 unit_lis += ` <li><a href="#">` + unit + `</a></li> `
                             }
                             dropdown += (unit_lis + `</ul></li>`);
                             $(this).append(dropdown);
+                        } else if (values.length === 1) {
+                            $(this).text(values[0]);
                         }
 
 
