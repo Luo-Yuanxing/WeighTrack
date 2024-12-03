@@ -48,16 +48,14 @@ public class PoundBillModel {
     private String poundID;
 
     public static PoundBillModel createPoundBillModel(String IOType,
-                                                String coalType,
-                                                String plateNumber,
-                                                String grossWeight,
-                                                String tare,
-                                                String primaryWeight,
-                                                String emptyLoadTime,
-                                                String fullLoadTime,
-                                                String outputUnit,
-                                                String inputUnit,
-                                                String weigher) {
+                                                      String coalType,
+                                                      String plateNumber,
+                                                      String grossWeight,
+                                                      String tare,
+                                                      String primaryWeight,
+                                                      String outputUnit,
+                                                      String inputUnit,
+                                                      String weigher) {
         PoundBillModel poundBillModel = new PoundBillModel();
         poundBillModel.setIOType(IOType);
         poundBillModel.setCoalType(coalType);
@@ -65,12 +63,23 @@ public class PoundBillModel {
         poundBillModel.setGrossWeightString(grossWeight);
         poundBillModel.setTareWeightString(tare);
         poundBillModel.setPrimaryWeightString(primaryWeight);
-        poundBillModel.setEmptyLoadTimeString(emptyLoadTime);
-        poundBillModel.setFullLoadTimeString(fullLoadTime);
         poundBillModel.setOutputUnit(outputUnit);
         poundBillModel.setInputUnit(inputUnit);
         poundBillModel.setWeigher(weigher);
+
         return poundBillModel;
+    }
+
+    public void updatePrintTime(String printTime) {
+        if (printTime != null) {
+            if (printTime.contains("：")) {
+                printTime = printTime.replace("：", ":");
+            }
+            int hour = Integer.parseInt(printTime.split(":")[0]);
+            int minute = Integer.parseInt(printTime.split(":")[1]);
+            LocalDateTime printTime_ = this.getCreatTime().withHour(hour).withMinute(minute).withSecond(0);
+            this.setPrintTime(printTime_);
+        }
     }
 
     public PoundBillModel updatePoundBillModel(PoundBillModel newPoundBillModel) {

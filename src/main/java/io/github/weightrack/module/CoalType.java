@@ -6,5 +6,4 @@ import lombok.Data;
 public class CoalType {
     private String name;
     private int id;
-    private boolean isRemoved;
 }

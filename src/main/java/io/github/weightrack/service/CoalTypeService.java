@@ -11,11 +11,20 @@ public class CoalTypeService {
     @Autowired
     CoalTypeMapper coalTypeMapper;
 
-    public CoalType[] getCoalType() {
+    public CoalType[] getCoalTypes() {
         return coalTypeMapper.getCoalType();
     }
 
     public void insertCoalType(String coalType) {
+        coalType = coalType.strip();
+        for (CoalType type : coalTypeMapper.getCoalType()) {
+            if (type.getName().equals(coalType)) {
+                return;
+            }
+        }
+        if (coalType.isEmpty()) {
+            return;
+        }
         coalTypeMapper.insertCoalType(coalType);
     }
 

@@ -4,6 +4,7 @@ import io.github.weightrack.service.PoundBillService;
 import io.github.weightrack.service.PrintService;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.utils.ImageUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Slf4j
 @Controller
 public class PrintController {
 
@@ -44,6 +46,7 @@ public class PrintController {
             String currentDateTimeString = now.toLocalDate() + " " + updatePrintTime;
             LocalDateTime dateTime = LocalDateTime.parse(currentDateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
             poundBillModel.setPrintTime(dateTime);
+            log.info("id: {} update print time to {}", poundBillModel.getId(), poundBillModel.getPrintTime());
         }
 
         String[] data = new String[11];
@@ -62,11 +65,10 @@ public class PrintController {
         BufferedImage image = ImageUtil.createImage(data);
         ImageUtil.printRun(image);
         poundBillModel.setPrinted(true);
-        poundBillService.updateById(poundBillModel, poundBillModel.getId());
+        poundBillService.updateById(poundBillModel, poundBillModel.getId(), null);
 
         model.addAttribute("message", "已请求打印任务");
         model.addAttribute("poundBillModel", poundBillModel);
-
         return "print";
     }
 }

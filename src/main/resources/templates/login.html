@@ -94,6 +94,17 @@
     <div th:if="${error}" class="error-message">
         <div class="alert alert-danger" th:text="${error}"></div>
     </div>
+
+    <span class="success-ok" th:text="${success}" style="display: none"></span>
 </div>
+
+<script src="/js/jQuery-3.7.1.js"></script>
+<script>
+    $(document).ready(function() {
+        if ($('.success-ok').text() === 'ok') {
+            history.go(-2);
+        }
+    });
+</script>
 </body>
 </html>

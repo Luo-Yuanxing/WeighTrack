@@ -22,7 +22,7 @@ public class DataSummaryController {
         model.addAttribute("IOType", "in");
         model.addAttribute("date", "today");
         model.addAttribute("tableName", "今日入库汇总");
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
         return "data-summary";
     }
 
@@ -32,7 +32,7 @@ public class DataSummaryController {
         model.addAttribute("IOType", "in");
         model.addAttribute("date", "month");
         model.addAttribute("tableName", "本月入库汇总");
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
         return "data-summary";
     }
 
@@ -42,7 +42,7 @@ public class DataSummaryController {
         model.addAttribute("IOType", "in");
         model.addAttribute("date", "year");
         model.addAttribute("tableName", "年度入库汇总");
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
         return "data-summary";
     }
 
@@ -52,7 +52,7 @@ public class DataSummaryController {
         model.addAttribute("IOType", "in");
         model.addAttribute("date", "all");
         model.addAttribute("tableName", "历史入库汇总");
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
         return "data-summary";
     }
 
@@ -62,7 +62,7 @@ public class DataSummaryController {
         model.addAttribute("IOType", "out");
         model.addAttribute("date", "today");
         model.addAttribute("tableName", "今日出库汇总");
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
         return "data-summary";
     }
 
@@ -72,7 +72,7 @@ public class DataSummaryController {
         model.addAttribute("IOType", "out");
         model.addAttribute("date", "month");
         model.addAttribute("tableName", "本月出库汇总");
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
         return "data-summary";
     }
 
@@ -82,7 +82,7 @@ public class DataSummaryController {
         model.addAttribute("IOType", "out");
         model.addAttribute("date", "year");
         model.addAttribute("tableName", "年度出库汇总");
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
         return "data-summary";
     }
 
@@ -92,7 +92,7 @@ public class DataSummaryController {
         model.addAttribute("IOType", "out");
         model.addAttribute("date", "all");
         model.addAttribute("tableName", "历史出库汇总");
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
         return "data-summary";
     }
 

@@ -11,7 +11,7 @@ public interface PoundBillMapper {
             "VALUES (#{IOType}, #{coalType}, #{plateNumber}, #{grossWeight}, #{tareWeight}, #{netWeight}, #{primaryWeight}, #{profitLossWeight}, #{emptyLoadTime}, #{fullLoadTime}, #{outputUnit}, #{inputUnit}, #{weigher}, #{modifyTime}, #{creatorId})")
     void insert(PoundBillModel poundBillModel);
 
-    @Update("update poundbill set IOType=#{IOType}, coalType=#{coalType}, plateNumber=#{plateNumber}, grossWeight=#{grossWeight}, tareWeight=#{tareWeight}, netWeight=#{netWeight}, primaryWeight=#{primaryWeight}, profitLossWeight=#{profitLossWeight}, emptyLoadTime=#{emptyLoadTime}, fullLoadTime=#{fullLoadTime}, outputUnit=#{outputUnit}, inputUnit=#{inputUnit}, weigher=#{weigher}, printTime=#{printTime}, printed=#{printed}, poundID=#{poundID}, modifyTime=now() where id=#{id}")
+    @Update("update poundbill set IOType=#{IOType}, coalType=#{coalType}, plateNumber=#{plateNumber}, grossWeight=#{grossWeight}, tareWeight=#{tareWeight}, netWeight=#{netWeight}, primaryWeight=#{primaryWeight}, profitLossWeight=#{profitLossWeight}, emptyLoadTime=#{emptyLoadTime}, fullLoadTime=#{fullLoadTime}, outputUnit=#{outputUnit}, inputUnit=#{inputUnit}, weigher=#{weigher}, printTime=#{printTime}, printed=#{printed}, poundID=#{poundID}, modifyTime=now(), printTime=#{printTime} where id=#{id}")
     void updateById(PoundBillModel poundBillModel);
 
     @Select("select * from poundbill where id = #{id}")

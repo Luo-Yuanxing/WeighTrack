@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>鸿聚一号煤场出库明细</title>
+    <title>鸿聚一号煤场出入库明细</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -231,9 +231,8 @@
 <div th:if="${#lists.isEmpty(poundBillModels)}">没有数据</div>
 
 <script>
-
-    $(function() {
-        $('.profit-loss-weight').each(function() {
+    $(function () {
+        $('.profit-loss-weight').each(function () {
             // 获取该元素的数值
             let value = parseFloat($(this).text()); // 使用 jQuery 的 .text() 获取文本内容
 
@@ -247,9 +246,18 @@
                     "border-radius": "5px",  // 使背景块更圆润
                     "transition": "all 0.3s ease-in-out"  // 添加过渡效果，使样式更平滑
                 });
+            } else if (value > 0.2 && value !== 0) {
+                $(this).css({
+                    "color": "#45d32f",
+                    "background-color": "#d7f8e1",
+                    "border": "1px solid #6fdf5e",
+                    "padding": "0.2em 0.4em",
+                    "border-radius": "5px",
+                    "transition": "all 0.3s ease-in-out"
+                })
             }
         });
-        $('.weights').each(function() {
+        $('.weights').each(function () {
             // 获取该元素的数值
             let value = parseFloat($(this).text());
             if (value === 0) {
@@ -260,10 +268,6 @@
             }
         });
     })
-
-
-
-
 </script>
 
 </body>

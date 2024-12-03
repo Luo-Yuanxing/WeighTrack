@@ -75,7 +75,7 @@ public class PoundBillService {
         poundBillMapper.insert(poundBillModel);
     }
 
-    public void updateById(PoundBillModel newPoundBillModel, int id) {
+    public void updateById(PoundBillModel newPoundBillModel, int id, String printTime) {
 
         // 新数据
         parseString(newPoundBillModel);
@@ -84,6 +84,8 @@ public class PoundBillService {
 
         PoundBillModel oldPoundBillModel = poundBillMapper.selectById(id);
         newPoundBillModel = oldPoundBillModel.updatePoundBillModel(newPoundBillModel);
+
+        newPoundBillModel.updatePrintTime(printTime);
 
         poundBillMapper.updateById(newPoundBillModel);
     }

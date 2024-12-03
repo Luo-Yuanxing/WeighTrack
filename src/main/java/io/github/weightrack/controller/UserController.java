@@ -31,6 +31,7 @@ public class UserController {
             model.addAttribute("error", userNotFound.getMessage());
             return "login";
         }
-        return "redirect:/";
+        model.addAttribute("success", "ok");
+        return "login";
     }
 }

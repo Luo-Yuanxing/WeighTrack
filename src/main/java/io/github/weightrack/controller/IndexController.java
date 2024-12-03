@@ -14,7 +14,8 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
+        model.addAttribute("coalTypes", null);
         return "index";
     }
 }

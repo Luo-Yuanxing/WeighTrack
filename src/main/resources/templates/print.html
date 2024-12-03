@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>鸿聚一号煤场出库明细</title>
+    <title>鸿聚一号煤场出入库明细</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -97,7 +97,8 @@
 <div class="container">
     <div th:insert="~{nav :: nav}"></div>
     <h4 class="text-left">打印预览</h4>
-    <a class="checkout" th:if="${message}" href="javascript:history.go(-2)" th:text="${message}+' 点击返回查询列表'"></a>
+    <a class="checkout" th:if="${message}" href="javascript:history.go(-2)"
+       th:text="${message}+' 点击返回查询列表'"></a>
     <h3 class="text-center">鸿聚一号煤场</h3>
     <h3 class="text-center">过磅单</h3>
 
@@ -136,7 +137,7 @@
         </tr>
         <tr>
             <td>净重</td>
-            <td th:text="${poundBillModel.netWeight}"></td>
+            <td class="float_2" th:text="${poundBillModel.netWeight}"></td>
         </tr>
         <tr th:if="${poundBillModel.printTime}">
             <td>
@@ -161,7 +162,7 @@
     <form th:action="@{/print/{id}(id=${poundBillModel.id})}" method="post">
         <div class="input-group input-print-time" style="display: none">
             <span class="input-group-addon">请输入打印时间</span>
-            <input type="text" name="update-print-time" class="form-control" >
+            <input type="text" name="update-print-time" class="form-control">
         </div>
         <input class="submit" type="submit" value="确认打印">
     </form>
@@ -178,10 +179,25 @@
         $('.update-btn').on('click', function () {
             $('.input-print-time').css({
                 'display': 'table',
-                'margin-top' : '20px'
+                'margin-top': '20px'
             });
         });
-    })
+    });
+
+    $(document).ready(function () {
+        let $float_2 = $('.float_2');
+        $float_2.text(parseFloat($float_2.text()).toFixed(2));
+    });
+
+    // 监听回车键
+    $(document).ready(function () {
+
+        $(document).keydown(function (e) {
+            if (e.keyCode === 13) {
+                $('.submit').click();
+            }
+        });
+    });
 </script>
 </body>
 </html>

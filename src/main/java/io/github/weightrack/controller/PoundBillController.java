@@ -1,9 +1,9 @@
 package io.github.weightrack.controller;
 
-import io.github.weightrack.service.CoalTypeService;
-import io.github.weightrack.service.PoundBillService;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.User;
+import io.github.weightrack.service.CoalTypeService;
+import io.github.weightrack.service.PoundBillService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,28 +27,23 @@ public class PoundBillController {
             @RequestParam("gross-weight") String grossWeight,
             @RequestParam("tare") String tare,
             @RequestParam("primary-weight") String primaryWeight,
-            @RequestParam("empty-load-time") String emptyLoadTime,
-            @RequestParam("full-load-time") String fullLoadTime,
             @RequestParam("output-unit") String outputUnit,
             @RequestParam("input-unit") String inputUnit,
             @RequestParam("weigher") String weigher,
             @RequestParam("other-coal-type") String otherCoalType,
-            HttpServletRequest request,
-            Model model) {
+            HttpServletRequest request) {
 
         if (coalType.equals("other")) {
-            coalType = otherCoalType;
+            coalType = otherCoalType.strip();
             coalTypeService.insertCoalType(coalType);
         }
 
-        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare,
-                primaryWeight, emptyLoadTime, fullLoadTime,
-                outputUnit, inputUnit, weigher);
+        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
         Object user = request.getSession().getAttribute("user");
         if (user instanceof User) {
             poundBillModel.setCreatorId(((User) user).getId());
         } else {
-            model.addAttribute("error", "用户未登录");
+            return "redirect:/login";
         }
 
         poundBillService.insertPoundBill(poundBillModel);
@@ -62,7 +57,7 @@ public class PoundBillController {
             Model model,
             @PathVariable("id") int id) {
         model.addAttribute("poundBillModel", poundBillService.selectById(id));
-        model.addAttribute("coalTypes", coalTypeService.getCoalType());
+        model.addAttribute("coalTypes", coalTypeService.getCoalTypes());
 
         return "update";
     }
@@ -75,17 +70,14 @@ public class PoundBillController {
                                       @RequestParam("gross-weight") String grossWeight,
                                       @RequestParam("tare") String tare,
                                       @RequestParam("primary-weight") String primaryWeight,
-                                      @RequestParam("empty-load-time") String emptyLoadTime,
-                                      @RequestParam("full-load-time") String fullLoadTime,
                                       @RequestParam("output-unit") String outputUnit,
                                       @RequestParam("input-unit") String inputUnit,
+                                      @RequestParam("print-time") String printTime,
                                       @RequestParam("weigher") String weigher) {
 
-        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare,
-                primaryWeight, emptyLoadTime, fullLoadTime,
-                outputUnit, inputUnit, weigher);
+        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
 
-        poundBillService.updateById(poundBillModel, id);
+        poundBillService.updateById(poundBillModel, id, printTime);
         return "redirect:/showList";
     }
 

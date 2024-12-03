@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>鸿聚一号煤场出库明细 - 修改</title>
+    <title>鸿聚一号煤场出入库明细 - 修改</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -115,49 +115,62 @@
         <span class="input-group-addon input-desc">毛重</span>
         <input th:value="${poundBillModel.grossWeight}" type="text" class="form-control" name="gross-weight"
                aria-describedby="basic-addon3">
-        <span class="input-group-addon">吨</span>
+        <span class="exclude-border input-group-addon">吨</span>
+        <div class="exclude-border input-group-addon">
+            <span>自动追加两位小数点</span>
+        </div>
     </div>
 
     <div class="input-group">
         <span class="input-group-addon input-desc">皮重</span>
         <input th:value="${poundBillModel.tareWeight}" type="text" class="form-control" name="tare"
                aria-describedby="basic-addon3">
-        <span class="input-group-addon">吨</span>
+        <span class="exclude-border input-group-addon">吨</span>
+        <div class="exclude-border input-group-addon">
+            <span>自动追加两位小数点</span>
+        </div>
     </div>
 
     <div class="input-group">
         <span class="input-group-addon input-desc">原发</span>
         <input th:value="${poundBillModel.primaryWeight}" type="text" class="form-control" name="primary-weight"
                aria-describedby="basic-addon3">
-        <span class="input-group-addon">吨</span>
+        <span class="exclude-border input-group-addon">吨</span>
+        <div class="exclude-border input-group-addon">
+            <span>自动追加两位小数点</span>
+        </div>
     </div>
 
-    <div class="input-group">
-        <script src='/js/form-date.js'></script>
-        <span class="exclude-border input-group-addon input-desc">过空时间</span>
-        <input th:value="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd hh:mm')}"
-               class="form-control" type="text" id="empty-load-time" name="empty-load-time"
-               value="2024-11-27 10:00" aria-label="选择时间">
-    </div>
+<!--    <div class="input-group">-->
+<!--        <script src='/js/form-date.js'></script>-->
+<!--        <span class="input-group-addon input-desc">过空时间</span>-->
+<!--        <input th:value="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd hh:mm')}"-->
+<!--               class="exclude-border form-control" type="text" id="empty-load-time" name="empty-load-time"-->
+<!--               value="2024-11-27 10:00" aria-label="选择时间">-->
+<!--    </div>-->
+
+<!--    <div class="input-group">-->
+<!--        <script src='/js/form-date.js'></script>-->
+<!--        <span class="exclude-border input-group-addon input-desc">过重时间</span>-->
+<!--        <input th:value="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd hh:mm')}"-->
+<!--               class="form-control" type="text" id="full-load-time" name="full-load-time"-->
+<!--               value="2024-11-27 11:00" aria-label="选择时间">-->
+<!--    </div>-->
 
     <div class="input-group">
-        <script src='/js/form-date.js'></script>
-        <span class="exclude-border input-group-addon input-desc">过重时间</span>
-        <input th:value="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd hh:mm')}"
-               class="form-control" type="text" id="full-load-time" name="full-load-time"
-               value="2024-11-27 11:00" aria-label="选择时间">
+        <span class="input-group-addon input-desc">打印时间</span>
+        <input th:unless="${poundBillModel.printTime}" th:value="${#dates.format(#dates.createNow(), 'HH:mm')}" type="text" class="form-control" name="print-time" aria-describedby="basic-addon3">
+        <input th:if="${poundBillModel.printTime}" th:value="${#temporals.format(poundBillModel.printTime, 'HH:mm')}" type="text" class="form-control" name="print-time" aria-describedby="basic-addon3">
     </div>
 
     <div class="input-group">
         <span class="input-group-addon input-desc">发货单位</span>
-        <input th:value="${poundBillModel.outputUnit}" type="text" class="form-control" name="output-unit"
-               value="发货单位名称" aria-describedby="basic-addon3">
+        <input th:value="${poundBillModel.outputUnit}" type="text" class="form-control" name="output-unit" aria-describedby="basic-addon3">
     </div>
 
     <div class="input-group">
         <span class="input-group-addon input-desc">收货单位</span>
-        <input th:value="${poundBillModel.inputUnit}" type="text" class="form-control" name="input-unit"
-               value="收货单位名称" aria-describedby="basic-addon3">
+        <input th:value="${poundBillModel.inputUnit}" type="text" class="form-control" name="input-unit" aria-describedby="basic-addon3">
     </div>
 
     <div class="input-group">

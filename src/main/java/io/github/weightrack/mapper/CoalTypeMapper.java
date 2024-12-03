@@ -6,17 +6,13 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface CoalTypeMapper {
 
-    @Select("select * from coal_type where isRemoved is false")
+    @Select("select * from coal_type")
     CoalType[] getCoalType();
 
-    @Insert("""
-            INSERT INTO coal_type (name)
-            VALUES (#{coalType})
-            ON DUPLICATE KEY UPDATE
-              isRemoved = IF(isRemoved = 1, 0, isRemoved);""")
+    @Insert("insert into coal_type (name) values (#{name})")
     void insertCoalType(String coalType);
 
-    @Update("update coal_type set isRemoved = 1 where name = #{name}")
+    @Update("delete from coal_type where name = #{name}")
     void deleteCoalTypeByName(String name);
 
 }

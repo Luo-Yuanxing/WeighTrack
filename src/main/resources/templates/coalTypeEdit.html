@@ -68,6 +68,25 @@
         .form-group input[type="submit"]:focus {
             outline: none;
         }
+
+        .warning {
+            background-color: #f8d7da; /* 淡红色背景，类似警告的颜色 */
+            color: #721c24; /* 深红色文本，增强警告感 */
+            border: 1px solid #f5c6cb; /* 边框颜色与背景色接近，形成柔和的对比 */
+            padding: 15px; /* 内边距，增加内容的舒适感 */
+            border-radius: 5px; /* 圆角边框，使外观更加柔和 */
+            font-size: 16px; /* 适中的字体大小 */
+            font-weight: bold; /* 加粗字体 */
+            margin: 10px 0; /* 上下边距，让提示信息不至于紧贴其他内容 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加轻微阴影，使提示信息浮起来 */
+            text-align: center; /* 文本居中 */
+        }
+
+        .warning span {
+            display: block; /* 使内容块级显示 */
+            word-wrap: break-word; /* 如果提示信息较长，自动换行 */
+        }
+
     </style>
 </head>
 
@@ -86,6 +105,9 @@
                     </label>
                 </div>
             </div>
+        </div>
+        <div class="warning" th:if="${error != null}">
+            <span th:text="${error}"></span>
         </div>
         <div class="form-group text-center">
             <input type="submit" value="提交">
