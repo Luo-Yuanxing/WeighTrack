@@ -16,13 +16,11 @@ public class SQLInitializer {
     @Autowired
     CoalTypeService coalTypeService;
     @Autowired
-    ShowListService showListService;
-    @Autowired
     PoundBillService poundBillService;
 
     @PostConstruct
     public void initCoalType() {
-        PoundBillModel[] poundBillModels = showListService.showList("all");
+        PoundBillModel[] poundBillModels = poundBillService.selectAll();
         for (PoundBillModel poundBillModel : poundBillModels) {
             coalTypeService.insertCoalType(poundBillModel.getCoalType());
         }
