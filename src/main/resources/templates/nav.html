@@ -1,59 +1,67 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>煤场出库明细</title>
+
+</head>
+
 <body>
-<div th:fragment="nav">
-    <head>
-        <link rel="stylesheet" href="/css/myself-dropdown.css"/>
-    </head>
-    <nav class="navbar navbar-default">
+<div th:fragment="nav" class="nav">
+    <nav class="navbar navbar-light">
         <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">码匠社区</span>
-                </button>
-                <a class="navbar-brand" href="/">码匠社区</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-                <form class="navbar-form navbar-left" style="margin-left: 50px">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="搜索问题">
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>
-                <ul class="nav navbar-nav navbar-right" style="margin-right: 50px">
-
-                    <!-- 已登录-->
-                    <li th:if="${session.user}">
-                        <a href="/publish">发布</a>
+            <div class="navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">鸿聚一号煤场出入库明细</a></li>
+                    <li><a href="/">添加新纪录</a></li>
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">历史记录 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/showList/in/1">入库记录</a></li>
+                            <li><a href="/showList/out/1">出库记录</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/showList/all/1">合并记录</a></li>
+                        </ul>
                     </li>
-
-                    <li th:if="${session.user}">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">今日记录 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/showList/today/in/1">今日入库记录</a></li>
+                            <li><a href="/showList/today/out/1">今日出库记录</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/showList/today/all/1">合并记录</a></li>
+                        </ul>
                     </li>
-
-                    <li class="myself-dropdown" th:if="${session.user}" style="width: 200px">
-                        <a class="col-lg-6 col-md-6 col-sm-6 col-xs-6" href="#" style="all:unset"><img th:src="${session.user.avatarUrl}" alt="头像" height="40px" style="margin-top: 5px"></a>
-                        <a class="col-lg-6 col-md-6 col-sm-6 col-xs-6" href="#" th:text="${session.user.name}" style="padding-left: 0"><span class="caret"></span></a>
-                        <div class="myself-dropdown-content" style="width: 200px">
-                            <div class="myself-center">
-                                <a href="/profile/questions">消息中心</a>
-                                <a href="#">退出登录</a>
-                            </div>
-                        </div>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">入库数据汇总 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/data-summary/in/today">今日汇总</a></li>
+                            <li><a href="/data-summary/in/month">本月汇总</a></li>
+                            <li><a href="/data-summary/in/year">年度汇总</a></li>
+                            <li><a href="/data-summary/in/all">全部汇总</a></li>
+                        </ul>
                     </li>
-
-                    <!-- 未登录-->
-                    <li th:unless="${session.user}"><a href="https://github.com/login/oauth/authorize?client_id=Ov23liEgCKiNO7VT6lKH&redirect_uri=http://10.114.55.142:8090/callback&scope=user&state=1j3hh123 ">登录</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">出库数据汇总 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/data-summary/out/today">今日汇总</a></li>
+                            <li><a href="/data-summary/out/month">本月汇总</a></li>
+                            <li><a href="/data-summary/out/year">年度汇总</a></li>
+                            <li><a href="/data-summary/out/all">全部汇总</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 </div>
+
 </body>
+
 </html>

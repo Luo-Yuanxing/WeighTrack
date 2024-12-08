@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>鸿聚一号煤场出入库明细 - 修改</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css">
+
+    <link rel="stylesheet" href="/css/nav.css">
+
+    <script src="/js/html5shiv.js"></script>
+    <script src="/js/respond.js"></script>
+    <style>
+        body {
+            justify-content: center; /* 水平居中 */
+            align-items: center; /* 垂直居中 */
+            background-color: #f8f9fa; /* 背景颜色可选 */
+        }
+
+        form {
+            max-width: 1000px;
+            background-color: #ffffff;
+            margin: 10px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .form-title {
+            display: block;
+            font-size: 24px; /* 字体大小 */
+            font-weight: bold; /* 加粗 */
+            color: #343a40; /* 颜色 */
+            margin-bottom: 20px; /* 底部间距 */
+            text-transform: uppercase; /* 全部大写（可选） */
+            letter-spacing: 1px; /* 字间距（可选） */
+        }
+
+        .input-group {
+            margin: 10px auto;
+            width: 60%;
+        }
+
+        .input-desc {
+            width: 100px;
+        }
+
+        input[type="submit"] {
+            display: block;
+            margin-top: 50px;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3; /* 按钮悬停颜色 */
+        }
+
+        .exclude-border {
+            border-left: 0;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<script src="/js/jQuery-3.7.1.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/bootstrap-datetimepicker.js"></script>
+<script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+<div th:insert="~{nav :: nav}"></div>
+<form id="pound_form" method="post" th:action="@{/update/{id}(id=${poundBillModel.id})}">
+    <span class="form-title">修改磅单数据</span>
+
+    <!-- 隐藏的ID字段，用于标识修改的记录 -->
+    <input type="hidden" name="id" th:value="${poundBillModel.id}"/>
+    <div class="input-group">
+        <span class="input-group-addon input-desc">出入库类型</span>
+        <select th:field="*{poundBillModel.IOType}" class="form-control" name="IOType"
+                aria-describedby="basic-addon3">
+            <option value="1">入库</option>
+            <option value="0">出库</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon input-desc">煤种</span>
+        <select th:field="*{poundBillModel.coalType}" class="form-control" name="coalType" id="coalType" aria-describedby="basic-addon3">
+            <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}"
+                    th:text="${coalType.name}">
+            </option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon input-desc">车牌号</span>
+        <input th:value="${poundBillModel.plateNumber}" type="text" class="form-control" name="plate-number"
+               aria-describedby="basic-addon3">
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon input-desc">毛重</span>
+        <input th:value="${poundBillModel.grossWeight}" type="text" class="form-control" name="gross-weight"
+               aria-describedby="basic-addon3">
+        <span class="exclude-border input-group-addon">吨</span>
+        <div class="exclude-border input-group-addon">
+            <span>自动追加两位小数点</span>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon input-desc">皮重</span>
+        <input th:value="${poundBillModel.tareWeight}" type="text" class="form-control" name="tare"
+               aria-describedby="basic-addon3">
+        <span class="exclude-border input-group-addon">吨</span>
+        <div class="exclude-border input-group-addon">
+            <span>自动追加两位小数点</span>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon input-desc">原发</span>
+        <input th:value="${poundBillModel.primaryWeight}" type="text" class="form-control" name="primary-weight"
+               aria-describedby="basic-addon3">
+        <span class="exclude-border input-group-addon">吨</span>
+        <div class="exclude-border input-group-addon">
+            <span>自动追加两位小数点</span>
+        </div>
+    </div>
+
+<!--    <div class="input-group">-->
+<!--        <script src='/js/form-date.js'></script>-->
+<!--        <span class="input-group-addon input-desc">过空时间</span>-->
+<!--        <input th:value="${#temporals.format(poundBillModel.emptyLoadTime, 'yyyy-MM-dd hh:mm')}"-->
+<!--               class="exclude-border form-control" type="text" id="empty-load-time" name="empty-load-time"-->
+<!--               value="2024-11-27 10:00" aria-label="选择时间">-->
+<!--    </div>-->
+
+<!--    <div class="input-group">-->
+<!--        <script src='/js/form-date.js'></script>-->
+<!--        <span class="exclude-border input-group-addon input-desc">过重时间</span>-->
+<!--        <input th:value="${#temporals.format(poundBillModel.fullLoadTime, 'yyyy-MM-dd hh:mm')}"-->
+<!--               class="form-control" type="text" id="full-load-time" name="full-load-time"-->
+<!--               value="2024-11-27 11:00" aria-label="选择时间">-->
+<!--    </div>-->
+
+    <div class="input-group">
+        <span class="input-group-addon input-desc">打印时间</span>
+        <input th:unless="${poundBillModel.printTime}" th:value="${#dates.format(#dates.createNow(), 'HH:mm')}" type="text" class="form-control" name="print-time" aria-describedby="basic-addon3">
+        <input th:if="${poundBillModel.printTime}" th:value="${#temporals.format(poundBillModel.printTime, 'HH:mm')}" type="text" class="form-control" name="print-time" aria-describedby="basic-addon3">
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon input-desc">发货单位</span>
+        <input th:value="${poundBillModel.outputUnit}" type="text" class="form-control" name="output-unit" aria-describedby="basic-addon3">
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon input-desc">收货单位</span>
+        <input th:value="${poundBillModel.inputUnit}" type="text" class="form-control" name="input-unit" aria-describedby="basic-addon3">
+    </div>
+
+    <div class="input-group">
+        <span class="input-group-addon input-desc">司磅员</span>
+        <select th:selected="${poundBillModel.weigher}" class="form-control" name="weigher"
+                aria-describedby="basic-addon3">
+            <option value="罗亚平" selected>罗亚平</option>
+        </select>
+    </div>
+
+    <input class="input-group" type="submit" value="确认修改"/>
+    <div style="height: 20px"></div>
+</form>
+
+
+</body>
+
+<script src="/js/form-date.js"></script>
+<script>
+    $(document).ready(function() {
+        // 定义一个函数来处理输入值并更新
+        function formatInputValue(input) {
+            let value = input.val().trim(); // 获取输入框内容并去除首尾空格
+            if (value === "" || isNaN(Number(value))) {
+                // 如果值为空或非数字，清空输入框
+                input.val('');
+                return;
+            }
+
+            console.log(input.val())
+            // 获取input.val()字符串最后一位字符
+            let current_input = value.slice(-1);
+            console.log(current_input);
+            let new_value;
+            if (value.length === 1) {
+                new_value = value * 0.01;
+            } else {
+                new_value = parseFloat(value.slice(0, -1)) * 10 + 0.01 * current_input;
+            }
+
+            // 更新输入框的值
+            input.val(new_value.toFixed(2));
+        }
+
+        // 给所有输入框绑定实时监控
+        $('input[name="gross-weight"], input[name="tare"], input[name="primary-weight"]').on('input', function() {
+            formatInputValue($(this)); // 处理当前输入框的值
+        });
+    });
+</script>
+
+</html>
+

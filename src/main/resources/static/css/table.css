@@ -1,0 +1,96 @@
+/* 通用样式 */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* 页眉 */
+.header {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.header h3, .header h4 {
+    margin: 5px;
+    color: #333;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* 表格容器 */
+.table-container {
+    margin: 20px auto;
+    width: 80%;
+    max-width: 1000px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+/* 使表格单元格更加整洁 */
+td {
+    background-color: #fafafa;
+}
+
+td.label {
+    width: 30%;
+    font-weight: bold;
+    background-color: #f2f2f2;
+}
+
+/* 打印时间样式 */
+.print-time {
+    font-style: italic;
+    color: #888;
+}
+
+/* 按钮样式 */
+.submit-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+/* 适应移动设备 */
+@media (max-width: 768px) {
+    .table-container {
+        width: 95%;
+    }
+    table, th, td {
+        font-size: 14px;
+    }
+}
