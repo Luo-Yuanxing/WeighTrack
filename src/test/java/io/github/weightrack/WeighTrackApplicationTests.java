@@ -17,10 +17,11 @@ public class WeighTrackApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
-        List<PoundBillModel> poundBillModels = ExcelUtil.insertPoundBillByExcel();
-        System.out.println("length:" + poundBillModels.size());
+        PoundBillModel[] poundBillModels = poundBillService.selectAll();
         for (PoundBillModel poundBillModel : poundBillModels) {
-            poundBillService.insertPoundBill(poundBillModel);
+            if (poundBillModel.getCoalType() == null) {
+                poundBillService.deleteById(poundBillModel.getId());
+            }
         }
     }
 

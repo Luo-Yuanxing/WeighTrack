@@ -119,4 +119,8 @@ public class PoundBillService {
             }
         }
     }
+
+    public PoundBillModel[] selectAll() {
+        return poundBillMapper.selectAll();
+    }
 }

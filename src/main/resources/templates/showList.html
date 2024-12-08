@@ -43,6 +43,22 @@
             overflow: hidden;
         }
 
+        table tbody {
+            display: block;
+            height: 570px;
+            overflow-y: scroll;
+        }
+
+        table thead, tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;/*重要  表格固定算法*/
+        }
+
+        table thead {/*留出滚动条的位置*/
+            width: calc(100% - 1em)
+        }
+
         table th, table td {
             padding: 12px 15px;
             text-align: center;
@@ -82,12 +98,12 @@
         td a {
             display: block;
             white-space: nowrap;
-            margin-top: 3px;
+            margin-top: 1px;
             padding: 0 10px;
             border-radius: 5px;
             background-color: #28a745; /* 按钮背景色 */
             color: white;
-            margin-right: 5px;
+            margin-right: 1px;
             transition: background-color 0.3s ease;
         }
 
@@ -99,7 +115,22 @@
             white-space: nowrap;
         }
 
-        .deleteRecord a {
+
+
+        .grid-layout {
+            display: grid;
+            grid-template-rows: repeat(2, 1fr);    /* 定义两行 */
+            gap: 1px;  /* 设置单元格之间的间隙 */
+        }
+        .grid-layout a {
+            text-decoration: none;  /* 可选：去掉链接的下划线 */
+            padding: 5px;
+            border: 1px solid #ccc; /* 可选：为每个链接添加边框 */
+            display: block; /* 使链接变为块级元素 */
+            text-align: center;
+        }
+        .delete-record {
+            grid-column: span 2;
             color: red; /* 设置字体颜色为红色 */
             font-weight: bold; /* 设置字体加粗 */
             text-decoration: none; /* 去除下划线 */
@@ -110,13 +141,13 @@
             transition: background-color 0.3s ease, color 0.3s ease; /* 添加平滑过渡效果 */
         }
 
-        .deleteRecord a:hover {
+        .delete-record:hover {
             background-color: #f5c6cb; /* 鼠标悬停时背景色变浅 */
             color: #721c24; /* 鼠标悬停时文字颜色变深 */
             cursor: pointer; /* 鼠标悬停时变成指针 */
         }
 
-        .deleteRecord a:active {
+        .delete-record:active {
             background-color: #f1b0b7; /* 点击时背景色变浅 */
             color: #721c24; /* 点击时文字颜色变深 */
         }
@@ -183,27 +214,28 @@
         <th>收货<br>单位</th>
         <th>司磅员</th>
         <th th:if="${today} == true">已打印</th>
-        <th>删除记录</th>
         <th style="display: none">id</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="tbody">
     <tr th:each="poundBillModel : ${poundBillModels}">
-        <td class="options">
+        <td class="options grid-layout">
             <a th:href="@{/update/{id}(id=${poundBillModel.id})}">修改</a>
             <a th:href="@{/print/{id}(id=${poundBillModel.id})}">打印</a>
+            <a href="#" class="delete-record" th:onclick="'confirmDelete(' + ${poundBillModel.id} + ')'">删除</a>
         </td>
+
         <td th:text="${poundBillModel.IOType} == '1' ? '入库' : '出库'"></td>
         <td th:text="${poundBillModel.coalType}"></td>
         <td th:text="${poundBillModel.poundID}"></td>
         <td th:text="${poundBillModel.plateNumber}"></td>
-        <td class="weights" th:text="${poundBillModel.grossWeight}"></td>
-        <td class="weights" th:text="${poundBillModel.tareWeight}"></td>
-        <td class="weights" th:text="${poundBillModel.netWeight}"></td>
-        <td th:if="${poundBillModel.IOType} == '1'" class="primaryWeight" th:text="${poundBillModel.primaryWeight}"></td>
+        <td class="weights" th:text="${#numbers.formatDecimal(poundBillModel.grossWeight, 2, 2)}"></td>
+        <td class="weights" th:text="${#numbers.formatDecimal(poundBillModel.tareWeight, 2, 2)}"></td>
+        <td class="weights" th:text="${#numbers.formatDecimal(poundBillModel.netWeight, 2, 2)}"></td>
+        <td th:if="${poundBillModel.IOType} == '1'" class="primaryWeight" th:text="${#numbers.formatDecimal(poundBillModel.primaryWeight, 2, 2)}"></td>
         <td th:if="${poundBillModel.IOType} == '0'" class="primaryWeight">NaN</td>
 
-        <td th:if="${poundBillModel.IOType} == '1'" class="weights profit-loss-weight" th:text="${poundBillModel.profitLossWeight}"></td>
+        <td th:if="${poundBillModel.IOType} == '1'" class="weights profit-loss-weight" th:text="${#numbers.formatDecimal(poundBillModel.profitLossWeight, 2, 2)}"></td>
         <td th:if="${poundBillModel.IOType} == '0'" class="weights profit-loss-weight">NaN</td>
         <td class="time">
             <span th:if="${#strings.isEmpty(poundBillModel.printTime)}">未打印</span>
@@ -216,26 +248,53 @@
         <td th:text="${poundBillModel.weigher}"></td>
         <td th:if="${today} == true" th:text="${poundBillModel.printed}==true?'是':'否'"></td>
         <td class="deleteRecord">
-            <a href="#" th:onclick="'confirmDelete(' + ${poundBillModel.id} + ')'">删除记录</a>
+
         </td>
 
         <td th:id="${poundBillModel.id}" th:text="${poundBillModel.id}" style="display: none"></td>
+        <td class="creat-time" th:text="${#temporals.format(poundBillModel.creatTime, 'yyyy-MM-dd')}" style="display: none"></td>
     </tr>
     </tbody>
 </table>
 
 <div th:if="${#lists.isEmpty(poundBillModels)}">没有数据</div>
 
-<script>
-    $(function () {
 
+<script>
+    <!-- 按日期插入空行-->
+    function insertDateRow () {
+        let rows = $("#tbody tr");
+        let j = 0;
+
+        for (let i = 1; i < rows.length; i++) {
+            // 获取当前行的日期
+            let currentDate = rows.eq(i).find('.creat-time').text();
+
+            // 获取上一行的日期
+            let prevDate = rows.eq(j).find('.creat-time').text();
+
+            // 如果日期不同，则插入新的日期展示空行
+            if (currentDate !== prevDate) {
+                insertRowOfDateAfter(i, prevDate); // 在当前行后插入新行
+                j = i; // 更新 j 为当前行的位置
+            }
+        }
+    }
+
+    // 插入辅助函数
+    function insertRowOfDateAfter(n, date) {
+        let newRow = $("<tr><td colspan='15'>日期&nbsp;<span>&#x2191;</span>： " + date + "</td></tr>");
+        $("#tbody tr").eq(n-1).after(newRow);
+    }
+
+    $(function () {
         $('.profit-loss-weight').each(function () {
             let value = $(this).text();
             if ($(this).text() === 'NaN') {
                 return;
             }
             // 获取该元素的数值
-            value = parseFloat(value); // 使用 jQuery 的 .text() 获取文本内容
+            value = parseFloat(value);
 
             // 如果值小于 -0.2，添加红色醒目
             if (value < -0.2 && value !== 0) {
@@ -258,19 +317,12 @@
                 })
             }
         });
-        $('.weights').each(function () {
-            // 获取该元素的数值
-            let value = parseFloat($(this).text());
-            if (value === 0) {
-                $(this).text("")
-            } else {
-                // 保留两位小数点
-                $(this).text(value.toFixed(2));
-            }
-        });
 
+        insertDateRow();
     })
+
 </script>
+
 
 </body>
 

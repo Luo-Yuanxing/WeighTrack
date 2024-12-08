@@ -19,4 +19,7 @@ public interface PoundBillMapper {
 
     @Delete("delete from poundbill where id = #{id}")
     void deleteById(int id);
+
+    @Select("select * from poundbill")
+    PoundBillModel[] selectAll();
 }

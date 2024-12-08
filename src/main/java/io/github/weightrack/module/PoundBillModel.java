@@ -14,19 +14,19 @@ public class PoundBillModel {
     private String plateNumber;
 
     // String 版本为controller接受参数临时使用，service校验再进行正常版本的赋值
-    private float grossWeight;
+    private double grossWeight;
     private String grossWeightString;
 
-    private float tareWeight;
+    private double tareWeight;
     private String tareWeightString;
 
-    private float netWeight;
+    private double netWeight;
     private String netWeightString;
 
-    private float primaryWeight;
+    private double primaryWeight;
     private String primaryWeightString;
 
-    private float ProfitLossWeight;
+    private double ProfitLossWeight;
     private String ProfitLossWeightString;
 
     private LocalDateTime emptyLoadTime;

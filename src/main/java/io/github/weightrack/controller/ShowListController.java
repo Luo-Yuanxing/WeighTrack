@@ -13,7 +13,7 @@ public class ShowListController {
     @Autowired
     ShowListService showListService;
 
-    @GetMapping("/showList")
+    @GetMapping("/showList/")
     public String showList(Model model) {
         PoundBillModel[] poundBillModels = showListService.showList("all");
         model.addAttribute("poundBillModels", poundBillModels);
