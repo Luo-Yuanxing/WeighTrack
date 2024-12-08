@@ -22,4 +22,7 @@ public interface PoundBillMapper {
 
     @Select("select * from poundbill")
     PoundBillModel[] selectAll();
+
+    @Select("select count(*) from poundbill")
+    int count();
 }

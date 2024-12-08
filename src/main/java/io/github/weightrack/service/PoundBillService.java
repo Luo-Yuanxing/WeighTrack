@@ -112,7 +112,7 @@ public class PoundBillService {
     }
 
     public void cleanPoundBill() {
-        PoundBillModel[] poundBillModels = showListMapper.showListAll();
+        PoundBillModel[] poundBillModels = poundBillMapper.selectAll();
         for (PoundBillModel poundBillModel : poundBillModels) {
             if (poundBillModel.getPrintTime() == null) {
                 poundBillMapper.deleteById(poundBillModel.getId());
@@ -122,5 +122,9 @@ public class PoundBillService {
 
     public PoundBillModel[] selectAll() {
         return poundBillMapper.selectAll();
+    }
+
+    public int count() {
+        return poundBillMapper.count();
     }
 }

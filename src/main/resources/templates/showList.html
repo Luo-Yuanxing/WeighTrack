@@ -17,140 +17,118 @@
     <script src="/js/respond.js"></script>
 
     <style>
-        /* 全局样式 */
-        body {
-            font-family: "Arial", sans-serif;
-            background-color: #f8f9fa; /* 背景颜色 */
-            color: #333; /* 全局字体颜色 */
-            margin: 0;
-            padding: 0;
-        }
-
         h2 {
             text-align: center;
             margin: 10px auto;
-            padding: 0;
         }
 
-        /* 表格样式 */
-        table {
-            margin: 10px auto;
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #fff; /* 表格背景 */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影 */
-            border-radius: 8px; /* 圆角 */
-            overflow: hidden;
-        }
-
-        table tbody {
-            display: block;
-            height: 570px;
-            overflow-y: scroll;
-        }
-
-        table thead, tbody tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;/*重要  表格固定算法*/
-        }
-
-        table thead {/*留出滚动条的位置*/
-            width: calc(100% - 1em)
-        }
-
-        table th, table td {
-            padding: 12px 15px;
+        #grid-pound-bill {
             text-align: center;
-            border-bottom: 1px solid #ddd; /* 表格分隔线 */
         }
 
-        table thead {
-            background-color: #007bff; /* 表头背景颜色 */
-            color: #fff; /* 表头文字颜色 */
-        }
-
-        table tbody tr:hover {
-            background-color: #f1f1f1; /* 鼠标悬浮行的背景色 */
-        }
-
-        table tbody tr:nth-child(even) {
-            background-color: #f9f9f9; /* 偶数行背景色 */
-        }
-
-        /* 链接样式 */
-        a {
-            text-decoration: none;
-            color: #007bff;
-        }
-
-        a:hover {
-            color: #0056b3;
-        }
-
-        td:not(.time, .options), th:not(.time, .options) {
-            white-space: nowrap; /* 防止换行 */
-            //overflow: hidden; /* 如果文本溢出，隐藏多余部分 */
-            text-overflow: ellipsis; /* 超出部分用省略号表示 */
-        }
-
-        /* 按钮样式 */
-        td a {
-            display: block;
-            white-space: nowrap;
-            margin-top: 1px;
-            padding: 0 10px;
-            border-radius: 5px;
-            background-color: #28a745; /* 按钮背景色 */
-            color: white;
-            margin-right: 1px;
-            transition: background-color 0.3s ease;
-        }
-
-        td a:hover {
-            background-color: #218838;
-        }
-
-        .time span {
-            white-space: nowrap;
-        }
-
-
-
-        .grid-layout {
+        .grid-col-13 {
             display: grid;
-            grid-template-rows: repeat(2, 1fr);    /* 定义两行 */
-            gap: 1px;  /* 设置单元格之间的间隙 */
+            grid-template-columns: repeat(13, 1fr); /* 定义三列 */
+            gap: 1px; /* 表格单元之间的间隔 */
         }
-        .grid-layout a {
-            text-decoration: none;  /* 可选：去掉链接的下划线 */
-            padding: 5px;
-            border: 1px solid #ccc; /* 可选：为每个链接添加边框 */
-            display: block; /* 使链接变为块级元素 */
+
+        .grid-col-14 {
+            display: grid;
+            grid-template-columns: repeat(14, 1fr); /* 定义三列 */
+            gap: 1px; /* 表格单元之间的间隔 */
+        }
+
+        .grid-col-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 定义三列 */
+            gap: 1px; /* 表格单元之间的间隔 */
+        }
+
+        #option-template {
+            display: none;
+        }
+
+        .centering {
+            align-items: center;
+        }
+
+         //========================== grid-head ====================
+        .grid-head {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* 增加轻微阴影效果 */
+            color: #333;  /* 文字颜色 */
+        }
+
+        .grid-head div {
             text-align: center;
-        }
-        .delete-record {
-            grid-column: span 2;
-            color: red; /* 设置字体颜色为红色 */
-            font-weight: bold; /* 设置字体加粗 */
-            text-decoration: none; /* 去除下划线 */
-            padding: 5px 10px; /* 设置内边距 */
-            background-color: #f8d7da; /* 背景色为浅红色 */
-            border: 1px solid #f5c6cb; /* 边框为红色 */
-            border-radius: 4px; /* 圆角边框 */
-            transition: background-color 0.3s ease, color 0.3s ease; /* 添加平滑过渡效果 */
+            font-weight: bold;
+            color: #333;  /* 默认文字颜色 */
         }
 
-        .delete-record:hover {
-            background-color: #f5c6cb; /* 鼠标悬停时背景色变浅 */
-            color: #721c24; /* 鼠标悬停时文字颜色变深 */
-            cursor: pointer; /* 鼠标悬停时变成指针 */
+        /* 蓝色主题标题栏 */
+        .grid-head div {
+            color: midnightblue;  /* 标题文字颜色为蓝色 */
         }
 
-        .delete-record:active {
-            background-color: #f1b0b7; /* 点击时背景色变浅 */
-            color: #721c24; /* 点击时文字颜色变深 */
+        /* 修改“已打印”文字颜色 */
+        .grid-head .is-printed {
+            display: none;
+            text-align: center;
+            font-weight: bold;
         }
+
+        /* 垂直和水平居中的列 */
+        .grid-head div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 给文本增加一些底部间距 */
+        .grid-head div {
+            margin: 5px auto;
+        }
+
+        /* ========================== 操作按钮样式 ==================== */
+        .options.grid-col-2 a {
+            display: inline-block;
+            padding: 1px 2px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 0 1px; /* 为按钮添加左右间距 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加微小的阴影 */
+        }
+
+        .update, .print {
+            background-color: olivedrab;
+            color: white;
+        }
+
+        .update:hover, .print:hover {
+            background-color: #7fa82a;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
+        }
+
+        .delete {
+            grid-column: span 2; /* 使删除按钮占据整个行 */
+            background-color: brown;
+            color: white;
+        }
+
+        .delete:hover {
+            background-color: #b83e3e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
+        }
+
 
     </style>
 
@@ -163,25 +141,7 @@
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/html5shiv.js"></script>
 <script src="/js/respond.js"></script>
-<script>
-    function confirmDelete(id) {
-        if (confirm("确定要删除这条记录吗？")) {
-            $.ajax({
-                url: '/delete/' + id, // 请求的URL
-                type: 'GET', // 请求方式，GET 或 POST
-                success: function () {
-                    // 请求成功后的回调函数
-                    alert('删除成功');
-                    window.location.reload(); // 刷新页面
-                },
-                error: function () {
-                    // 请求失败后的回调函数
-                    alert('删除失败');
-                }
-            });
-        }
-    }
-</script>
+<script src="/js/dayjs.min.js"></script>
 
 <div th:insert="~{nav :: nav}"></div>
 <div th:switch="${IOType}">
@@ -196,134 +156,335 @@
     </div>
 </div>
 
-<table>
-    <thead>
-    <tr>
-        <th>操作</th>
-        <th>出入库<br>类型</th>
-        <th>煤种</th>
-        <th>磅单编号</th>
-        <th>车牌号</th>
-        <th>毛重</th>
-        <th>皮重</th>
-        <th>净重</th>
-        <th>原发</th>
-        <th>盈亏</th>
-        <th class="time">打印<br>时间</th>
-        <th>发货<br>单位</th>
-        <th>收货<br>单位</th>
-        <th>司磅员</th>
-        <th th:if="${today} == true">已打印</th>
-        <th style="display: none">id</th>
-    </tr>
-    </thead>
-    <tbody id="tbody">
-    <tr th:each="poundBillModel : ${poundBillModels}">
-        <td class="options grid-layout">
-            <a th:href="@{/update/{id}(id=${poundBillModel.id})}">修改</a>
-            <a th:href="@{/print/{id}(id=${poundBillModel.id})}">打印</a>
-            <a href="#" class="delete-record" th:onclick="'confirmDelete(' + ${poundBillModel.id} + ')'">删除</a>
-        </td>
 
-        <td th:text="${poundBillModel.IOType} == '1' ? '入库' : '出库'"></td>
-        <td th:text="${poundBillModel.coalType}"></td>
-        <td th:text="${poundBillModel.poundID}"></td>
-        <td th:text="${poundBillModel.plateNumber}"></td>
-        <td class="weights" th:text="${#numbers.formatDecimal(poundBillModel.grossWeight, 2, 2)}"></td>
-        <td class="weights" th:text="${#numbers.formatDecimal(poundBillModel.tareWeight, 2, 2)}"></td>
-        <td class="weights" th:text="${#numbers.formatDecimal(poundBillModel.netWeight, 2, 2)}"></td>
-        <td th:if="${poundBillModel.IOType} == '1'" class="primaryWeight" th:text="${#numbers.formatDecimal(poundBillModel.primaryWeight, 2, 2)}"></td>
-        <td th:if="${poundBillModel.IOType} == '0'" class="primaryWeight">NaN</td>
+<div id="grid-pound-bill">
+    <div id="grid-head" class="grid-head grid-col-13 centering" style="background-color: gainsboro; position: sticky; top: 0; z-index: 10;">
+        <div>操作</div>
+        <div>煤种</div>
+        <div>磅单<br>编号</div>
+        <div>车牌号</div>
+        <div>毛重</div>
+        <div>皮重</div>
+        <div>净重</div>
+        <div>原发</div>
+        <div>盈亏</div>
+        <div>打印<br>时间</div>
+        <div>发货<br>单位</div>
+        <div>收货<br>单位</div>
+        <div>司磅员</div>
+        <div class="is-printed" style="display: none">已打印</div>
+    </div>
+    <div id="grid-body" class="grid-col-13 centering">
 
-        <td th:if="${poundBillModel.IOType} == '1'" class="weights profit-loss-weight" th:text="${#numbers.formatDecimal(poundBillModel.profitLossWeight, 2, 2)}"></td>
-        <td th:if="${poundBillModel.IOType} == '0'" class="weights profit-loss-weight">NaN</td>
-        <td class="time">
-            <span th:if="${#strings.isEmpty(poundBillModel.printTime)}">未打印</span>
-            <span th:if="${not#strings.isEmpty(poundBillModel.printTime)}"
-                  th:text="${#temporals.format(poundBillModel.printTime, 'HH:mm')}"></span><br/>
-        </td>
+    </div>
+</div>
 
-        <td th:text="${poundBillModel.outputUnit}"></td>
-        <td th:text="${poundBillModel.inputUnit}"></td>
-        <td th:text="${poundBillModel.weigher}"></td>
-        <td th:if="${today} == true" th:text="${poundBillModel.printed}==true?'是':'否'"></td>
-        <td class="deleteRecord">
+<link rel="stylesheet" href="/css/pagination.css">
+<div>
+    <ul class="pagination">
+        <li class="laquo">
+            <span aria-hidden="true">&laquo;</span>
+        </li>
+        <li class="raquo">
+            <span aria-hidden="true">&raquo;</span>
+        </li>
+    </ul>
 
-        </td>
+</div>
 
-        <td th:id="${poundBillModel.id}" th:text="${poundBillModel.id}" style="display: none"></td>
-        <td class="creat-time" th:text="${#temporals.format(poundBillModel.creatTime, 'yyyy-MM-dd')}" style="display: none"></td>
-    </tr>
-    </tbody>
-</table>
+<div id="option-template">
+    <div class="options grid-col-2">
+        <a class="update">修改</a>
+        <a class="print">打印</a>
+        <a class="delete">删除</a>
+    </div>
+</div>
 
-<div th:if="${#lists.isEmpty(poundBillModels)}">没有数据</div>
+<!--填充数据-->
+<script th:inline="javascript">
+    function getRandomColor() {
+        // 随机生成一个色调（H）、饱和度（S）和亮度（L）
+        let h = Math.floor(Math.random() * 360);  // 色调范围0-360
+        let s = Math.floor(Math.random() * 30) + 70;  // 饱和度范围70-100，避免过于灰暗
+        let l = Math.floor(Math.random() * 30) + 40;  // 亮度范围40-70，避免过于鲜艳或过于暗淡
 
+        // HSL转RGB的算法
+        function hslToRgb(h, s, l) {
+            s /= 100;
+            l /= 100;
+            let c = (1 - Math.abs(2 * l - 1)) * s;
+            let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            let m = l - c / 2;
+            let r, g, b;
 
-<script>
-    <!-- 按日期插入空行-->
-    function insertDateRow () {
-        let rows = $("#tbody tr");
-        let j = 0;
-
-        for (let i = 1; i < rows.length; i++) {
-            // 获取当前行的日期
-            let currentDate = rows.eq(i).find('.creat-time').text();
-
-            // 获取上一行的日期
-            let prevDate = rows.eq(j).find('.creat-time').text();
-
-            // 如果日期不同，则插入新的日期展示空行
-            if (currentDate !== prevDate) {
-                insertRowOfDateAfter(i, prevDate); // 在当前行后插入新行
-                j = i; // 更新 j 为当前行的位置
+            if (0 <= h && h < 60) {
+                r = c;
+                g = x;
+                b = 0;
+            } else if (60 <= h && h < 120) {
+                r = x;
+                g = c;
+                b = 0;
+            } else if (120 <= h && h < 180) {
+                r = 0;
+                g = c;
+                b = x;
+            } else if (180 <= h && h < 240) {
+                r = 0;
+                g = x;
+                b = c;
+            } else if (240 <= h && h < 300) {
+                r = x;
+                g = 0;
+                b = c;
+            } else {
+                r = c;
+                g = 0;
+                b = x;
             }
+
+            r = Math.round((r + m) * 255);
+            g = Math.round((g + m) * 255);
+            b = Math.round((b + m) * 255);
+
+            // 转为十六进制
+            return `#${(1 << 24 | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()}`;
         }
+
+        return hslToRgb(h, s, l);
     }
 
-    // 插入辅助函数
-    function insertRowOfDateAfter(n, date) {
-        let newRow = $("<tr><td colspan='15'>日期&nbsp;<span>&#x2191;</span>： " + date + "</td></tr>");
-        $("#tbody tr").eq(n-1).after(newRow);
+    // 计算两个RGB颜色的欧几里得距离
+    function colorDistance(color1, color2) {
+        // 将十六进制颜色转为RGB
+        function hexToRgb(hex) {
+            let r = parseInt(hex.slice(1, 3), 16);
+            let g = parseInt(hex.slice(3, 5), 16);
+            let b = parseInt(hex.slice(5, 7), 16);
+            return {r, g, b};
+        }
+
+        const c1 = hexToRgb(color1);
+        const c2 = hexToRgb(color2);
+
+        // 使用欧几里得距离计算色差
+        return Math.sqrt(
+            Math.pow(c1.r - c2.r, 2) +
+            Math.pow(c1.g - c2.g, 2) +
+            Math.pow(c1.b - c2.b, 2)
+        );
     }
 
-    $(function () {
-        $('.profit-loss-weight').each(function () {
-            let value = $(this).text();
-            if ($(this).text() === 'NaN') {
-                return;
-            }
-            // 获取该元素的数值
-            value = parseFloat(value);
+    // 获取颜色差异大的颜色
+    function getDistinctRandomColor(lastColor) {
+        let color;
+        do {
+            color = getRandomColor();  // 生成新颜色
+        } while (colorDistance(color, lastColor) < 50);  // 阈值50，表示颜色太接近时重新生成
+        return color;
+    }
 
-            // 如果值小于 -0.2，添加红色醒目
-            if (value < -0.2 && value !== 0) {
-                $(this).css({
-                    "color": "#d32f2f",  // 使用更深的红色，增加可读性
-                    "background-color": "#f8d7da",  // 使用柔和的粉红色背景
-                    "border": "1px solid #f5c6cb",  // 添加边框，使背景颜色更有层次感
-                    "padding": "0.2em 0.4em",  // 适当增加内边距，使内容更加舒适
-                    "border-radius": "5px",  // 使背景块更圆润
-                    "transition": "all 0.3s ease-in-out"  // 添加过渡效果，使样式更平滑
+    let pound_bill_grid_body = $('#grid-body');
+    let pound_bill_list = /*[[${poundBillModels}]]*/ '[]';
+    let isToday = /*[[${today}]]*/;
+    if (isToday) {
+        pound_bill_grid_body.removeClass('grid-col-13');
+        pound_bill_grid_body.addClass('grid-col-14');
+        $('#grid-head .is-printed').css('display', 'block');
+        pound_bill_grid_body.removeClass('grid-col-13');
+        pound_bill_grid_body.addClass('grid-col-14');
+    }
+    let prev_date = null;
+    let current_color = getRandomColor();
+    for (let poundBill of pound_bill_list) {
+        // 插入操作div
+        let $option = $("#option-template").clone().removeAttr("id");
+        $option.find('.update').attr('href', '/update/' + poundBill.id);
+        $option.find('.print').attr('href', '/print/' + poundBill.id);
+        $option.find('.delete').on('click', function () {
+            if (confirm("确定要删除这条记录吗？")) {
+                $.ajax({
+                    url: '/delete/' + poundBill.id, // 请求的URL
+                    type: 'GET', // 请求方式，GET 或 POST
+                    success: function () {
+                        // 请求成功后的回调函数
+                        alert('删除成功');
+                        window.location.reload(); // 刷新页面
+                    },
+                    error: function () {
+                        // 请求失败后的回调函数
+                        alert('删除失败');
+                    }
                 });
-            } else if (value > 0.2 && value !== 0) {
-                $(this).css({
-                    "color": "#45d32f",
-                    "background-color": "#d7f8e1",
-                    "border": "1px solid #6fdf5e",
-                    "padding": "0.2em 0.4em",
-                    "border-radius": "5px",
-                    "transition": "all 0.3s ease-in-out"
-                })
+            }
+        });
+        // 强制应用样式
+        $option.find('a').css({
+            'border-radius': '5px', // 确保圆角样式
+            'transition': 'all 0.3s ease', // 确保过渡效果
+        });
+        pound_bill_grid_body.append($option.find('.options').eq(0));
+
+        // 插入煤种
+        pound_bill_grid_body.append('<div>' + poundBill.coalType + '</div>');
+
+        // 插入磅单编号
+        let poundId = poundBill.poundID;
+        let current_date = poundId.substring(5, 7);
+        if (prev_date === null) {
+            prev_date = current_date;
+        }
+        if (prev_date !== current_date) {
+            current_color = getDistinctRandomColor(current_color);
+            prev_date = current_date;
+        }
+        pound_bill_grid_body.append('<div style="color: ' + current_color + '">' + poundId + '</div>');
+
+        // 插入车牌号
+        pound_bill_grid_body.append('<div>' + poundBill.plateNumber + '</div>');
+
+        // 插入毛重
+        pound_bill_grid_body.append('<div>' + poundBill.grossWeight.toFixed(2) + '</div>');
+
+        // 插入皮重
+        pound_bill_grid_body.append('<div>' + poundBill.tareWeight.toFixed(2) + '</div>');
+
+        // 插入净重
+        pound_bill_grid_body.append('<div>' + poundBill.netWeight.toFixed(2) + '</div>');
+
+        // 插入原发
+        pound_bill_grid_body.append('<div>' + poundBill.primaryWeight.toFixed(2) + '</div>');
+
+        // 插入盈亏
+        pound_bill_grid_body.append('<div>' + poundBill.profitLossWeight.toFixed(2) + '</div>');
+
+        // 插入打印时间
+        pound_bill_grid_body.append('<div>' + dayjs(poundBill.printTime).format('HH:mm:ss') + '</div>');
+
+        // 插入发货单位
+        pound_bill_grid_body.append('<div>' + poundBill.outputUnit + '</div>');
+
+        // 插入收货单位
+        pound_bill_grid_body.append('<div>' + poundBill.inputUnit + '</div>');
+
+        // 插入是否打印
+        if (isToday) {
+            let printed = poundBill.printed === true ? '已打印' : '未打印';
+            pound_bill_grid_body.append('<div>' + printed + '</div>');
+        }
+
+        // 插入司磅员
+        pound_bill_grid_body.append('<div>' + poundBill.weigher + '</div>');
+    }
+</script>
+
+<!--分页-->
+<script th:inline="javascript">
+    $(document).ready(function () {
+        // 获取当前页面的 URL
+        let currentUrl = window.location.href;
+        let match = currentUrl.match(/\/(\d+)$/);
+        let curr_page = 1
+        if (match) {
+            curr_page = parseInt(match[1]);
+        }
+        let isToday = /*[[${today}]]*/;
+        let IOType;
+        if (currentUrl.includes('in')) {
+            IOType = 'in';
+        } else if (currentUrl.includes('out')) {
+            IOType = 'out';
+        } else {
+            IOType = 'all';
+        }
+
+        $.ajax({
+            url: '/showList/page_num',  // 请求的URL
+            data: {
+                'isToday': isToday,
+                'IOType': IOType
+            },
+            type: 'POST',
+            success: function (response) {
+                // 假设返回的数据是一个整数，表示总页数
+                let totalPages = parseInt(response);
+                for (let i = 1; i <= totalPages; i++) {
+                    let pageItem = $('<li><a href="#">' + i + '</a></li>');
+                    if (i === curr_page) {
+                        pageItem.addClass('active');
+                    }
+                    $('.pagination .raquo').before(pageItem);
+                }
+                if (curr_page === 1) {
+                    $('.pagination li.laquo').addClass('disabled');
+                }
+                if (curr_page === totalPages) {
+                    $('.pagination li.raquo').addClass('disabled');
+                }
+
+                // 绑定分页点击事件
+                $('.pagination li').click(function (e) {
+                        e.preventDefault(); // 阻止默认链接跳转行为
+
+                        // 获取点击的页码
+                        let pageNum = $(this).text();
+
+                        // 如果是点击了当前页，则不做任何操作
+                        if ($(this).hasClass('active')) {
+                            return;
+                        }
+                        if ($(this).hasClass('disabled')) {
+                            return;
+                        }
+                        if ($(this).hasClass('raquo')) {
+                            pageNum = parseInt($('.pagination li.active').text()) + 1;
+                        }
+                        if ($(this).hasClass('laquo')) {
+                            pageNum = parseInt($('.pagination li.active').text()) - 1;
+                        }
+
+                        $('.pagination li').removeClass('active');
+                        $(this).addClass('active');
+
+
+                        window.location.href = currentUrl.replace(/\/\d+$/, '/' + pageNum);  // 跳转到新 URL
+                    }
+                );
+            },
+            error: function () {
+                console.log('Error occurred while fetching total pages.');
             }
         });
 
-        insertDateRow();
-    })
 
+    });
 </script>
 
+<!--数据修正-->
+<script>
 
+</script>
+<!--css 补丁-->
+<script th:inline="javascript">
+    $(function () {
+        let isToday = /*[[${today}]]*/;
+        let grid_head = $('#grid-head');
+        let grid_body = $('#grid-body')
+        if (isToday) {
+            grid_head.removeClass('grid-col-13');
+            grid_head.addClass('grid-col-14');
+            grid_body.removeClass('grid-col-13');
+            grid_body.addClass('grid-col-14');
+
+        }
+        $('#grid-body div').each(function () {
+            $(this).css({
+                'margin': '4px'
+            })
+        });
+
+    });
+</script>
 </body>
 
 </html>
