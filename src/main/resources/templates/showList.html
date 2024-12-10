@@ -326,7 +326,7 @@
         pound_bill_grid_body.append($option.find('.options').eq(0));
 
         // 插入煤种
-        pound_bill_grid_body.append('<div>' + poundBill.coalType + '</div>');
+        pound_bill_grid_body.append('<div class="coal-type">' + poundBill.coalType + '</div>');
 
         // 插入磅单编号
         let poundId = poundBill.poundID;
@@ -338,28 +338,28 @@
             current_color = getDistinctRandomColor(current_color);
             prev_date = current_date;
         }
-        pound_bill_grid_body.append('<div style="color: ' + current_color + '">' + poundId + '</div>');
+        pound_bill_grid_body.append('<div class="pound-id" style="color: ' + current_color + '">' + poundId + '</div>');
 
         // 插入车牌号
-        pound_bill_grid_body.append('<div>' + poundBill.plateNumber + '</div>');
+        pound_bill_grid_body.append('<div class="plate-number">' + poundBill.plateNumber + '</div>');
 
         // 插入毛重
-        pound_bill_grid_body.append('<div>' + poundBill.grossWeight.toFixed(2) + '</div>');
+        pound_bill_grid_body.append('<div class="gross-weight">' + poundBill.grossWeight.toFixed(2) + '</div>');
 
         // 插入皮重
-        pound_bill_grid_body.append('<div>' + poundBill.tareWeight.toFixed(2) + '</div>');
+        pound_bill_grid_body.append('<div class="tare-weight">' + poundBill.tareWeight.toFixed(2) + '</div>');
 
         // 插入净重
-        pound_bill_grid_body.append('<div>' + poundBill.netWeight.toFixed(2) + '</div>');
+        pound_bill_grid_body.append('<div class="net-weight">' + poundBill.netWeight.toFixed(2) + '</div>');
 
         // 插入原发
-        pound_bill_grid_body.append('<div>' + poundBill.primaryWeight.toFixed(2) + '</div>');
+        pound_bill_grid_body.append('<div class="primary-weight">' + poundBill.primaryWeight.toFixed(2) + '</div>');
 
         // 插入盈亏
-        pound_bill_grid_body.append('<div>' + poundBill.profitLossWeight.toFixed(2) + '</div>');
+        pound_bill_grid_body.append('<div class="profit-loss-weight">' + poundBill.profitLossWeight.toFixed(2) + '</div>');
 
         // 插入打印时间
-        pound_bill_grid_body.append('<div>' + dayjs(poundBill.printTime).format('HH:mm:ss') + '</div>');
+        pound_bill_grid_body.append('<div class="print-time">' + dayjs(poundBill.printTime).format('HH:mm:ss') + '</div>');
 
         // 插入发货单位
         pound_bill_grid_body.append('<div>' + poundBill.outputUnit + '</div>');
@@ -462,6 +462,36 @@
 
 <!--数据修正-->
 <script>
+    $(function () {
+        // 条件样式
+        $('.profit-loss-weight').each(function () {
+            let value = $(this).text();
+            let profit_loss_weight = parseFloat(value);
+            if (!Number.isNaN(profit_loss_weight)) {
+                if (profit_loss_weight < -0.2) {
+                    $(this).css({
+                        "color": "#d32f2f",
+                        "background-color": "#f8d7da",
+                        "border": "1px solid #f5c6cb",
+                        "padding": "0.2em 0.4em",
+                        "border-radius": "5px",
+                        "transition": "all 0.3s ease-in-out"
+                    });
+                } else if (profit_loss_weight > 0.2) {
+                    $(this).css({
+                        "color": "#45d32f",
+                        "background-color": "#d7f8e1",
+                        "border": "1px solid #6fdf5e",
+                        "padding": "0.2em 0.4em",
+                        "border-radius": "5px",
+                        "transition": "all 0.3s ease-in-out"
+                    });
+                }
+            }
+
+        });
+
+    });
 
 </script>
 <!--css 补丁-->
@@ -479,7 +509,7 @@
         }
         $('#grid-body div').each(function () {
             $(this).css({
-                'margin': '4px'
+                'margin': '4px',
             })
         });
 
