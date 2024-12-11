@@ -1,15 +1,18 @@
 package io.github.weightrack.service;
 
+import com.alibaba.fastjson2.JSON;
 import io.github.weightrack.mapper.CoalTypeMapper;
 import io.github.weightrack.mapper.DataSummaryMapper;
 import io.github.weightrack.module.CoalType;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.SummaryTable;
 import io.github.weightrack.utils.DateUtil;
+import org.intellij.lang.annotations.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.chrono.JapaneseDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -22,100 +25,18 @@ public class DataSummaryService {
     @Autowired
     DataSummaryMapper dataSummaryMapper;
 
-    public SummaryTable getSummary(String IOType, LocalDateTime startTime, LocalDateTime endTime) {
-
-        System.out.println(IOType);
-        System.out.println(startTime);
-        System.out.println(endTime);
-
-        SummaryTable summaryTable = new SummaryTable();
-        LinkedHashMap<String, LinkedHashMap<String, String>> summary = new LinkedHashMap<>();
-        PoundBillModel[] poundBillModels;
-
-        // 获取煤种信息
-        CoalType[] coalTypes = coalTypeMapper.getCoalType();
-        List<String> columnNames = new ArrayList<>();
-
-        columnNames.add("日期");
-
-        for (CoalType coalType : coalTypes) {
-            columnNames.add(coalType.getName());
-        }
-
-        // sql
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if (IOType.equals("in")) {
-            summaryTable.setTableName("入库报表");
-            columnNames.add("来源");
-            poundBillModels = dataSummaryMapper.getData("1", startTime.format(formatter), endTime.format(formatter));
-        } else if (IOType.equals("out")) {
-            summaryTable.setTableName("出库报表");
-            columnNames.add("运往地");
-            poundBillModels = dataSummaryMapper.getData("0", startTime.format(formatter), endTime.format(formatter));
-        } else {
-            throw new RuntimeException("不存在的请求");
-        }
-        summaryTable.setColumnNames(columnNames);
-
-        for (PoundBillModel poundBillModel : poundBillModels) {
-            String creatTime = poundBillModel.getCreatTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            summary.putIfAbsent(creatTime, new LinkedHashMap<>());
-            try {
-                summary.get(creatTime).merge(poundBillModel.getCoalType(), String.valueOf(poundBillModel.getNetWeight()), (o, n) -> String.valueOf(Double.parseDouble(o) + Double.parseDouble(n)));
-                summary.get(creatTime).merge("unit", poundBillModel.getOutputUnit(), (o, n) -> o + "," + n);
-            } catch (Exception e) {
-                System.out.println(creatTime);
-                System.out.println(summary);
-
-            }
-        }
-        summary.forEach((key, value) -> {
-            List<String> row = new ArrayList<>();
-            // 日期
-            row.add(key);
-            for (CoalType coalType : coalTypes) {
-                row.add(value.getOrDefault(coalType.getName(), "0"));
-            }
-            row.add(value.getOrDefault("unit", ""));
-            summaryTable.addRow(row);
-        });
-        // 按日期排序，反转
-        Collections.reverse(summaryTable.getTable());
-        return summaryTable;
+    public List<Map<String, Object>> getCountGroupByCoalType(String IOType, String start, String end) {
+        List<Map<String, Object>> countByCoalTypes = dataSummaryMapper.getCountGroupByCoalType(IOType, start, end);
+        System.out.println(countByCoalTypes);
+        return countByCoalTypes;
     }
 
-    public SummaryTable getSummaryToday(String IOType) {
-        SummaryTable summaryTable = new SummaryTable();
-        LinkedHashMap<String, LinkedHashMap<String, Double>> summary = new LinkedHashMap<>();
-        PoundBillModel[] poundBillModels;
-        // 生成本日报表
-        summaryTable.setColumnNames(Arrays.asList("煤种", "总毛重", "总皮重", "总净重", "总盈亏", "车次")); // 煤种、实收、原发、盈亏、车次
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if (IOType.equals("in")) {
-            summaryTable.setTableName("入库报表");
-            poundBillModels = dataSummaryMapper.getData("1", DateUtil.getTodayStartTime().format(formatter), DateUtil.getTodayEndTime().format(formatter));
-        } else if (IOType.equals("out")) {
-            summaryTable.setTableName("出库报表");
-            poundBillModels = dataSummaryMapper.getData("0", DateUtil.getTodayStartTime().format(formatter), DateUtil.getTodayEndTime().format(formatter));
-        } else {
-            throw new RuntimeException("不存在的请求");
-        }
-        for (PoundBillModel poundBillModel : poundBillModels) {
-            summary.putIfAbsent(poundBillModel.getCoalType(), new LinkedHashMap<>());
-            summary.get(poundBillModel.getCoalType()).merge("总毛重", (double) poundBillModel.getGrossWeight(), Double::sum);
-            summary.get(poundBillModel.getCoalType()).merge("总皮重", (double) poundBillModel.getTareWeight(), Double::sum);
-            summary.get(poundBillModel.getCoalType()).merge("总净重", (double) poundBillModel.getNetWeight(), Double::sum);
-            summary.get(poundBillModel.getCoalType()).merge("总盈亏", (double) poundBillModel.getProfitLossWeight(), Double::sum);
-            summary.get(poundBillModel.getCoalType()).merge("车次", 1.0, Double::sum);
-        }
-        summary.forEach((key, value) -> {
-            List<String> row = new ArrayList<>();
-            row.add(key);
-            value.forEach((columnName, total) -> row.add(total.toString()));
-            summaryTable.addRow(row);
-        });
-        // 按日期排序，反转
-        Collections.reverse(summaryTable.getTable());
-        return summaryTable;
+    public List<Map<String, Object>> getCountGroupByDate(@Pattern("^([10])$") String IOType, String start, String end) {
+        CoalType[] ct = coalTypeMapper.getCoalType();
+        String[] coalTypes = CoalType.coalTypesToNames(ct);
+
+        List<Map<String, Object>> countGroupByDate;
+        countGroupByDate = dataSummaryMapper.getCountGroupByDate(IOType, start, end, coalTypes);
+        return countGroupByDate;
     }
 }

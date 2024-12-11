@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.weightrack.mapper.DataSummaryMapper">
+    <select id="getCountGroupByDate" parameterType="map">
+        SELECT
+        date(creatTime) AS date,  <!-- 使用日期部分 -->
+        <foreach collection="coalTypes" item="coalType" separator=",">
+            SUM(IF(coalType = #{coalType}, netWeight, 0)) AS #{coalType}
+        </foreach>
+        <if test="IOType == 1">
+            , group_concat(outputUnit separator ',') AS 'unit'
+        </if>
+        <if test="IOType == 0">
+            , group_concat(inputUnit separator ',') AS 'unit'
+        </if>
+        FROM
+        poundbill
+        WHERE
+        printed = true
+        AND IOType = #{IOType}
+        AND creatTime BETWEEN #{startTime} AND #{endTime}
+        GROUP BY
+        date(creatTime)  <!-- 按日期分组 -->
+        ORDER BY
+        date(creatTime) DESC;  <!-- 按日期排序 -->
+    </select>
+
+</mapper>
