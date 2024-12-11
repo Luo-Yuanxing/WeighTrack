@@ -290,7 +290,7 @@
         let color;
         do {
             color = getRandomColor();  // 生成新颜色
-        } while (colorDistance(color, lastColor) < 50);  // 阈值50，表示颜色太接近时重新生成
+        } while (colorDistance(color, lastColor) < 50 || colorDistance(color, '#FFFFFF') < 100);  // 阈值50，表示颜色太接近时重新生成
         return color;
     }
 
