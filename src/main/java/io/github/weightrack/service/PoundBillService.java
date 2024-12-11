@@ -6,6 +6,7 @@ import io.github.weightrack.module.PoundBillModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -99,7 +100,7 @@ public class PoundBillService {
         newPoundBillModel = oldPoundBillModel.updatePoundBillModel(newPoundBillModel);
 
         newPoundBillModel.updatePrintTime(printTime);
-
+        parseString(newPoundBillModel);
         poundBillMapper.updateById(newPoundBillModel);
     }
 
@@ -114,7 +115,7 @@ public class PoundBillService {
     public void cleanPoundBill() {
         PoundBillModel[] poundBillModels = poundBillMapper.selectAll();
         for (PoundBillModel poundBillModel : poundBillModels) {
-            if (poundBillModel.getPrintTime() == null) {
+            if (poundBillModel.getPrintTime() == null && !poundBillModel.getCreatTime().toLocalDate().equals(LocalDate.now())) {
                 poundBillMapper.deleteById(poundBillModel.getId());
             }
         }

@@ -78,7 +78,7 @@ public class PoundBillController {
         PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
 
         poundBillService.updateById(poundBillModel, id, printTime);
-        return "redirect:/showList";
+        return "redirect:/showList/in/1";
     }
 
     @ResponseBody

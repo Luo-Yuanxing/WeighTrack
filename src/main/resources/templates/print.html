@@ -159,13 +159,11 @@
         </tr>
     </table>
 
-    <form th:action="@{/print/{id}(id=${poundBillModel.id})}" method="post">
-        <div class="input-group input-print-time" style="display: none">
-            <span class="input-group-addon">请输入打印时间</span>
-            <input type="text" name="update-print-time" class="form-control">
-        </div>
-        <input class="submit" type="submit" value="确认打印">
-    </form>
+    <div class="input-group input-print-time" style="display: none">
+        <span class="input-group-addon">请输入打印时间</span>
+        <input type="text" name="update-print-time" class="update-print-time form-control">
+    </div>
+    <input class="submit" type="submit" value="确认打印">
 
 </div>
 
@@ -182,6 +180,46 @@
                 'margin-top': '20px'
             });
         });
+
+        $('.submit').on('click', function () {
+            let currentUrl = window.location.href;
+            let match = currentUrl.match(/\/(\d+)$/);
+            let id = 1;
+            if (match) {
+                id = parseInt(match[1]);
+            }
+            let updatePrintTime = $('.update-print-time').text();
+            let isUpdatePrintTime;
+            isUpdatePrintTime = updatePrintTime !== "";
+
+            try {
+                $.ajax({
+                    url: '/print/' + id,
+                    method: 'POST',
+                    contentType: 'application/json',  // 设置请求头为application/json
+                    data: JSON.stringify({           // 将数据转换为JSON字符串
+                        id: id,
+                        isUpdatePrintTime: isUpdatePrintTime,
+                        updatePrintTime: updatePrintTime
+                    }),
+
+                    success: function (response) {
+                        // 请求成功后的回调函数
+                        if (response === 'ok') {
+                            alert('打印成功');
+                        }
+                    },
+                    error: function () {
+                        // 请求失败后的回调函数
+                        alert('打印失败');
+                    }
+                });
+
+            } catch (error) {
+                alert('打印请求失败：' + error);
+            }
+        });
+
     });
 
     $(document).ready(function () {
