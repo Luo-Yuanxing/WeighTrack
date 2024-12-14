@@ -35,7 +35,7 @@ public class ShowListController {
     public String showListIn(Model model, @PathVariable int pageNumber) {
         PoundBillModel[] poundBillModels = showListService.showList("in", pageSize, pageNumber);
         model.addAttribute("poundBillModels", poundBillModels);
-        model.addAttribute("IOType", "in");
+        model.addAttribute("IOType", "1");
         model.addAttribute("today", false);
         return "showList";
     }
@@ -44,7 +44,7 @@ public class ShowListController {
     public String showListOut(Model model, @PathVariable int pageNumber) {
         PoundBillModel[] poundBillModels = showListService.showList("out", pageSize, pageNumber);
         model.addAttribute("poundBillModels", poundBillModels);
-        model.addAttribute("IOType", "out");
+        model.addAttribute("IOType", "0");
         model.addAttribute("today", false);
         return "showList";
     }
@@ -53,7 +53,7 @@ public class ShowListController {
     public String showListTodayIn(Model model, @PathVariable int pageNumber) {
         PoundBillModel[] poundBillModels = showListService.showTodayList("in", pageSize, pageNumber);
         model.addAttribute("poundBillModels", poundBillModels);
-        model.addAttribute("IOType", "todayIn");
+        model.addAttribute("IOType", "1");
         model.addAttribute("today", true);
         return "showList";
     }
@@ -62,7 +62,7 @@ public class ShowListController {
     public String showListTodayOut(Model model, @PathVariable int pageNumber) {
         PoundBillModel[] poundBillModels = showListService.showTodayList("out", pageSize, pageNumber);
         model.addAttribute("poundBillModels", poundBillModels);
-        model.addAttribute("IOType", "todayOut");
+        model.addAttribute("IOType", "0");
         model.addAttribute("today", true);
         return "showList";
     }
@@ -71,7 +71,7 @@ public class ShowListController {
     public String showListTodayAll(Model model, @PathVariable int pageNumber) {
         PoundBillModel[] poundBillModels = showListService.showTodayList("all", pageSize, pageNumber);
         model.addAttribute("poundBillModels", poundBillModels);
-        model.addAttribute("IOType", "todayAll");
+        model.addAttribute("IOType", "all");
         model.addAttribute("today", true);
         return "showList";
     }
