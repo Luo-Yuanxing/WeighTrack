@@ -3,12 +3,14 @@ package io.github.weightrack;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.service.PoundBillService;
 import io.github.weightrack.utils.ExcelUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+@Slf4j
 @SpringBootTest
 public class WeighTrackApplicationTests {
 
@@ -17,10 +19,11 @@ public class WeighTrackApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
-        PoundBillModel[] poundBillModels = poundBillService.selectAll();
+        List<PoundBillModel> poundBillModels = ExcelUtil.insertPoundBillByExcel();
         for (PoundBillModel poundBillModel : poundBillModels) {
             if (poundBillModel.getCoalType() == null) {
-                poundBillService.deleteById(poundBillModel.getId());
+                poundBillService.insertPoundBill(poundBillModel);
+                log.info("insert into poundBill {}", poundBillModel);
             }
         }
     }

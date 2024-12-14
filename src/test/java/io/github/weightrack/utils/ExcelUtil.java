@@ -21,15 +21,15 @@ public class ExcelUtil {
         //  NUMERIC	 STRING	 STRING	 STRING	 NUMERIC(毛重)	 NUMERIC	 FORMULA	 NUMERIC	 FORMULA	 NUMERIC	 STRING	 STRING	 STRING	 BLANK
         List<PoundBillModel> poundBillModels = new ArrayList<>();
 
-        FileInputStream fileIn = new FileInputStream("C:\\Users\\34696\\Desktop\\鸿聚一号煤场库存出货台账.xlsx");
+        FileInputStream fileIn = new FileInputStream("C:\\Users\\Administrator\\Documents\\xwechat_files\\luoyaping2012_5d1a\\msg\\file\\2024-12\\鸿聚一号煤场库存出货台账.xlsx");
         Workbook workbook = new XSSFWorkbook(fileIn);
         Sheet sheet = workbook.getSheet("入库明细");
-
         int length = sheet.getLastRowNum();
         System.out.println("sheet长度：" + length);
         for (int i = 10; i <= sheet.getLastRowNum(); i++) {
 
             Row row = sheet.getRow(i);
+            System.out.println(row.toString());
             PoundBillModel poundBillModel = new PoundBillModel();
             if (row.getCell(0) == null) {
                 continue;

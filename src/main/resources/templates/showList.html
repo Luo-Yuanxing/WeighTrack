@@ -601,19 +601,19 @@
 
 
     $(function (){
-        $('#print-selected').on('click', function () {
+        $('#print-selected').on('click', async function () {
             let selectedIds = [];
 
             // 遍历所有的checkbox
-            $('.checkbox').each(function() {
+            $('.checkbox').each(function () {
                 // 如果checkbox被选中
                 if ($(this).prop('checked')) {
                     selectedIds.push($(this).val()); // 获取选中checkbox的value（即poundBill.id）
                 }
             });
 
-            sendRequestsSequentially(selectedIds);
-            window.location.reload();
+            await sendRequestsSequentially(selectedIds);
+            await window.location.reload();
         })
     })
 </script>
