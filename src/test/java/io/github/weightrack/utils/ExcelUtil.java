@@ -21,7 +21,7 @@ public class ExcelUtil {
         //  NUMERIC	 STRING	 STRING	 STRING	 NUMERIC(毛重)	 NUMERIC	 FORMULA	 NUMERIC	 FORMULA	 NUMERIC	 STRING	 STRING	 STRING	 BLANK
         List<PoundBillModel> poundBillModels = new ArrayList<>();
 
-        FileInputStream fileIn = new FileInputStream("C:\\Users\\Administrator\\Documents\\xwechat_files\\luoyaping2012_5d1a\\msg\\file\\2024-12\\鸿聚一号煤场库存出货台账.xlsx");
+        FileInputStream fileIn = new FileInputStream("C:\\Users\\Administrator\\Documents\\xwechat_files\\luoyaping2012_5d1a\\msg\\file\\2024-12\\每日过磅明细-1.xlsx");
         Workbook workbook = new XSSFWorkbook(fileIn);
         Sheet sheet = workbook.getSheet("入库明细");
         int length = sheet.getLastRowNum();
