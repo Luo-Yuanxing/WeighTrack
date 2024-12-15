@@ -16,6 +16,12 @@ public class CoalTypeService {
     }
 
     public void insertCoalType(String coalType) {
+        if (coalType == null) {
+            return;
+        }
+        if (coalType.isEmpty()) {
+            return;
+        }
         coalType = coalType.strip();
         for (CoalType type : coalTypeMapper.getCoalType()) {
             if (type.getName().equals(coalType)) {
