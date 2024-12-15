@@ -68,6 +68,7 @@
         input[type="submit"]:hover {
             background-color: #0056b3; /* 按钮悬停颜色 */
         }
+
         .exclude-border {
             border-left: 0;
         }
@@ -102,7 +103,31 @@
 <script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
 <script src="/js/html5shiv.js"></script>
 <script src="/js/respond.js"></script>
-
+<script src="/js/js-cookie.js"></script>
+<script>
+    $(function () {
+        let userInput = Cookies.get('userInput');
+        userInput = JSON.parse(userInput);
+        console.log(userInput)
+        if (userInput) {
+            if (userInput.IOType) {
+                $('.IOType').val(userInput.IOType);
+            }
+            if (userInput.coalType) {
+                $('#coal-type').val(userInput.coalType);
+            }
+            if (userInput.plateNumber) {
+                $('.plate-number').val(userInput.plateNumber);
+            }
+            if (userInput.inputUnit) {
+                $('.input-unit').val(userInput.inputUnit);
+            }
+            if (userInput.outputUnit) {
+                $('.output-unit').val(userInput.outputUnit);
+            }
+        }
+    });
+</script>
 <div class="container-fluid">
     <div th:insert="~{nav :: nav}"></div>
     <form id="pound_form" method="post" action="/creat">
@@ -119,7 +144,8 @@
         <div class="input-group">
             <span class="input-group-addon input-desc"><a href="/coalTypeEdit">煤种</a></span>
             <select class="form-control" name="coalType" id="coal-type" aria-describedby="basic-addon3">
-                <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}" th:text="${coalType.name}"></option>
+                <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}"
+                        th:text="${coalType.name}"></option>
                 <option value="other">其他</option>
             </select>
         </div>
@@ -131,7 +157,7 @@
 
         <div class="input-group">
             <span class="input-group-addon input-desc">车牌号</span>
-            <input type="text" class="form-control" name="plate-number" aria-describedby="basic-addon3">
+            <input type="text" class="plate-number form-control" name="plate-number" aria-describedby="basic-addon3">
         </div>
         <div class="input-group">
             <div class="input-group-addon input-desc">毛重</div>
@@ -163,25 +189,25 @@
                 <span>自动追加两位小数点</span>
             </div>
         </div>
-<!--        <div class="input-group">-->
-<!--            <script src='/js/form-date.js'></script>-->
-<!--            <span class="input-group-addon input-desc">过空时间</span>-->
-<!--            <input class="exclude-border form-control" type="text" id="empty-load-time" name="empty-load-time"-->
-<!--                   aria-label="选择时间">-->
-<!--        </div>-->
-<!--        <div class="input-group">-->
-<!--            <script src='/js/form-date.js'></script>-->
-<!--            <span class="input-group-addon input-desc">过重时间</span>-->
-<!--            <input class="exclude-border form-control" type="text" id="full-load-time" name="full-load-time"-->
-<!--                   aria-label="选择时间">-->
-<!--        </div>-->
+        <!--        <div class="input-group">-->
+        <!--            <script src='/js/form-date.js'></script>-->
+        <!--            <span class="input-group-addon input-desc">过空时间</span>-->
+        <!--            <input class="exclude-border form-control" type="text" id="empty-load-time" name="empty-load-time"-->
+        <!--                   aria-label="选择时间">-->
+        <!--        </div>-->
+        <!--        <div class="input-group">-->
+        <!--            <script src='/js/form-date.js'></script>-->
+        <!--            <span class="input-group-addon input-desc">过重时间</span>-->
+        <!--            <input class="exclude-border form-control" type="text" id="full-load-time" name="full-load-time"-->
+        <!--                   aria-label="选择时间">-->
+        <!--        </div>-->
         <div class="input-group">
             <span class="input-group-addon input-desc">发货单位</span>
-            <input type="text" class="form-control" name="output-unit" aria-describedby="basic-addon3">
+            <input type="text" class="form-control output-unit" name="output-unit" aria-describedby="basic-addon3">
         </div>
         <div class="input-group">
             <span class="input-group-addon input-desc">收货单位</span>
-            <input type="text" class="form-control" name="input-unit" aria-describedby="basic-addon3">
+            <input type="text" class="form-control input-unit" name="input-unit" aria-describedby="basic-addon3">
         </div>
         <div class="input-group">
             <span class="input-group-addon input-desc">司磅员</span>
@@ -195,10 +221,16 @@
     </form>
 
 </div>
-
-</body>
-
 <script src="/js/form-date.js"></script>
+<!--拦截回车提交表单-->
+<script>
+    $('#pound_form').on('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            console.log('回车键被拦截');
+        }
+    });
+</script>
 <!-- 验证-->
 <script>
     // 初始化实时验证
@@ -278,7 +310,7 @@
 </script>
 <!-- 自动追加两位小数点-->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // 定义一个函数来处理输入值并更新
         function formatInputValue(input) {
             let value = input.val().trim(); // 获取输入框内容并去除首尾空格
@@ -287,32 +319,25 @@
                 input.val('');
                 return;
             }
-
-            console.log(input.val())
-            // 获取input.val()字符串最后一位字符
-            let current_input = value.slice(-1);
-            console.log(current_input);
-            let new_value;
-            if (value.length === 1) {
-                new_value = value * 0.01;
-            } else {
-                new_value = parseFloat(value.slice(0, -1)) * 10 + 0.01 * current_input;
-            }
-
+            let newValue = value * 0.01;
             // 更新输入框的值
-            input.val(new_value.toFixed(2));
+            input.val(newValue.toFixed(2));
         }
 
         // 给所有输入框绑定实时监控
-        $('input[name="gross-weight"], input[name="tare"], input[name="primary-weight"]').on('input', function() {
-            formatInputValue($(this)); // 处理当前输入框的值
+        $('input[name="gross-weight"], input[name="tare"], input[name="primary-weight"]').on('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                formatInputValue($(this));
+            }
+
         });
     });
 </script>
 
 <!-- 绑定显示其他煤种输入框-->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         const $coalTypeSelect = $('#coal-type');
         let optionCount = $coalTypeSelect.children('option').length;
 
@@ -333,7 +358,7 @@
         toggleOtherInput();
 
         // 绑定change事件
-        $coalTypeSelect.on('change', function() {
+        $coalTypeSelect.on('change', function () {
             toggleOtherInput();
         });
     });
@@ -341,17 +366,68 @@
 </script>
 <!-- 选择出库后隐藏原发-->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         let $primary_weight = $('.primary-weight');
         let $IOType = $('.IOType');
-        $IOType.on('change', function() {
-           if ($IOType.val() === '0') {
-               $primary_weight.hide();
-           } else if ($IOType.val() === '1') {
-               $primary_weight.show();
-           }
+        $IOType.on('change', function () {
+            if ($IOType.val() === '0') {
+                $primary_weight.hide();
+            } else if ($IOType.val() === '1') {
+                $primary_weight.show();
+            }
         });
     });
 </script>
+
+<script>
+    let userInput = {
+        IOType: '',
+        coalType: '',
+        plateNumber: '',
+        gross: '',
+        tare: '',
+        primary: '',
+        outputUnit: '',
+        inputUnit: '',
+    };
+
+    $(function () {
+        // 检查是否有用户输入数据，如果没有则初始化为默认值
+        if (!Cookies.get('userInput')) {
+            Cookies.set('userInput', JSON.stringify(userInput), { expires: 0.2 });
+        }
+
+        // 更新 Cookies 的函数
+        const updateUserInputCookie = (key, value) => {
+            let userInput = JSON.parse(Cookies.get('userInput'));
+            userInput[key] = value;
+            Cookies.set('userInput', JSON.stringify(userInput), { expires: 0.2 });
+        };
+
+        // 监听输入字段变化并更新 Cookies
+        $('.input-unit').change(function () {
+            updateUserInputCookie('inputUnit', $(this).val());
+        });
+
+        $('.output-unit').change(function () {
+            updateUserInputCookie('outputUnit', $(this).val());
+        });
+
+        $('.plate-number').change(function () {
+            updateUserInputCookie('plateNumber', $(this).val());
+        });
+
+        $('#coal-type').change(function () {
+            updateUserInputCookie('coalType', $(this).val());
+        });
+
+        $('.IOType').change(function () {
+            updateUserInputCookie('IOType', $(this).val());
+        });
+    });
+</script>
+
+
+</body>
 </html>
 

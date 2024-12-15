@@ -38,6 +38,12 @@
             gap: 1px; /* 表格单元之间的间隔 */
         }
 
+        .grid-col-15 {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr); /* 定义三列 */
+            gap: 1px; /* 表格单元之间的间隔 */
+        }
+
         .grid-col-2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr); /* 定义三列 */
@@ -156,9 +162,13 @@
     </div>
 </div>
 
+<div style="margin: 20px auto;">
+    <button id="print-selected">打印已选择的记录</button>
+</div>
 
 <div id="grid-pound-bill">
-    <div id="grid-head" class="grid-head grid-col-13 centering" style="background-color: gainsboro; position: sticky; top: 0; z-index: 10;">
+    <div id="grid-head" class="grid-head grid-col-14 centering" style="background-color: gainsboro; position: sticky; top: 0; z-index: 10;">
+        <div>多选</div>
         <div>操作</div>
         <div>煤种</div>
         <div>磅单<br>编号</div>
@@ -174,7 +184,7 @@
         <div>司磅员</div>
         <div class="is-printed" style="display: none">已打印</div>
     </div>
-    <div id="grid-body" class="grid-col-13 centering">
+    <div id="grid-body" class="grid-col-14 centering">
 
     </div>
 </div>
@@ -280,23 +290,46 @@
         let color;
         do {
             color = getRandomColor();  // 生成新颜色
-        } while (colorDistance(color, lastColor) < 50);  // 阈值50，表示颜色太接近时重新生成
+        } while (colorDistance(color, lastColor) < 50 || colorDistance(color, '#FFFFFF') < 100);  // 阈值50，表示颜色太接近时重新生成
         return color;
     }
 
     let pound_bill_grid_body = $('#grid-body');
-    let pound_bill_list = /*[[${poundBillModels}]]*/ '[]';
+    let pound_bill_list = /*[[${poundBillModels}]]*/;
     let isToday = /*[[${today}]]*/;
+    let IOType = /*[[${IOType}]]*/;
+    console.log(IOType)
     if (isToday) {
-        pound_bill_grid_body.removeClass('grid-col-13');
-        pound_bill_grid_body.addClass('grid-col-14');
+        pound_bill_grid_body.removeClass('grid-col-14');
+        pound_bill_grid_body.addClass('grid-col-15');
         $('#grid-head .is-printed').css('display', 'block');
-        pound_bill_grid_body.removeClass('grid-col-13');
-        pound_bill_grid_body.addClass('grid-col-14');
+        pound_bill_grid_body.removeClass('grid-col-14');
+        pound_bill_grid_body.addClass('grid-col-15');
     }
     let prev_date = null;
     let current_color = getRandomColor();
     for (let poundBill of pound_bill_list) {
+        // 插入多选框
+        // 创建一个包含多选框和文本的容器
+        let checkBoxContainer = $('<div></div>', {
+            class: 'grid-item'
+        });
+
+        // 创建多选框
+        let checkBox = $('<input>', {
+            type: 'checkbox',
+            class: 'checkbox', // 自定义样式类
+            id: 'checkbox-' + poundBill.id, // 设置id，方便定位
+            value: poundBill.id,
+            style: 'margin: 0 auto'
+        });
+
+        // 将多选框和文本添加到容器中
+        checkBoxContainer.append(checkBox);
+
+        // 将容器插入到grid布局的#grid-body中
+        pound_bill_grid_body.append(checkBoxContainer);
+
         // 插入操作div
         let $option = $("#option-template").clone().removeAttr("id");
         $option.find('.update').attr('href', '/update/' + poundBill.id);
@@ -330,15 +363,19 @@
 
         // 插入磅单编号
         let poundId = poundBill.poundID;
-        let current_date = poundId.substring(5, 7);
-        if (prev_date === null) {
-            prev_date = current_date;
+        if (poundId !== null) {
+            let current_date = poundId.substring(5, 7);
+            if (prev_date === null) {
+                prev_date = current_date;
+            }
+            if (prev_date !== current_date) {
+                current_color = getDistinctRandomColor(current_color);
+                prev_date = current_date;
+            }
+            pound_bill_grid_body.append('<div class="pound-id" style="color: ' + current_color + '">' + poundId + '</div>');
+        } else {
+            pound_bill_grid_body.append('<div class="pound-id"' + poundId + '</div>');
         }
-        if (prev_date !== current_date) {
-            current_color = getDistinctRandomColor(current_color);
-            prev_date = current_date;
-        }
-        pound_bill_grid_body.append('<div class="pound-id" style="color: ' + current_color + '">' + poundId + '</div>');
 
         // 插入车牌号
         pound_bill_grid_body.append('<div class="plate-number">' + poundBill.plateNumber + '</div>');
@@ -350,7 +387,14 @@
         pound_bill_grid_body.append('<div class="tare-weight">' + poundBill.tareWeight.toFixed(2) + '</div>');
 
         // 插入净重
-        pound_bill_grid_body.append('<div class="net-weight">' + poundBill.netWeight.toFixed(2) + '</div>');
+        let netWeight = poundBill.netWeight;
+        switch (netWeight) {
+            case '1': netWeight = netWeight.toFixed(2); break;
+            case '0': netWeight = '-'; break;
+            case 'all': netWeight = netWeight.toFixed(2); break;
+        }
+        console.log(netWeight)
+        pound_bill_grid_body.append('<div class="net-weight">' + netWeight + '</div>');
 
         // 插入原发
         pound_bill_grid_body.append('<div class="primary-weight">' + poundBill.primaryWeight.toFixed(2) + '</div>');
@@ -359,7 +403,11 @@
         pound_bill_grid_body.append('<div class="profit-loss-weight">' + poundBill.profitLossWeight.toFixed(2) + '</div>');
 
         // 插入打印时间
-        pound_bill_grid_body.append('<div class="print-time">' + dayjs(poundBill.printTime).format('HH:mm:ss') + '</div>');
+        if (poundBill.printTime !== null) {
+            pound_bill_grid_body.append('<div class="print-time">' + dayjs(poundBill.printTime).format('HH:mm:ss') + '</div>');
+        } else {
+            pound_bill_grid_body.append('<div class="print-time"> </div>');
+        }
 
         // 插入发货单位
         pound_bill_grid_body.append('<div>' + poundBill.outputUnit + '</div>');
@@ -501,10 +549,10 @@
         let grid_head = $('#grid-head');
         let grid_body = $('#grid-body')
         if (isToday) {
-            grid_head.removeClass('grid-col-13');
-            grid_head.addClass('grid-col-14');
-            grid_body.removeClass('grid-col-13');
-            grid_body.addClass('grid-col-14');
+            grid_head.removeClass('grid-col-14');
+            grid_head.addClass('grid-col-15');
+            grid_body.removeClass('grid-col-14');
+            grid_body.addClass('grid-col-15');
 
         }
         $('#grid-body div').each(function () {
@@ -515,6 +563,61 @@
 
     });
 </script>
+
+<script>
+    async function sendAjaxRequest(id) {
+        try {
+            const response = await $.ajax({
+                url: '/print/' + id,
+                method: 'POST',
+                contentType: 'application/json',  // 设置请求头为application/json
+                data: JSON.stringify({           // 将数据转换为JSON字符串
+                    id: id,
+                    isUpdatePrintTime: false,
+                }),
+
+                success: function (response) {
+                    // 请求成功后的回调函数
+                    if (response === 'ok') {
+                        console.log('打印成功');
+                    }
+                },
+                error: function () {
+                    // 请求失败后的回调函数
+                    alert('打印失败: ' + id);
+                }
+            });
+            console.log('Response for request', id, response);
+        } catch (error) {
+            console.error('Request failed for index', id, error);
+        }
+    }
+
+    async function sendRequestsSequentially(requestId) {
+        for (let id of requestId) {
+            await sendAjaxRequest(id);
+        }
+    }
+
+
+    $(function (){
+        $('#print-selected').on('click', async function () {
+            let selectedIds = [];
+
+            // 遍历所有的checkbox
+            $('.checkbox').each(function () {
+                // 如果checkbox被选中
+                if ($(this).prop('checked')) {
+                    selectedIds.push($(this).val()); // 获取选中checkbox的value（即poundBill.id）
+                }
+            });
+
+            await sendRequestsSequentially(selectedIds);
+            await window.location.reload();
+        })
+    })
+</script>
+
 </body>
 
 </html>

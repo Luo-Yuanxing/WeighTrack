@@ -1,8 +1,9 @@
 package io.github.weightrack.controller;
 
+import io.github.weightrack.dto.PrintDTO;
+import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.service.PoundBillService;
 import io.github.weightrack.service.PrintService;
-import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.utils.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,13 @@ public class PrintController {
         return "print";
     }
 
+    @ResponseBody
     @PostMapping("/print/{id}")
-    public String printWork(@PathVariable("id") int id, @RequestParam("update-print-time") String updatePrintTime, Model model) {
+    public String printWork(@PathVariable("id") int id, @RequestBody PrintDTO printDTO, Model model) {
         LocalDateTime now = LocalDateTime.now();
         PoundBillModel poundBillModel = printService.selectById(id);
-        if (updatePrintTime.isEmpty()) {
-            if (poundBillModel.getPrintTime() == null) {
-                poundBillModel.setPrintTime(now);
-            }
-        } else {
+        if (printDTO.isUpdatePrintTime()) {
+            String updatePrintTime = printDTO.getUpdatePrintTime();
             if (updatePrintTime.contains("：")) {
                 updatePrintTime = updatePrintTime.replace("：", ":");
             }
@@ -47,6 +46,10 @@ public class PrintController {
             LocalDateTime dateTime = LocalDateTime.parse(currentDateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
             poundBillModel.setPrintTime(dateTime);
             log.info("id: {} update print time to {}", poundBillModel.getId(), poundBillModel.getPrintTime());
+        } else {
+            if (poundBillModel.getPrintTime() == null) {
+                poundBillModel.setPrintTime(now);
+            }
         }
 
         String[] data = new String[11];
@@ -64,11 +67,10 @@ public class PrintController {
 
         BufferedImage image = ImageUtil.createImage(data);
         ImageUtil.printRun(image);
+        log.info("print to id: {}", poundBillModel.getId());
         poundBillModel.setPrinted(true);
         poundBillService.updateById(poundBillModel, poundBillModel.getId(), null);
 
-        model.addAttribute("message", "已请求打印任务");
-        model.addAttribute("poundBillModel", poundBillModel);
-        return "print";
+        return "ok";
     }
 }

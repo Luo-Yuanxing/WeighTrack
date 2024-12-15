@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.weightrack</groupId>
     <artifactId>WeighTrack</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.1</version>
     <name>WeighTrack</name>
     <description>WeighTrack</description>
     <url/>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
         </dependency>
 
         <dependency>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-            <version>3.5.6</version>
+            <version>3.5.16</version>
         </dependency>
 
         <dependency>
@@ -165,8 +165,6 @@
 
 
     <build>
-
-
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -180,6 +178,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -187,6 +186,7 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                    <compilerArgument>-parameters</compilerArgument>
                 </configuration>
             </plugin>
         </plugins>

@@ -188,9 +188,9 @@
 
 </body>
 
-<script src="/js/form-date.js"></script>
+<!-- 自动追加两位小数点-->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // 定义一个函数来处理输入值并更新
         function formatInputValue(input) {
             let value = input.val().trim(); // 获取输入框内容并去除首尾空格
@@ -199,28 +199,22 @@
                 input.val('');
                 return;
             }
-
-            console.log(input.val())
-            // 获取input.val()字符串最后一位字符
-            let current_input = value.slice(-1);
-            console.log(current_input);
-            let new_value;
-            if (value.length === 1) {
-                new_value = value * 0.01;
-            } else {
-                new_value = parseFloat(value.slice(0, -1)) * 10 + 0.01 * current_input;
-            }
-
+            let newValue = value * 0.01;
             // 更新输入框的值
-            input.val(new_value.toFixed(2));
+            input.val(newValue.toFixed(2));
         }
 
         // 给所有输入框绑定实时监控
-        $('input[name="gross-weight"], input[name="tare"], input[name="primary-weight"]').on('input', function() {
-            formatInputValue($(this)); // 处理当前输入框的值
+        $('input[name="gross-weight"], input[name="tare"], input[name="primary-weight"]').on('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                formatInputValue($(this));
+            }
+
         });
     });
 </script>
+
 
 </html>
 

@@ -1,0 +1,352 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>鸿聚一号煤场出入库明细 - 报表</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css">
+
+    <!-- nav.css   -->
+    <link rel="stylesheet" href="/css/nav.css">
+
+    <script src="/js/html5shiv.js"></script>
+    <script src="/js/respond.js"></script>
+
+    <style>
+
+        h2 {
+            text-align: center;
+            margin: 10px auto;
+        }
+        
+        #grid-summary {
+            text-align: center;
+        }
+
+        .centering {
+            align-items: center;
+        }
+
+        //========================== grid-head ====================
+        .grid-head {
+            margin: 5px auto;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* 增加轻微阴影效果 */
+            color: #333;  /* 文字颜色 */
+        }
+
+        .grid-head div {
+            text-align: center;
+            font-weight: bold;
+            color: #333;  /* 默认文字颜色 */
+        }
+
+        /* 蓝色主题标题栏 */
+        .grid-head div {
+            color: midnightblue;  /* 标题文字颜色为蓝色 */
+        }
+
+        /* 垂直和水平居中的列 */
+        .grid-head div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 给文本增加一些底部间距 */
+        .grid-head div {
+            margin: 5px auto;
+        }
+        //========================== grid-body ====================
+
+    </style>
+</head>
+
+<body>
+
+<script src="/js/jQuery-3.7.1.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/html5shiv.js"></script>
+<script src="/js/respond.js"></script>
+<div th:insert="~{nav :: nav}"></div>
+
+<h2 class="summary_title"></h2>
+
+<div id="grid-summary">
+    <div id="grid-head" class="grid-head centering" style="background-color: gainsboro; position: sticky; top: 0; z-index: 10;">
+    </div>
+    <div id="grid-body" class="centering">
+
+    </div>
+</div>
+
+
+<script th:inline="javascript">
+    let summary = /*[[${summary}]]*/;
+    let IOType = /*[[${IOType}]]*/;
+    let dateRange = /*[[${dateRange}]]*/;
+    let coalTypes = /*[[${coalTypes}]]*/;
+    $(document).ready(function () {
+
+        // 设置标题
+        let $summary_title = $('.summary_title');
+        switch (dateRange) {
+            case 'today': {
+                if (IOType === '1') {
+                    $summary_title.text("今日入库汇总");
+                } else {
+                    $summary_title.text("今日出库汇总");
+                }
+                break;
+            }
+            case 'month': {
+                if (IOType === '1') {
+                    $summary_title.text("本月入库汇总");
+                } else {
+                    $summary_title.text("本月出库汇总");
+                }
+                break;
+            }
+            case 'year': {
+                if (IOType === '1') {
+                    $summary_title.text("年度入库汇总");
+                } else {
+                    $summary_title.text("年度出库汇总");
+                }
+                break;
+            }
+            case 'all': {
+                if (IOType === '1') {
+                    $summary_title.text("历史入库汇总");
+                } else {
+                    $summary_title.text("历史出库汇总");
+                }
+                break;
+            }
+        }
+
+        // 创建表头
+        let $gh = $("#grid-head");
+        let head_length;
+        if (dateRange !== 'today') {
+            head_length = coalTypes.length + 3;
+            $gh.css(
+                {
+                    'display': 'grid',
+                    'grid-template-columns': `repeat(${head_length}, 1fr)`,
+                    'gap': '1px',
+                    'padding': '10px 20px'
+                }
+            )
+            $gh.append(`<div>日期</div>`);
+            coalTypes.forEach(function (name) {
+                $gh.append(`<div>${name}</div>`);
+            })
+            if (IOType === '1') {
+                $gh.append(`<div class>发货单位</div>`)
+            } else {
+                $gh.append(`<div class>收货单位</div>`)
+            }
+        } else {
+            if (IOType === '1') {
+                head_length = 1 + 3 + 1 + 1; // 煤种、净原盈、车次、合计
+            } else {
+                head_length = 1 + 2 + 1 + 1; // 煤种、净原、车次、合计
+            }
+
+            $gh.css(
+                {
+                    'display': 'grid',
+                    'grid-template-columns': `repeat(${head_length}, 1fr)`,
+                    'gap': '1px'
+                }
+            )
+            $gh.append(`<div class="date">煤种</div>`);
+
+            if (IOType === '1') {
+                $gh.append(`<div>实收</div>`);
+                $gh.append(`<div>原发</div>`);
+                $gh.append(`<div>盈亏</div>`);
+                $gh.append(`<div>车次</div>`);
+            } else {
+                $gh.append(`<div>净重</div>`);
+                $gh.append(`<div>原发</div>`);
+                $gh.append(`<div>车次</div>`);
+            }
+        }
+        $gh.append(`<div>合计</div>`);
+
+        // 插入数据
+        let $gb = $('#grid-body');
+        $gb.css(
+            {
+                'display': 'grid',
+                'grid-template-columns': `repeat(${head_length}, 1fr)`,
+                'gap': '1px'
+            }
+        );
+        if (dateRange !== 'today') {
+
+            for (let row of summary) {
+                // 插入日期
+                $gb.append(`<div class="date">${row['date']}</div>`)
+
+                // 插入净重
+                let coalTypeSum = 0;
+                for (let coalType of coalTypes) {
+                    let net_weight = row[coalType];
+                    net_weight = parseFloat(net_weight);
+                    if (isNaN(net_weight)) {
+                        net_weight = NaN;
+                    } else {
+                        coalTypeSum += net_weight;
+                        net_weight = net_weight.toFixed(2);
+                    }
+                    $gb.append(`<div class="weight ${coalType}">${net_weight}</div>`)
+                }
+
+                // 插入单位
+                let units = [...new Set(row['unit'].split(','))];
+                for (let unit of units) {
+                    for (let index in unit) {
+                        if (unit[index].length === 0) {
+                            unit.pop();
+                        }
+                    }
+                }
+                if (units.length === 1 && units[0].length === 0) {
+                    units = ['#']
+                    console.log(units)
+                }
+                $gb.append(`<div class="unit">${units}</div>`)
+
+                // 插入行合计
+                $gb.append(`<div class="weight row-sum">${coalTypeSum.toFixed(2)}</div>`)
+
+            }
+        } else {
+            let coalTypeSum = 0;
+            for (let row of summary) {
+                console.log(row)
+                $gb.append(`<div class="coal-type">${row['coalType']}</div>`)
+                $gb.append(`<div class="net weight">${parseFloat(row['totalNetWeight']).toFixed(2)}</div>`)
+                $gb.append(`<div class="primary weight">${parseFloat(row['totalPrimaryWeight']).toFixed(2)}</div>`)
+                if (IOType === '1') {
+                    $gb.append(`<div class="profit-loss weight">${parseFloat(row['totalProfitLossWeight']).toFixed(2)}</div>`)
+                }
+                $gb.append(`<div class="trips">${row['totalTrips']}</div>`)
+                // 插入行合计
+                coalTypeSum = parseFloat(row['totalNetWeight']) + parseFloat(row['totalPrimaryWeight']) + parseFloat(row['totalProfitLossWeight'])
+                $gb.append(`<div class="weight row-sum">${coalTypeSum.toFixed(2)}</div>`)
+            }
+        }
+        // 插入列求和
+        $gb.append(`<div>合计</div>`);
+        if (dateRange !== 'today') {
+            for (let coalType of coalTypes) {
+                let colSum = 0;
+                $(`.${coalType}`).each(function() {
+                    colSum += parseFloat($(this).text());
+                });
+                $gb.append(`<div class="weight">${colSum.toFixed(2)}</div>`)
+            }
+            // 占位
+            $gb.append(`<div class="unit">#</div>`);
+            // 总和
+            let sumAll = 0;
+            $('.row-sum').each(function() {
+                sumAll += parseFloat($(this).text());
+            });
+            $gb.append(`<div class="all-sum weight">${sumAll.toFixed(2)}</div>`);
+        } else {
+            let netSum = 0;
+            $('.net').each(function() {
+                netSum += parseFloat($(this).text());
+            });
+            let primary = 0;
+            $('.primary').each(function() {
+                primary += parseFloat($(this).text());
+            });
+            let profitLoss = 0;
+            if (IOType === '1') {
+                $('.profit-loss').each(function () {
+                    profitLoss += parseFloat($(this).text());
+                })
+            }
+            let trips = 0;
+            $('.trips').each(function() {
+                trips += parseFloat($(this).text());
+            });
+            $gb.append(`<div class="weight">${netSum.toFixed(2)}</div>`);
+            $gb.append(`<div class="weight">${primary.toFixed(2)}</div>`);
+            if (IOType === '1') {
+                $gb.append(`<div class="weight">${profitLoss.toFixed(2)}</div>`);
+            }
+            $gb.append(`<div class="trips">${trips.toFixed(0)}</div>`);
+
+            // 总和
+            let sumAll = 0;
+            $('.row-sum').each(function() {
+                sumAll += parseFloat($(this).text());
+            });
+            $gb.append(`<div class="all-sum weight">${sumAll.toFixed(2)}</div>`);
+        }
+
+
+        // css
+        $('#grid-body div').css({
+            'margin': '10px auto'
+        });
+
+        // 样式设置
+        $('#grid-body').css({
+            'padding': '20px',
+            'border-radius': '8px',
+            'background-color': '#f7f7f7'
+        });
+
+        // 设置每个单元格的样式
+        $('#grid-body div').css({
+            'padding': '12px',
+            'text-align': 'center',
+            'background-color': '#ffffff',
+            'border-radius': '5px',
+            'box-shadow': '0 2px 5px rgba(0, 0, 0, 0.1)',
+            'margin': '5px 0'
+        });
+
+        // 设置特定类的样式（例如 net-weight 和 unit）
+        $('.weight').css({
+            'background-color': '#d9edf7', // 薄蓝色背景
+            'color': '#31708f', // 蓝色字体
+            'font-weight': 'bold'
+        });
+
+        $('.unit, .trips').css({
+            'background-color': '#f2dede', // 轻微的红色背景
+            'color': '#a94442', // 深红色字体
+            'font-style': 'italic'
+        });
+
+        // 设置日期栏目的样式
+        $('#grid-body .date, .coal-type').css({
+            'background-color': '#dff0d8', // 绿色背景
+            'color': '#3c763d',
+            'font-weight': 'bold'
+        });
+
+
+    });
+</script>
+
+
+</body>
+
+</html>
+
