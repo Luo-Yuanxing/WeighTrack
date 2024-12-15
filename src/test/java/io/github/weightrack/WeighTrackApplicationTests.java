@@ -21,7 +21,7 @@ public class WeighTrackApplicationTests {
     void contextLoads() throws Exception {
         List<PoundBillModel> poundBillModels = ExcelUtil.insertPoundBillByExcel();
         for (PoundBillModel poundBillModel : poundBillModels) {
-            if (poundBillModel.getCoalType() == null) {
+            if (poundBillModel.getCoalType() != null) {
                 poundBillService.insertPoundBill(poundBillModel);
                 log.info("insert into poundBill {}", poundBillModel);
             }

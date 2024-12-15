@@ -1,10 +1,7 @@
 package io.github.weightrack.utils;
 
 import io.github.weightrack.module.PoundBillModel;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +18,7 @@ public class ExcelUtil {
         //  NUMERIC	 STRING	 STRING	 STRING	 NUMERIC(毛重)	 NUMERIC	 FORMULA	 NUMERIC	 FORMULA	 NUMERIC	 STRING	 STRING	 STRING	 BLANK
         List<PoundBillModel> poundBillModels = new ArrayList<>();
 
-        FileInputStream fileIn = new FileInputStream("C:\\Users\\Administrator\\Documents\\xwechat_files\\luoyaping2012_5d1a\\msg\\file\\2024-12\\每日过磅明细-1.xlsx");
+        FileInputStream fileIn = new FileInputStream("C:\\Users\\34696\\Desktop\\每日过磅明细-1.xlsx");
         Workbook workbook = new XSSFWorkbook(fileIn);
         Sheet sheet = workbook.getSheet("入库明细");
         int length = sheet.getLastRowNum();
@@ -29,7 +26,6 @@ public class ExcelUtil {
         for (int i = 10; i <= sheet.getLastRowNum(); i++) {
 
             Row row = sheet.getRow(i);
-            System.out.println(row.toString());
             PoundBillModel poundBillModel = new PoundBillModel();
             if (row.getCell(0) == null) {
                 continue;
@@ -51,7 +47,16 @@ public class ExcelUtil {
                 poundBillModel.setPrintTime(localDateTime);
                 poundBillModel.setModifyTime(localDateTime);
 
-                String poundID = row.getCell(1).getStringCellValue();
+                String poundID;
+                Cell poundIDCell = row.getCell(1);
+                if (poundIDCell.getCellType().equals(CellType.NUMERIC)) {
+                    System.out.println("poundID:" + poundIDCell.getNumericCellValue());
+                    poundID = "R" + String.valueOf((int) poundIDCell.getNumericCellValue());
+                } else if (poundIDCell.getCellType().equals(CellType.STRING)) {
+                    poundID = poundIDCell.getStringCellValue();
+                } else {
+                    poundID = "";
+                }
                 poundBillModel.setPoundID(poundID);
 
                 poundBillModel.setCoalType(row.getCell(2).getStringCellValue());
@@ -100,6 +105,7 @@ public class ExcelUtil {
                 poundBillModel.setIOType("1");
                 poundBillModel.setPrinted(true);
             }
+            System.out.println(poundBillModel);
             poundBillModels.add(poundBillModel);
         }
 
