@@ -456,18 +456,28 @@
             success: function (response) {
                 // 假设返回的数据是一个整数，表示总页数
                 let totalPages = parseInt(response);
+                let isContinueLeft = false;
+                let isContinueRight = false;
                 for (let i = 1; i <= totalPages; i++) {
                     let pageItem = $('<li><a href="#">' + i + '</a></li>');
+                    if (i < curr_page - 3) {
+                        isContinueLeft = true;
+                        continue;
+                    }
+                    if (i > curr_page + 5) {
+                        isContinueRight = true;
+                        continue;
+                    }
                     if (i === curr_page) {
                         pageItem.addClass('active');
                     }
                     $('.pagination .raquo').before(pageItem);
                 }
                 if (curr_page === 1) {
-                    $('.pagination li.laquo').addClass('disabled');
+                    $('.pagination .laquo').addClass('disabled');
                 }
                 if (curr_page === totalPages) {
-                    $('.pagination li.raquo').addClass('disabled');
+                    $('.pagination .raquo').addClass('disabled');
                 }
 
                 // 绑定分页点击事件
@@ -485,19 +495,26 @@
                             return;
                         }
                         if ($(this).hasClass('raquo')) {
-                            pageNum = parseInt($('.pagination li.active').text()) + 1;
+                            pageNum = totalPages;
                         }
                         if ($(this).hasClass('laquo')) {
-                            pageNum = parseInt($('.pagination li.active').text()) - 1;
+                            pageNum = 1;
                         }
 
                         $('.pagination li').removeClass('active');
                         $(this).addClass('active');
 
-
-                        window.location.href = currentUrl.replace(/\/\d+$/, '/' + pageNum);  // 跳转到新 URL
+                         window.location.href = currentUrl.replace(/\/\d+$/, '/' + pageNum);  // 跳转到新 URL
                     }
                 );
+
+                // 添加省略号
+                if (isContinueLeft) {
+                    $('.laquo').after(`<li><a>...</a></li>`)
+                }
+                if (isContinueRight) {
+                    $('.raquo').before(`<li><a>...</a></li>`)
+                }
             },
             error: function () {
                 console.log('Error occurred while fetching total pages.');
