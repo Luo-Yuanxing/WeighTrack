@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.weightrack</groupId>
     <artifactId>WeighTrack</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.1</version>
     <name>WeighTrack</name>
     <description>WeighTrack</description>
     <url/>
