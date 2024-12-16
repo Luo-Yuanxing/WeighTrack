@@ -52,8 +52,14 @@ public class PoundBillController {
 
         poundBillService.insertPoundBill(poundBillModel);
 
+        String url = "redirect:/showList/today/";
+        if (poundBillModel.getIOType().equals("1")) {
+            url += "in/1";
+        } else {
+            url += "out/1";
+        }
         // 返回视图名称
-        return "redirect:/";
+        return url;
     }
 
     @GetMapping("/update/{id}")

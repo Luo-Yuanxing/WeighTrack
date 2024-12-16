@@ -101,19 +101,19 @@ body {
 }
 
 /* 输入框和按钮样式 */
-input {
+#dateModal input {
     margin: 5px;
     padding: 5px;
     width: 100px;
 }
 
-.example {
+#dateModal .example {
     width: 100%;
     text-align: center;
     margin: 0 auto;
 }
 
-button {
+#submitBtn {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: #007bff;
@@ -122,6 +122,6 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+#submitBtn:hover {
     background-color: #0056b3;
 }

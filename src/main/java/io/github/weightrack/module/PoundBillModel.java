@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 public class PoundBillModel {
 
     private int id;
-    //    private LocalTime date;
+
+    // IOType: {'1': 'in', '2': 'out'}
     private String IOType;
     private String coalType;
     private String plateNumber;
