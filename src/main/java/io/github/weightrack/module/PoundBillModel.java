@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 public class PoundBillModel {
 
     private int id;
-    //    private LocalTime date;
+
+    // IOType: {'1': 'in', '2': 'out'}
     private String IOType;
     private String coalType;
     private String plateNumber;
@@ -70,15 +71,21 @@ public class PoundBillModel {
     }
 
     public void updatePrintTime(String printTime) {
-        if (printTime != null) {
-            if (printTime.contains("：")) {
-                printTime = printTime.replace("：", ":");
-            }
-            int hour = Integer.parseInt(printTime.split(":")[0]);
-            int minute = Integer.parseInt(printTime.split(":")[1]);
-            LocalDateTime printTime_ = this.getCreatTime().withHour(hour).withMinute(minute).withSecond(0);
-            this.setPrintTime(printTime_);
+        if (printTime == null) {
+            this.setPrintTime(null);
+            return;
         }
+        if (printTime.isEmpty()) {
+            this.setPrintTime(null);
+            return;
+        }
+        if (printTime.contains("：")) {
+            printTime = printTime.replace("：", ":");
+        }
+        int hour = Integer.parseInt(printTime.split(":")[0]);
+        int minute = Integer.parseInt(printTime.split(":")[1]);
+        LocalDateTime printTime_ = this.getCreatTime().withHour(hour).withMinute(minute).withSecond(0);
+        this.setPrintTime(printTime_);
     }
 
     public PoundBillModel updatePoundBillModel(PoundBillModel newPoundBillModel) {
@@ -116,7 +123,7 @@ public class PoundBillModel {
             this.fullLoadTime = newPoundBillModel.fullLoadTime;
         }
         // 更新时间字段
-        if (newPoundBillModel.printTime != null) {
+        if (this.printTime != null && newPoundBillModel.printTime != null) {
             this.printTime = newPoundBillModel.printTime;
         }
 

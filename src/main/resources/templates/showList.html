@@ -135,6 +135,17 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
         }
 
+        .batch-operations button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .batch-operations button:hover {
+            background-color: #0056b3;
+        }
 
     </style>
 
@@ -150,19 +161,9 @@
 <script src="/js/dayjs.min.js"></script>
 
 <div th:insert="~{nav :: nav}"></div>
-<div th:switch="${IOType}">
-    <div th:case="in">
-        <h2>入库记录表</h2>
-    </div>
-    <div th:case="out">
-        <h2>出库记录表</h2>
-    </div>
-    <div th:case="all">
-        <h2>出入库总记录</h2>
-    </div>
-</div>
+<h2 class="table-title"></h2>
 
-<div style="margin: 20px auto;">
+<div class="batch-operations">
     <button id="print-selected">打印已选择的记录</button>
 </div>
 
@@ -424,6 +425,24 @@
         // 插入司磅员
         pound_bill_grid_body.append('<div>' + poundBill.weigher + '</div>');
     }
+    $(function (){
+        // add title
+        let $tableTitle = $('.table-title');
+        if (isToday) {
+            if (IOType === '1') {
+                $tableTitle.text('今日入库磅单');
+            } else {
+                $tableTitle.text('今日出库磅单');
+            }
+        } else {
+            if (IOType === '1') {
+                $tableTitle.text('历史入库磅单');
+            } else {
+                $tableTitle.text('历史出库磅单');
+            }
+        }
+
+    });
 </script>
 
 <!--分页-->
@@ -456,18 +475,28 @@
             success: function (response) {
                 // 假设返回的数据是一个整数，表示总页数
                 let totalPages = parseInt(response);
+                let isContinueLeft = false;
+                let isContinueRight = false;
                 for (let i = 1; i <= totalPages; i++) {
                     let pageItem = $('<li><a href="#">' + i + '</a></li>');
+                    if (i < curr_page - 3) {
+                        isContinueLeft = true;
+                        continue;
+                    }
+                    if (i > curr_page + 5) {
+                        isContinueRight = true;
+                        continue;
+                    }
                     if (i === curr_page) {
                         pageItem.addClass('active');
                     }
                     $('.pagination .raquo').before(pageItem);
                 }
                 if (curr_page === 1) {
-                    $('.pagination li.laquo').addClass('disabled');
+                    $('.pagination .laquo').addClass('disabled');
                 }
                 if (curr_page === totalPages) {
-                    $('.pagination li.raquo').addClass('disabled');
+                    $('.pagination .raquo').addClass('disabled');
                 }
 
                 // 绑定分页点击事件
@@ -485,19 +514,26 @@
                             return;
                         }
                         if ($(this).hasClass('raquo')) {
-                            pageNum = parseInt($('.pagination li.active').text()) + 1;
+                            pageNum = totalPages;
                         }
                         if ($(this).hasClass('laquo')) {
-                            pageNum = parseInt($('.pagination li.active').text()) - 1;
+                            pageNum = 1;
                         }
 
                         $('.pagination li').removeClass('active');
                         $(this).addClass('active');
 
-
-                        window.location.href = currentUrl.replace(/\/\d+$/, '/' + pageNum);  // 跳转到新 URL
+                         window.location.href = currentUrl.replace(/\/\d+$/, '/' + pageNum);  // 跳转到新 URL
                     }
                 );
+
+                // 添加省略号
+                if (isContinueLeft) {
+                    $('.laquo').after(`<li><a>...</a></li>`)
+                }
+                if (isContinueRight) {
+                    $('.raquo').before(`<li><a>...</a></li>`)
+                }
             },
             error: function () {
                 console.log('Error occurred while fetching total pages.');
