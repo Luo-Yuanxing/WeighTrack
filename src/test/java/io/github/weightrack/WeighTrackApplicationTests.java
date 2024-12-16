@@ -19,13 +19,22 @@ public class WeighTrackApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
-        List<PoundBillModel> poundBillModels = ExcelUtil.insertPoundBillByExcel_OUT();
-        for (PoundBillModel poundBillModel : poundBillModels) {
+        List<PoundBillModel> poundBillModelsIn = ExcelUtil.insertPoundBillByExcel();
+        for (PoundBillModel poundBillModel : poundBillModelsIn) {
+            if (poundBillModel.getCoalType() != null) {
+                poundBillService.insertPoundBill(poundBillModel);
+                log.info("insert into poundBill {}", poundBillModel);
+            }
+        }
+
+        List<PoundBillModel> poundBillModelsOut = ExcelUtil.insertPoundBillByExcel_OUT();
+        for (PoundBillModel poundBillModel : poundBillModelsOut) {
             if (poundBillModel.getCoalType() != null) {
                 poundBillService.insertPoundBill(poundBillModel);
                 log.info("insert into poundBill {}", poundBillModel);
             }
         }
     }
+
 
 }
