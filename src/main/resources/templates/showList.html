@@ -135,6 +135,17 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
         }
 
+        .batch-operations button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .batch-operations button:hover {
+            background-color: #0056b3;
+        }
 
     </style>
 
@@ -152,7 +163,7 @@
 <div th:insert="~{nav :: nav}"></div>
 <h2 class="table-title"></h2>
 
-<div style="margin: 20px auto;">
+<div class="batch-operations">
     <button id="print-selected">打印已选择的记录</button>
 </div>
 
