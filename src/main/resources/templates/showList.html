@@ -150,17 +150,7 @@
 <script src="/js/dayjs.min.js"></script>
 
 <div th:insert="~{nav :: nav}"></div>
-<div th:switch="${IOType}">
-    <div th:case="in">
-        <h2>入库记录表</h2>
-    </div>
-    <div th:case="out">
-        <h2>出库记录表</h2>
-    </div>
-    <div th:case="all">
-        <h2>出入库总记录</h2>
-    </div>
-</div>
+<h2 class="table-title"></h2>
 
 <div style="margin: 20px auto;">
     <button id="print-selected">打印已选择的记录</button>
@@ -424,6 +414,24 @@
         // 插入司磅员
         pound_bill_grid_body.append('<div>' + poundBill.weigher + '</div>');
     }
+    $(function (){
+        // add title
+        let $tableTitle = $('.table-title');
+        if (isToday) {
+            if (IOType === '1') {
+                $tableTitle.text('今日入库磅单');
+            } else {
+                $tableTitle.text('今日出库磅单');
+            }
+        } else {
+            if (IOType === '1') {
+                $tableTitle.text('历史入库磅单');
+            } else {
+                $tableTitle.text('历史出库磅单');
+            }
+        }
+
+    });
 </script>
 
 <!--分页-->

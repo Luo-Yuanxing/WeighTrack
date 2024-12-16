@@ -10,6 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDate;
+
 @Controller
 public class PoundBillController {
 
@@ -73,12 +77,21 @@ public class PoundBillController {
                                       @RequestParam("output-unit") String outputUnit,
                                       @RequestParam("input-unit") String inputUnit,
                                       @RequestParam("print-time") String printTime,
-                                      @RequestParam("weigher") String weigher) {
+                                      @RequestParam("weigher") String weigher) throws URISyntaxException {
 
         PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
 
-        poundBillService.updateById(poundBillModel, id, printTime);
-        return "redirect:/showList/in/1";
+        poundBillModel = poundBillService.updateById(poundBillModel, id, printTime);
+        String url = "redirect:/showList/";
+        if (poundBillModel.getCreatTime().toLocalDate().equals(LocalDate.now())) {
+            url += "today/";
+        }
+        if (poundBillModel.getIOType().equals("1")) {
+            url += "in/1";
+        } else {
+            url += "out/1";
+        }
+        return url;
     }
 
     @ResponseBody

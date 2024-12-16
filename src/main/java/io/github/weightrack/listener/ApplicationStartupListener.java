@@ -1,5 +1,6 @@
 package io.github.weightrack.listener;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import java.lang.reflect.Executable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+@Slf4j
 @Component
 public class ApplicationStartupListener {
 
@@ -32,13 +34,13 @@ public class ApplicationStartupListener {
                     desktop.browse(new URI(url));
                     return; // 如果成功打开，则结束方法
                 } catch (IOException | URISyntaxException e) {
-                    System.err.println("Failed to open browser using Desktop: " + e.getMessage());
+                    log.info("Failed to open browser using Desktop: {}", e.getMessage());
                 }
             } else {
-                System.err.println("Desktop browse action is not supported.");
+                log.info("Desktop browse action is not supported.");
             }
         } else {
-            System.err.println("Desktop is not supported. Falling back to specified browser.");
+            log.info("Desktop is not supported. Falling back to specified browser.");
         }
 
         // 如果 Desktop 不支持或失败，则尝试指定浏览器路径

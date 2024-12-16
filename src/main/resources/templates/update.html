@@ -159,7 +159,7 @@
 
     <div class="input-group">
         <span class="input-group-addon input-desc">打印时间</span>
-        <input th:unless="${poundBillModel.printTime}" th:value="${#dates.format(#dates.createNow(), 'HH:mm')}" type="text" class="form-control" name="print-time" aria-describedby="basic-addon3">
+        <input th:unless="${poundBillModel.printTime}"  type="text" class="form-control" name="print-time" aria-describedby="basic-addon3">
         <input th:if="${poundBillModel.printTime}" th:value="${#temporals.format(poundBillModel.printTime, 'HH:mm')}" type="text" class="form-control" name="print-time" aria-describedby="basic-addon3">
     </div>
 
@@ -189,7 +189,8 @@
 </body>
 
 <!-- 自动追加两位小数点-->
-<script>
+<script th:inline="javascript" type="text/javascript">
+    let poundBillModel = /*[[${poundBillModel}]]*/ {};
     $(document).ready(function () {
         // 定义一个函数来处理输入值并更新
         function formatInputValue(input) {
@@ -212,6 +213,9 @@
             }
 
         });
+
+
+
     });
 </script>
 
