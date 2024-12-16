@@ -22,7 +22,8 @@ public class ApplicationStartupListener {
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReady() {
         logger.info("服务器启动成功！");
-        openBrowser("127.0.0.1");
+        // TODO 发布时开启自动打开浏览器
+//        openBrowser("127.0.0.1");
     }
 
     String BROWSER_PATH = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
