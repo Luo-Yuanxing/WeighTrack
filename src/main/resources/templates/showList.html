@@ -58,26 +58,26 @@
             align-items: center;
         }
 
-         //========================== grid-head ====================
+        //========================== grid-head ====================
         .grid-head {
             display: grid;
             grid-template-columns: repeat(13, 1fr);
             gap: 15px;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* 增加轻微阴影效果 */
-            color: #333;  /* 文字颜色 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 增加轻微阴影效果 */
+            color: #333; /* 文字颜色 */
         }
 
         .grid-head div {
             text-align: center;
             font-weight: bold;
-            color: #333;  /* 默认文字颜色 */
+            color: #333; /* 默认文字颜色 */
         }
 
         /* 蓝色主题标题栏 */
         .grid-head div {
-            color: midnightblue;  /* 标题文字颜色为蓝色 */
+            color: midnightblue; /* 标题文字颜色为蓝色 */
         }
 
         /* 修改“已打印”文字颜色 */
@@ -165,10 +165,14 @@
 
 <div class="batch-operations">
     <button id="print-selected">打印已选择的记录</button>
+    <button th:if="${today && IOType == '1'}" id="output-excel">将今日入库数据导入excel</button>
+    <button th:if="${today && IOType == '0'}" id="output-excel">将今日出库数据导入excel</button>
 </div>
+<input type="file" id="fileInput" style="display: none">
 
 <div id="grid-pound-bill">
-    <div id="grid-head" class="grid-head grid-col-14 centering" style="background-color: gainsboro; position: sticky; top: 0; z-index: 10;">
+    <div id="grid-head" class="grid-head grid-col-14 centering"
+         style="background-color: gainsboro; position: sticky; top: 0; z-index: 10;">
         <div>多选</div>
         <div>操作</div>
         <div>煤种</div>
@@ -296,10 +300,9 @@
     }
 
     let pound_bill_grid_body = $('#grid-body');
-    let pound_bill_list = /*[[${poundBillModels}]]*/;
-    let isToday = /*[[${today}]]*/;
-    let IOType = /*[[${IOType}]]*/;
-    console.log(IOType)
+    let pound_bill_list = /*[[${poundBillModels}]]*/ {};
+    let isToday = /*[[${today}]]*/ {};
+    let IOType = /*[[${IOType}]]*/ {};
     if (isToday) {
         pound_bill_grid_body.removeClass('grid-col-14');
         pound_bill_grid_body.addClass('grid-col-15');
@@ -312,7 +315,7 @@
     for (let poundBill of pound_bill_list) {
         // 插入多选框
         // 创建一个包含多选框和文本的容器
-        let checkBoxContainer = $('<div></div>', {
+        let $checkBoxContainer = $('<div class="checkBoxContainer" style="display: flex;justify-content: center;align-items: center; height: 100%; width: 100%"></div>', {
             class: 'grid-item'
         });
 
@@ -326,10 +329,10 @@
         });
 
         // 将多选框和文本添加到容器中
-        checkBoxContainer.append(checkBox);
+        $checkBoxContainer.append(checkBox);
 
         // 将容器插入到grid布局的#grid-body中
-        pound_bill_grid_body.append(checkBoxContainer);
+        pound_bill_grid_body.append($checkBoxContainer);
 
         // 插入操作div
         let $option = $("#option-template").clone().removeAttr("id");
@@ -390,11 +393,16 @@
         // 插入净重
         let netWeight = poundBill.netWeight;
         switch (netWeight) {
-            case '1': netWeight = netWeight.toFixed(2); break;
-            case '0': netWeight = '-'; break;
-            case 'all': netWeight = netWeight.toFixed(2); break;
+            case '1':
+                netWeight = netWeight.toFixed(2);
+                break;
+            case '0':
+                netWeight = '-';
+                break;
+            case 'all':
+                netWeight = netWeight.toFixed(2);
+                break;
         }
-        console.log(netWeight)
         pound_bill_grid_body.append('<div class="net-weight">' + netWeight + '</div>');
 
         // 插入原发
@@ -425,7 +433,7 @@
         // 插入司磅员
         pound_bill_grid_body.append('<div>' + poundBill.weigher + '</div>');
     }
-    $(function (){
+    $(function () {
         // add title
         let $tableTitle = $('.table-title');
         if (isToday) {
@@ -443,6 +451,16 @@
         }
 
     });
+    $(function () {
+        $('.checkBoxContainer').on('click', function () {
+            let checkBox = $(this).find('input');
+            if (checkBox.prop('checked')) {
+                checkBox.prop('checked', false);
+            } else {
+                checkBox.prop('checked', true);
+            }
+        })
+    })
 </script>
 
 <!--分页-->
@@ -455,7 +473,7 @@
         if (match) {
             curr_page = parseInt(match[1]);
         }
-        let isToday = /*[[${today}]]*/;
+        let isToday = /*[[${today}]]*/ {};
         let IOType;
         if (currentUrl.includes('in')) {
             IOType = 'in';
@@ -523,7 +541,7 @@
                         $('.pagination li').removeClass('active');
                         $(this).addClass('active');
 
-                         window.location.href = currentUrl.replace(/\/\d+$/, '/' + pageNum);  // 跳转到新 URL
+                        window.location.href = currentUrl.replace(/\/\d+$/, '/' + pageNum);  // 跳转到新 URL
                     }
                 );
 
@@ -581,7 +599,7 @@
 <!--css 补丁-->
 <script th:inline="javascript">
     $(function () {
-        let isToday = /*[[${today}]]*/;
+        let isToday = /*[[${today}]]*/ {};
         let grid_head = $('#grid-head');
         let grid_body = $('#grid-body')
         if (isToday) {
@@ -599,11 +617,11 @@
 
     });
 </script>
-
+<!--批量打印-->
 <script>
-    async function sendAjaxRequest(id) {
+    function sendAjaxRequest(id) {
         try {
-            const response = await $.ajax({
+            const response = $.ajax({
                 url: '/print/' + id,
                 method: 'POST',
                 contentType: 'application/json',  // 设置请求头为application/json
@@ -613,6 +631,7 @@
                 }),
 
                 success: function (response) {
+                    console.log(response)
                     // 请求成功后的回调函数
                     if (response === 'ok') {
                         console.log('打印成功');
@@ -629,15 +648,15 @@
         }
     }
 
-    async function sendRequestsSequentially(requestId) {
+    function sendRequestsSequentially(requestId) {
         for (let id of requestId) {
-            await sendAjaxRequest(id);
+            sendAjaxRequest(id);
         }
     }
 
 
-    $(function (){
-        $('#print-selected').on('click', async function () {
+    $(function () {
+        $('#print-selected').on('click', function () {
             let selectedIds = [];
 
             // 遍历所有的checkbox
@@ -648,9 +667,36 @@
                 }
             });
 
-            await sendRequestsSequentially(selectedIds);
-            await window.location.reload();
+            sendRequestsSequentially(selectedIds);
+            setTimeout(() => window.location.reload(), 5000);
         })
+    })
+</script>
+<!--导出excel-->
+<script th:inline="javascript">
+
+    $(function () {
+        let IOType = /*[[${IOType}]]*/ {};
+        // 默认文件路径
+        let file = '';
+        let $outputExcel = $('#output-excel');
+        $outputExcel.on('click', function () {
+
+            $.ajax({
+                url: '/outputExcel?IOType=' + IOType + '&file=' + file,
+                method: 'GET',
+                success: function (response) {
+                    if (response === 'ok') {
+                        alert('导出成功');
+                    }
+                },
+                error: function () {
+                    alert('导出失败');
+                }
+            })
+        })
+
+
     })
 </script>
 

@@ -19,7 +19,7 @@ public class PrintService {
 
     public PoundBillModel selectById(int id) {
         PoundBillModel poundBillModel = poundBillMapper.selectById(id);
-        int count = printMapper.getTodayPrintedCount();
+        int count = printMapper.getTodayPrintedCount(poundBillModel.getIOType());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
         String dateStr = dateFormat.format(new Date(System.currentTimeMillis()));
 
@@ -30,7 +30,9 @@ public class PrintService {
         } else {
             poundID = "C" + dateStr + countStr;
         }
-        poundBillModel.setPoundID(poundID);
+        if (poundBillModel.getPoundID() == null || poundBillModel.getPoundID().isEmpty()) {
+            poundBillModel.setPoundID(poundID);
+        }
         poundBillModel.setPrinted(true);
         return poundBillModel;
     }

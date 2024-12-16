@@ -21,3 +21,9 @@ DELETE localhost:8080/coalType/111
 
 ###
 GET 127.0.0.1
+
+###
+GET 127.0.0.1/test_file_path?file=C:/Users/34696/Desktop/每日过磅明细-1.xlsx
+
+
+

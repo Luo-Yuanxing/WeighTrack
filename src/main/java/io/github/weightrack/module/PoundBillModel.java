@@ -123,7 +123,7 @@ public class PoundBillModel {
             this.fullLoadTime = newPoundBillModel.fullLoadTime;
         }
         // 更新时间字段
-        if (this.printTime != null && newPoundBillModel.printTime != null) {
+        if (newPoundBillModel.printTime != null) {
             this.printTime = newPoundBillModel.printTime;
         }
 

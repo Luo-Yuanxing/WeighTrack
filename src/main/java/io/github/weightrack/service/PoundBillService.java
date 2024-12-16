@@ -99,7 +99,9 @@ public class PoundBillService {
         PoundBillModel oldPoundBillModel = poundBillMapper.selectById(id);
         newPoundBillModel = oldPoundBillModel.updatePoundBillModel(newPoundBillModel);
 
-        newPoundBillModel.updatePrintTime(printTime);
+        if (printTime != null && !printTime.equals("null")) {
+            newPoundBillModel.updatePrintTime(printTime);
+        }
         parseString(newPoundBillModel);
         poundBillMapper.updateById(newPoundBillModel);
         return newPoundBillModel;
