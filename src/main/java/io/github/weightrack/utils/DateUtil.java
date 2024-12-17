@@ -7,7 +7,7 @@ import java.time.temporal.TemporalAdjusters;
 
 public class DateUtil {
 
-    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     // 获取今天的开始时间（00:00:00）
     public static String getTodayStartTime() {

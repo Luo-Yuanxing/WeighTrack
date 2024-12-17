@@ -18,7 +18,25 @@ public class OutputExcelService {
     public String getTodayPrintedPoundBillModels(String IOType) {
         PoundBillModel[] poundBillModels = outputExcelMapper.getTodayPrintedPoundBillModels(IOType);
         String rootPath = System.getProperty("user.dir");
-        File excelFile = new File(rootPath, "每日过磅明细.xlsx");
+
+        // 获取第一个匹配的 .xlsx 文件
+        File rootDir = new File(rootPath);
+        File excelFile = null;
+
+        File[] files = rootDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".xlsx"));
+        if (files != null && files.length > 0) {
+            excelFile = files[0]; // 拿到第一个符合条件的文件
+            log.info("找到文件: {}", excelFile.getAbsolutePath());
+        } else {
+            log.error("未找到符合条件的 .xlsx 文件");
+        }
+
+        // 使用 File excelFile 对象
+        if (excelFile == null) {
+            // 示例：打印文件路径
+            log.error("Excel文件对象获取失败");
+            return "error";
+        }
 
         if (excelFile.exists()) {
             log.info("打开文件 每日过磅明细.xlsx  at: {}", excelFile.getAbsolutePath());
