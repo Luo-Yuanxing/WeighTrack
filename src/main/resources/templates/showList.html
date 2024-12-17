@@ -412,11 +412,7 @@
         pound_bill_grid_body.append('<div class="profit-loss-weight">' + poundBill.profitLossWeight.toFixed(2) + '</div>');
 
         // 插入打印时间
-        if (poundBill.printTime !== null) {
-            pound_bill_grid_body.append('<div class="print-time">' + dayjs(poundBill.printTime).format('HH:mm:ss') + '</div>');
-        } else {
-            pound_bill_grid_body.append('<div class="print-time"> </div>');
-        }
+        pound_bill_grid_body.append('<div class="print-time">' + dayjs(poundBill.creatTime).format('HH:mm:ss') + '</div>');
 
         // 插入发货单位
         pound_bill_grid_body.append('<div>' + poundBill.outputUnit + '</div>');
@@ -631,10 +627,11 @@
                 }),
 
                 success: function (response) {
-                    console.log(response)
                     // 请求成功后的回调函数
                     if (response === 'ok') {
                         console.log('打印成功');
+                    } else {
+                        alert(id + '打印失败:' + response);
                     }
                 },
                 error: function () {
@@ -642,7 +639,6 @@
                     alert('打印失败: ' + id);
                 }
             });
-            console.log('Response for request', id, response);
         } catch (error) {
             console.error('Request failed for index', id, error);
         }
@@ -667,7 +663,7 @@
                 }
             });
 
-            sendRequestsSequentially(selectedIds);
+            sendRequestsSequentially(selectedIds.sort());
             setTimeout(() => window.location.reload(), 5000);
         })
     })
