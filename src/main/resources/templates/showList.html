@@ -134,8 +134,10 @@
             background-color: #b83e3e;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
         }
-
-        .batch-operations button {
+        .input-group-addon {
+            border-radius: 0;
+        }
+        .batch-operations button, .batch-operations span {
             padding: 10px 20px;
             background-color: #007bff;
             color: white;
@@ -143,7 +145,7 @@
             cursor: pointer;
         }
 
-        .batch-operations button:hover {
+        .batch-operations button:hover, .batch-operations span:hover {
             background-color: #0056b3;
         }
 
@@ -167,6 +169,8 @@
     <button id="print-selected">打印已选择的记录</button>
     <button th:if="${today && IOType == '1'}" id="output-excel">将今日入库数据导入excel</button>
     <button th:if="${today && IOType == '0'}" id="output-excel">将今日出库数据导入excel</button>
+    <button id="select-plate-number">按车牌号查询最近10条数据</button>
+    <input type="text" name="plate-number" aria-describedby="basic-addon3">
 </div>
 <input type="file" id="fileInput" style="display: none">
 
@@ -186,8 +190,8 @@
         <div>打印<br>时间</div>
         <div>发货<br>单位</div>
         <div>收货<br>单位</div>
-        <div>司磅员</div>
         <div class="is-printed" style="display: none">已打印</div>
+        <div>司磅员</div>
     </div>
     <div id="grid-body" class="grid-col-14 centering">
 
@@ -476,7 +480,7 @@
         } else if (currentUrl.includes('out')) {
             IOType = 'out';
         } else {
-            IOType = 'all';
+            return;
         }
 
         $.ajax({
@@ -695,7 +699,24 @@
 
     })
 </script>
+<script>
+    function isLicensePlate(str) {
+        return /^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$/.test(str);
+    }
+    $(function () {
+        let $selectPlateNumber = $('#select-plate-number');
+        $selectPlateNumber.on('click', function () {
+            let $plateNumber = $('.batch-operations input[name="plate-number"]');
+            let plateNumber = $plateNumber.val().trim();
+            if (!plateNumber || !isLicensePlate(plateNumber)) {
+                $plateNumber.val('请正确输入车牌号').focus().select();
+            } else {
+                window.location.href = '/showList/plateNumber/' + plateNumber;
+            }
 
+        })
+    })
+</script>
 </body>
 
 </html>

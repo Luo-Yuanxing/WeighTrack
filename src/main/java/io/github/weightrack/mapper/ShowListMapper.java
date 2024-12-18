@@ -30,4 +30,7 @@ public interface ShowListMapper {
 
     @Select("SELECT COUNT(*) FROM poundbill WHERE DATE(creatTime) = CURDATE()")
     int showTodayListAllCount();
+
+    @Select("SELECT * FROM poundbill WHERE plateNumber = #{plateNumber} ORDER BY creatTime DESC LIMIT 10")
+    PoundBillModel[] showListByPlateNumber(String plateNumber);
 }

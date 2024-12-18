@@ -35,4 +35,4 @@ build/
 ### log ###
 logs/
 
-*.xlsx
+每日过磅明细.xlsx

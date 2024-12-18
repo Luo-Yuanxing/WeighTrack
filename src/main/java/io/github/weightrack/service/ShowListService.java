@@ -47,4 +47,8 @@ public class ShowListService {
             };
         }
     }
+
+    public PoundBillModel[] showListByPlateNumber(String plateNumber) {
+        return showListMapper.showListByPlateNumber(plateNumber);
+    }
 }

@@ -76,4 +76,13 @@ public class ShowListController {
         return "showList";
     }
 
+    @GetMapping("/showList/plateNumber/{plateNumber}")
+    public String showListByPlateNumber(@PathVariable String plateNumber, Model model) {
+        PoundBillModel[] poundBillModels = showListService.showListByPlateNumber(plateNumber.strip());
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "all");
+        model.addAttribute("today", false);
+        return "showList";
+    }
+
 }
