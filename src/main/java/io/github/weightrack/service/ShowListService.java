@@ -51,6 +51,9 @@ public class ShowListService {
     }
 
     public PoundBillModel[] showListByPlateNumber(String plateNumber, String filter) {
+        if (plateNumber == null || plateNumber.isEmpty()) {
+            plateNumber = "";
+        }
         return switch (filter) {
             case "not-in-pound" -> showListMapper.showListByPlateNumberNotInPound(plateNumber);
             case "already-in-pound" -> showListMapper.showListByPlateNumberAlreadyInPound(plateNumber);

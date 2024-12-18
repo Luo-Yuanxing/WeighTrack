@@ -117,10 +117,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
         }
 
-        .input-group-addon {
-            border-radius: 0;
-        }
-
         .batch-operations button, .batch-operations span {
             padding: 10px 20px;
             background-color: #007bff;
@@ -154,7 +150,7 @@
     <button id="print-selected">打印已选择的记录</button>
     <button th:if="${today && IOType == '1'}" id="output-excel">将今日入库数据导入excel</button>
     <button th:if="${today && IOType == '0'}" id="output-excel">将今日出库数据导入excel</button>
-    <button id="select-plate-number">按车牌号查询记录</button>
+    <span id="select-plate-number" class="glyphicon glyphicon-search"></span>
     <input type="text" name="plate-number">
     <select name="filter" id="filter-record">
         <option value="not-in-pound">未过空</option>
@@ -481,8 +477,15 @@
     $(document).ready(function () {
         // 获取当前页面的 URL
         let currentUrl = window.location.href;
+        if (currentUrl.includes('plate-number-filter')) {
+            $('.laquo').css('display','none');
+            $('.raquo').css('display','none');
+            return;
+        }
         let match = currentUrl.match(/\/(\d+)$/);
+
         let curr_page = 1
+
         if (match) {
             curr_page = parseInt(match[1]);
         }
@@ -709,11 +712,11 @@
         let $plateNumber = $('.batch-operations input[name="plate-number"]');
         $selectPlateNumber.on('click', function () {
             let plateNumber = $plateNumber.val().trim();
-            if (!plateNumber) {
-                $plateNumber.val('请正确输入车牌号').focus().select();
-            } else {
-                window.location.href = '/showList/plate-number-filter/?plateNumber=' + plateNumber + '&filter=' + $filter.val();
+            if ($filter.val() === 'printed' && plateNumber === '') {
+                $plateNumber.val('警告：车牌号未空且查询已打印');
+                return;
             }
+            window.location.href = '/showList/plate-number-filter/?plateNumber=' + plateNumber + '&filter=' + $filter.val();
         })
         let url = new URL(window.location.href);
         let params = new URLSearchParams(url.search);
