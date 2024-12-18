@@ -26,24 +26,6 @@
             text-align: center;
         }
 
-        .grid-col-13 {
-            display: grid;
-            grid-template-columns: repeat(13, 1fr); /* 定义三列 */
-            gap: 1px; /* 表格单元之间的间隔 */
-        }
-
-        .grid-col-14 {
-            display: grid;
-            grid-template-columns: repeat(14, 1fr); /* 定义三列 */
-            gap: 1px; /* 表格单元之间的间隔 */
-        }
-
-        .grid-col-15 {
-            display: grid;
-            grid-template-columns: repeat(15, 1fr); /* 定义三列 */
-            gap: 1px; /* 表格单元之间的间隔 */
-        }
-
         .grid-col-2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr); /* 定义三列 */
@@ -134,9 +116,11 @@
             background-color: #b83e3e;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
         }
+
         .input-group-addon {
             border-radius: 0;
         }
+
         .batch-operations button, .batch-operations span {
             padding: 10px 20px;
             background-color: #007bff;
@@ -166,16 +150,25 @@
 <h2 class="table-title"></h2>
 
 <div class="batch-operations">
+    <button id="print-all">打印本页全部数据</button>
     <button id="print-selected">打印已选择的记录</button>
     <button th:if="${today && IOType == '1'}" id="output-excel">将今日入库数据导入excel</button>
     <button th:if="${today && IOType == '0'}" id="output-excel">将今日出库数据导入excel</button>
-    <button id="select-plate-number">按车牌号查询最近10条数据</button>
-    <input type="text" name="plate-number" aria-describedby="basic-addon3">
+    <button id="select-plate-number">按车牌号查询记录</button>
+    <input type="text" name="plate-number">
+    <select name="filter" id="filter-record">
+        <option value="not-in-pound">未过空</option>
+        <option value="already-in-pound">已过空</option>
+        <option value="printed">已打印</option>
+    </select>
+
 </div>
+
+
 <input type="file" id="fileInput" style="display: none">
 
 <div id="grid-pound-bill">
-    <div id="grid-head" class="grid-head grid-col-14 centering"
+    <div id="grid-head" class="grid-head centering"
          style="background-color: gainsboro; position: sticky; top: 0; z-index: 10;">
         <div>多选</div>
         <div>操作</div>
@@ -187,13 +180,14 @@
         <div>净重</div>
         <div>原发</div>
         <div>盈亏</div>
+        <div>创建<br>时间</div>
         <div>打印<br>时间</div>
         <div>发货<br>单位</div>
         <div>收货<br>单位</div>
-        <div class="is-printed" style="display: none">已打印</div>
+        <div th:if="${today}" class="is-printed" style="display: none">已打印</div>
         <div>司磅员</div>
     </div>
-    <div id="grid-body" class="grid-col-14 centering">
+    <div id="grid-body" class="centering">
 
     </div>
 </div>
@@ -307,13 +301,7 @@
     let pound_bill_list = /*[[${poundBillModels}]]*/ {};
     let isToday = /*[[${today}]]*/ {};
     let IOType = /*[[${IOType}]]*/ {};
-    if (isToday) {
-        pound_bill_grid_body.removeClass('grid-col-14');
-        pound_bill_grid_body.addClass('grid-col-15');
-        $('#grid-head .is-printed').css('display', 'block');
-        pound_bill_grid_body.removeClass('grid-col-14');
-        pound_bill_grid_body.addClass('grid-col-15');
-    }
+
     let prev_date = null;
     let current_color = getRandomColor();
     for (let poundBill of pound_bill_list) {
@@ -415,8 +403,17 @@
         // 插入盈亏
         pound_bill_grid_body.append('<div class="profit-loss-weight">' + poundBill.profitLossWeight.toFixed(2) + '</div>');
 
-        // 插入打印时间
+        // 插入创建时间
         pound_bill_grid_body.append('<div class="print-time">' + dayjs(poundBill.creatTime).format('HH:mm:ss') + '</div>');
+
+        // 插入打印时间
+        let printTime = poundBill.printTime;
+        if (printTime) {
+            printTime = dayjs(printTime).format('HH:mm:ss');
+        } else {
+            printTime = '-';
+        }
+        pound_bill_grid_body.append('<div class="print-time">' + printTime + '</div>');
 
         // 插入发货单位
         pound_bill_grid_body.append('<div>' + poundBill.outputUnit + '</div>');
@@ -459,6 +456,22 @@
             } else {
                 checkBox.prop('checked', true);
             }
+        })
+    })
+    $(function () {
+        let $gridHead = $('#grid-head');
+        let $gridBody = $('#grid-body');
+        let length = $gridHead.find('div').length;
+        console.log(length)
+        $gridHead.css({
+            'display': 'grid',
+            'grid-template-columns': `repeat(${length}, 1fr)`,
+            'gap': '1px'
+        })
+        $gridBody.css({
+            'display': 'grid',
+            'grid-template-columns': `repeat(${length}, 1fr)`,
+            'gap': '1px'
         })
     })
 </script>
@@ -596,27 +609,6 @@
     });
 
 </script>
-<!--css 补丁-->
-<script th:inline="javascript">
-    $(function () {
-        let isToday = /*[[${today}]]*/ {};
-        let grid_head = $('#grid-head');
-        let grid_body = $('#grid-body')
-        if (isToday) {
-            grid_head.removeClass('grid-col-14');
-            grid_head.addClass('grid-col-15');
-            grid_body.removeClass('grid-col-14');
-            grid_body.addClass('grid-col-15');
-
-        }
-        $('#grid-body div').each(function () {
-            $(this).css({
-                'margin': '4px',
-            })
-        });
-
-    });
-</script>
 <!--批量打印-->
 <script>
     function sendAjaxRequest(id) {
@@ -670,6 +662,16 @@
             sendRequestsSequentially(selectedIds.sort());
             setTimeout(() => window.location.reload(), 5000);
         })
+
+        $('#print-all').on('click', function () {
+            let selectedIds = [];
+            $('.checkbox').each(function () {
+                selectedIds.push($(this).val());
+            });
+            sendRequestsSequentially(selectedIds.sort());
+            setTimeout(() => window.location.reload(), 5000);
+        })
+
     })
 </script>
 <!--导出excel-->
@@ -699,22 +701,29 @@
 
     })
 </script>
+<!--按车牌号搜索-->
 <script>
-    function isLicensePlate(str) {
-        return /^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$/.test(str);
-    }
     $(function () {
         let $selectPlateNumber = $('#select-plate-number');
+        let $filter = $('#filter-record');
+        let $plateNumber = $('.batch-operations input[name="plate-number"]');
         $selectPlateNumber.on('click', function () {
-            let $plateNumber = $('.batch-operations input[name="plate-number"]');
             let plateNumber = $plateNumber.val().trim();
-            if (!plateNumber || !isLicensePlate(plateNumber)) {
+            if (!plateNumber) {
                 $plateNumber.val('请正确输入车牌号').focus().select();
             } else {
-                window.location.href = '/showList/plateNumber/' + plateNumber;
+                window.location.href = '/showList/plate-number-filter/?plateNumber=' + plateNumber + '&filter=' + $filter.val();
             }
-
         })
+        let url = new URL(window.location.href);
+        let params = new URLSearchParams(url.search);
+        let plateNumber = params.get('plateNumber'); // 解码后的 plateNumber
+        let filter = params.get('filter'); // filter 参数值
+        $plateNumber.val(plateNumber);
+        console.log(plateNumber);
+        if (!filter === null && filter.length !== 0) {
+            $filter.val(filter);
+        }
     })
 </script>
 </body>

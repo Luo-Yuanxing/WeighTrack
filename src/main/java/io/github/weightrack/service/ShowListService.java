@@ -2,9 +2,11 @@ package io.github.weightrack.service;
 
 import io.github.weightrack.mapper.ShowListMapper;
 import io.github.weightrack.module.PoundBillModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class ShowListService {
     @Autowired
@@ -48,7 +50,15 @@ public class ShowListService {
         }
     }
 
-    public PoundBillModel[] showListByPlateNumber(String plateNumber) {
-        return showListMapper.showListByPlateNumber(plateNumber);
+    public PoundBillModel[] showListByPlateNumber(String plateNumber, String filter) {
+        return switch (filter) {
+            case "not-in-pound" -> showListMapper.showListByPlateNumberNotInPound(plateNumber);
+            case "already-in-pound" -> showListMapper.showListByPlateNumberAlreadyInPound(plateNumber);
+            case "printed" -> showListMapper.showListByPlateNumberPrinted(plateNumber);
+            default -> {
+                log.error("filter error");
+                yield null;
+            }
+        };
     }
 }

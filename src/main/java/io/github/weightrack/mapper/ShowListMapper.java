@@ -31,6 +31,13 @@ public interface ShowListMapper {
     @Select("SELECT COUNT(*) FROM poundbill WHERE DATE(creatTime) = CURDATE()")
     int showTodayListAllCount();
 
-    @Select("SELECT * FROM poundbill WHERE plateNumber = #{plateNumber} ORDER BY creatTime DESC LIMIT 10")
-    PoundBillModel[] showListByPlateNumber(String plateNumber);
+
+    @Select("SELECT * FROM poundbill WHERE plateNumber LIKE CONCAT(#{plateNumber}, '%') and tareWeight = 0 and printed = false ORDER BY creatTime DESC")
+    PoundBillModel[] showListByPlateNumberNotInPound(String plateNumber);
+
+    @Select("SELECT * FROM poundbill WHERE plateNumber LIKE CONCAT(#{plateNumber}, '%') and tareWeight != 0 and printed = false ORDER BY creatTime DESC")
+    PoundBillModel[] showListByPlateNumberAlreadyInPound(String plateNumber);
+
+    @Select("SELECT * FROM poundbill WHERE plateNumber LIKE CONCAT(#{plateNumber}, '%') and printed = true ORDER BY creatTime DESC")
+    PoundBillModel[] showListByPlateNumberPrinted(String plateNumber);
 }
