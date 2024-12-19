@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>鸿聚一号煤场出入库明细</title>
+    <title>鸿聚一号煤场出入库明细 - 回收站</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -28,8 +28,8 @@
 
         .grid-col-2 {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 定义三列 */
-            gap: 1px; /* 表格单元之间的间隔 */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
         }
 
         #option-template {
@@ -40,12 +40,11 @@
             align-items: center;
         }
 
-        //========================== grid-head ====================
+        /*========================== grid-head ====================*/
         .grid-head {
             display: grid;
             grid-template-columns: repeat(13, 1fr);
             gap: 15px;
-            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 增加轻微阴影效果 */
             color: #333; /* 文字颜色 */
@@ -95,24 +94,23 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加微小的阴影 */
         }
 
-        .update, .print {
+        .recover {
             background-color: olivedrab;
             color: white;
         }
 
-        .update:hover, .print:hover {
+        .recover:hover {
             background-color: #7fa82a;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
         }
 
         .delete {
-            grid-column: span 2; /* 使删除按钮占据整个行 */
-            background-color: crimson;
+            background-color: brown;
             color: white;
         }
 
         .delete:hover {
-            background-color: #a82540;
+            background-color: #b83e3e;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
         }
 
@@ -137,6 +135,15 @@
             background-color: #a82540 !important;
         }
 
+        .recover-style {
+            background-color: #5cb85c !important;
+            color: white;
+        }
+        .recover-style:hover {
+            background-color: #34a134 !important;
+            color: white;
+        }
+
     </style>
 
 
@@ -151,22 +158,17 @@
 <script src="/js/dayjs.min.js"></script>
 
 <div th:insert="~{nav :: nav}"></div>
-<h2 class="table-title"></h2>
+<h2> 回收站</h2>
 
 <div class="batch-operations">
-    <button id="print-all">打印本页全部数据</button>
-    <button id="print-selected">打印已选择的记录</button>
-    <button class="delete-style" id="delete-selected">删除已选择的记录</button>
-    <button th:if="${today && IOType == '1'}" id="output-excel">将今日入库数据导入excel</button>
-    <button th:if="${today && IOType == '0'}" id="output-excel">将今日出库数据导入excel</button>
-    <span id="select-plate-number" class="glyphicon glyphicon-search"></span>
+    <button class="delete-style" id="remove-all">清空回收站</button>
+    <button class="delete-style" id="remove-current-page-all">清空本页数据</button>
+    <button class="delete-style" id="delete-select">删除所选数据</button>
+    <button class="recover-style" id="recover-select">恢复所选数据</button>
+    <span id="select-record" class="glyphicon glyphicon-search"></span>
     <input type="text" name="plate-number" placeholder="车牌号">
     <input type="text" name="pound-id" placeholder="磅单编号">
-    <select name="filter" id="filter-record">
-        <option value="not-in-pound">未过空</option>
-        <option value="already-in-pound">已过空</option>
-        <option value="printed">已打印</option>
-    </select>
+
 
 </div>
 
@@ -213,11 +215,36 @@
 
 <div id="option-template">
     <div class="options grid-col-2">
-        <a class="update">修改</a>
-        <a class="print">打印</a>
+        <a class="recover">恢复</a>
         <a class="delete">删除</a>
     </div>
 </div>
+
+<script>
+    function recover(id) {
+
+        $.ajax({
+            url: '/recycle-bin/recover/' + id,
+            type: 'GET',
+            success: function () {
+                res = true;
+            }
+        })
+
+    }
+    function deleteRecord(id) {
+
+        $.ajax({
+            url: '/recycle-bin/delete/' + id, // 请求的URL
+            type: 'GET',
+            success: function () {
+                // 请求成功后的回调函数
+                res = true;
+            }
+        });
+
+    }
+</script>
 
 <script src="/js/js-cookie.js"></script>
 <!--填充数据-->
@@ -337,23 +364,17 @@
 
         // 插入操作div
         let $option = $("#option-template").clone().removeAttr("id");
-        $option.find('.update').attr('href', '/update/' + poundBill.id);
-        $option.find('.print').attr('href', '/print/' + poundBill.id);
+        $option.find('.recover').on('click', function () {
+            recover(poundBill.id);
+            alert('该记录已恢复');
+            window.location.reload();
+        })
         $option.find('.delete').on('click', function () {
-            if (confirm("确定要删除这条记录吗？")) {
-                $.ajax({
-                    url: '/delete/' + poundBill.id, // 请求的URL
-                    type: 'GET', // 请求方式，GET 或 POST
-                    success: function () {
-                        // 请求成功后的回调函数
-                        alert('删除成功');
-                        window.location.reload(); // 刷新页面
-                    },
-                    error: function () {
-                        // 请求失败后的回调函数
-                        alert('删除失败');
-                    }
-                });
+            if (confirm("确定要永久这条记录吗？")) {
+                deleteRecord(poundBill.id)
+                alert('该记录已删除');
+                window.location.reload();
+
             }
         });
         // 强制应用样式
@@ -388,7 +409,6 @@
             }
             pound_bill_grid_body.append('<div style="color: white; background-color: red" class="pound-id">' + poundId + '</div>');
         }
-
 
         // 插入车牌号
         pound_bill_grid_body.append('<div class="plate-number">' + poundBill.plateNumber + '</div>');
@@ -491,10 +511,20 @@
         })
     })
 </script>
-
+<!--css-->
+<script>
+    $(function () {
+        $('#grid-body div').each(function () {
+            $(this).css({
+                margin: '10px auto'
+            })
+        })
+    })
+</script>
 <!--分页-->
 <script th:inline="javascript">
     $(document).ready(function () {
+        let pageSize = 50;
         // 获取当前页面的 URL
         let currentUrl = window.location.href;
         if (currentUrl.includes('plate-number-filter')) {
@@ -502,30 +532,17 @@
             $('.raquo').css('display','none');
             return;
         }
-        let match = currentUrl.match(/\/(\d+)$/);
+        let match = window.location.href.match(/pageNum=(\d+)/);
 
         let curr_page = 1
 
         if (match) {
             curr_page = parseInt(match[1]);
         }
-        let isToday = /*[[${today}]]*/ {};
-        let IOType;
-        if (currentUrl.includes('in')) {
-            IOType = 'in';
-        } else if (currentUrl.includes('out')) {
-            IOType = 'out';
-        } else {
-            return;
-        }
 
         $.ajax({
-            url: '/showList/page_num',  // 请求的URL
-            data: {
-                'isToday': isToday,
-                'IOType': IOType
-            },
-            type: 'POST',
+            url: '/recycle-bin/page_num?pageSize=' + pageSize,
+            type: 'GET',
             success: function (response) {
                 // 假设返回的数据是一个整数，表示总页数
                 let totalPages = parseInt(response);
@@ -577,7 +594,7 @@
                         $('.pagination li').removeClass('active');
                         $(this).addClass('active');
 
-                        window.location.href = currentUrl.replace(/\/\d+$/, '/' + pageNum);  // 跳转到新 URL
+                        window.location.href = currentUrl.replace(/pageNum=\d+/, `pageNum=${pageNum}`);
                     }
                 );
 
@@ -632,134 +649,81 @@
     });
 
 </script>
-<!--批量打印-->
+<!--批量恢复-->
 <script>
-    function sendAjaxRequest(id) {
-        try {
-            const response = $.ajax({
-                url: '/print/' + id,
-                method: 'POST',
-                contentType: 'application/json',  // 设置请求头为application/json
-                data: JSON.stringify({           // 将数据转换为JSON字符串
-                    id: id,
-                    isUpdatePrintTime: false,
-                }),
+    $(function () {
 
-                success: function (response) {
-                    // 请求成功后的回调函数
-                    if (response === 'ok') {
-                        console.log('打印成功');
-                    } else {
-                        alert(id + '打印失败:' + response);
-                    }
+        // 清空回收站
+        $('#remove-all').on('click', function () {
+            if (!confirm("确认清空回收站！！！！！！！！！")) {
+                return;
+            }
+            $.ajax({
+                url: '/recycle-bin/delete-all',
+                method: 'GET',
+                success: function () {
+                    alert('回收站已清空！');
+                    window.location.reload();
                 },
                 error: function () {
-                    // 请求失败后的回调函数
-                    alert('打印失败: ' + id);
+                    alert('清空失败');
                 }
-            });
-        } catch (error) {
-            console.error('Request failed for index', id, error);
-        }
-    }
+            })
+        })
 
-    function sendRequestsSequentially(requestId) {
-        for (let id of requestId) {
-            sendAjaxRequest(id);
-        }
-    }
-
-
-    $(function () {
-        $('#print-selected').on('click', function () {
-            if (!confirm("确认打印本页？")) {
+        //
+        $('#remove-current-page-all').on('click', function () {
+            if (!confirm("确认清空本页？")) {
                 return;
             }
-            let selectedIds = [];
 
-            // 遍历所有的checkbox
             $('.checkbox').each(function () {
-                // 如果checkbox被选中
+                deleteRecord($(this).val());
+            });
+            alert('本页已删除')
+            window.location.reload();
+        })
+
+        $('#recover-select').on('click', function () {
+            if (!confirm("确认恢复所选？")) {
+                return;
+            }
+            $('.checkbox').each(function () {
                 if ($(this).prop('checked')) {
-                    selectedIds.push($(this).val()); // 获取选中checkbox的value（即poundBill.id）
+                    recover($(this).val());
                 }
+
             });
-
-            sendRequestsSequentially(selectedIds.sort());
-            setTimeout(() => window.location.reload(), 5000);
+            alert('所选已恢复');
+            window.location.reload();
         })
-
-        $('#print-all').on('click', function () {
-            if (!confirm("确认打印本页？")) {
-                return;
-            }
-            let selectedIds = [];
-            $('.checkbox').each(function () {
-                selectedIds.push($(this).val());
-            });
-            sendRequestsSequentially(selectedIds.sort());
-            setTimeout(() => window.location.reload(), 5000);
-        })
-
-        $('#delete-selected').on('click', function () {
+        $('#delete-select').on('click', function () {
             if (!confirm("确认删除所选？")) {
                 return;
             }
             $('.checkbox').each(function () {
                 if ($(this).prop('checked')) {
-                    $.ajax({
-                        url: '/delete/' + $(this).val(),
-                        method: 'GET'
-                    })
+                    deleteRecord($(this).val());
                 }
+
             });
-            alert('所选已删除');
+            alert('所选已恢复');
             window.location.reload();
         })
 
     })
 </script>
-<!--导出excel-->
-<script th:inline="javascript">
 
-    $(function () {
-        let IOType = /*[[${IOType}]]*/ {};
-        // 默认文件路径
-        let file = '';
-        let $outputExcel = $('#output-excel');
-        $outputExcel.on('click', function () {
-
-            $.ajax({
-                url: '/outputExcel?IOType=' + IOType + '&file=' + file,
-                method: 'GET',
-                success: function (response) {
-                    if (response === 'ok') {
-                        alert('导出成功');
-                    }
-                },
-                error: function () {
-                    alert('导出失败');
-                }
-            })
-        })
-
-
-    })
-</script>
 <!--按车牌号搜索-->
 <script>
     $(function () {
-        let $selectPlateNumber = $('#select-plate-number');
-        let $filter = $('#filter-record');
+        let $selectRecord = $('#select-record');
         let $plateNumber = $('.batch-operations input[name="plate-number"]');
         let $poundId = $('.batch-operations input[name="pound-id"]');
-        $selectPlateNumber.on('click', function () {
+        $selectRecord.on('click', function () {
             let plateNumber = $plateNumber.val().trim();
-            // if ($filter.val() === 'printed' && plateNumber === '' && $poundId.val() !== '') {
-            //     $plateNumber.val('警告：车牌号未空且查询已打印');
-            //     return;
-            // }
-            window.location.href = '/showList/plate-number-filter/?plateNumber=' + plateNumber + '&filter=' + $filter.val() + '&poundId=' + $poundId.val();
+            let poundId = $poundId.val().trim();
+            window.location.href = '/recycle/plate-number-filter?plateNumber=' + plateNumber + '&poundId=' + poundId;
         })
         let url = new URL(window.location.href);
         let params = new URLSearchParams(url.search);

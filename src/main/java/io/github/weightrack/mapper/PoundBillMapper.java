@@ -17,12 +17,12 @@ public interface PoundBillMapper {
     @Select("select * from poundbill where id = #{id}")
     PoundBillModel selectById(int id);
 
-    @Delete("delete from poundbill where id = #{id}")
+    @Delete("update poundbill set removed = 1 where id = #{id}")
     void deleteById(int id);
 
-    @Select("select * from poundbill")
+    @Select("select * from poundbill where removed = 0")
     PoundBillModel[] selectAll();
 
-    @Select("select count(*) from poundbill")
+    @Select("select count(*) from poundbill where removed = 0")
     int count();
 }
