@@ -7,6 +7,6 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface OutputExcelMapper {
 
-    @Select("select * from poundbill where IOType = #{IOType} and printed is true and date(creatTime) = date(now()) order by creatTime desc")
+    @Select("select * from poundbill where removed = 0 and IOType = #{IOType} and printed is true and date(creatTime) = date(now()) order by creatTime desc")
     PoundBillModel[] getTodayPrintedPoundBillModels(String IOType);
 }

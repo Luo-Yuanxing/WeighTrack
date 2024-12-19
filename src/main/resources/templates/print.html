@@ -149,7 +149,7 @@
         <tr th:unless="${poundBillModel.printTime}">
             <td>
                 <span>打印时间（首次打印）</span>
-                <button class="update-btn">我要修改</button>
+<!--                <button class="update-btn">我要修改</button>-->
             </td>
             <td class="print-time" th:text="${#dates.format(#dates.createNow(), 'HH:mm')}"></td>
         </tr>
