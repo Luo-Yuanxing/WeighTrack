@@ -79,8 +79,9 @@ public class ShowListController {
     @GetMapping("/showList/plate-number-filter/")
     public String showListByPlateNumber(@RequestParam("plateNumber") String plateNumber,
                                         @RequestParam("filter") String filter,
+                                        @RequestParam("poundId") String poundId,
                                         Model model) {
-        PoundBillModel[] poundBillModels = showListService.showListByPlateNumber(plateNumber.strip(), filter);
+        PoundBillModel[] poundBillModels = showListService.showListByPlateNumber(plateNumber.strip(), filter, poundId);
         model.addAttribute("poundBillModels", poundBillModels);
         model.addAttribute("IOType", "all");
         model.addAttribute("today", false);

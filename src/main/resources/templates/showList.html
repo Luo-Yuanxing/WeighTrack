@@ -64,7 +64,6 @@
 
         /* 修改“已打印”文字颜色 */
         .grid-head .is-printed {
-            display: none;
             text-align: center;
             font-weight: bold;
         }
@@ -151,7 +150,8 @@
     <button th:if="${today && IOType == '1'}" id="output-excel">将今日入库数据导入excel</button>
     <button th:if="${today && IOType == '0'}" id="output-excel">将今日出库数据导入excel</button>
     <span id="select-plate-number" class="glyphicon glyphicon-search"></span>
-    <input type="text" name="plate-number">
+    <input type="text" name="plate-number" placeholder="车牌号">
+    <input type="text" name="pound-id" placeholder="磅单编号">
     <select name="filter" id="filter-record">
         <option value="not-in-pound">未过空</option>
         <option value="already-in-pound">已过空</option>
@@ -180,7 +180,7 @@
         <div>打印<br>时间</div>
         <div>发货<br>单位</div>
         <div>收货<br>单位</div>
-        <div th:if="${today}" class="is-printed" style="display: none">已打印</div>
+        <div th:if="${today}" class="is-printed">已打印</div>
         <div>司磅员</div>
     </div>
     <div id="grid-body" class="centering">
@@ -209,6 +209,7 @@
     </div>
 </div>
 
+<script src="/js/js-cookie.js"></script>
 <!--填充数据-->
 <script th:inline="javascript">
     function getRandomColor() {
@@ -300,6 +301,8 @@
 
     let prev_date = null;
     let current_color = getRandomColor();
+    let currentModifyID = Cookies.get('currentModifyID');
+
     for (let poundBill of pound_bill_list) {
         // 插入多选框
         // 创建一个包含多选框和文本的容器
@@ -355,19 +358,27 @@
 
         // 插入磅单编号
         let poundId = poundBill.poundID;
-        if (poundId !== null) {
-            let current_date = poundId.substring(5, 7);
-            if (prev_date === null) {
-                prev_date = current_date;
+        if (currentModifyID === undefined || poundBill.id !== parseInt(currentModifyID)) {
+            if (poundId !== null) {
+                let current_date = poundId.substring(5, 7);
+                if (prev_date === null) {
+                    prev_date = current_date;
+                }
+                if (prev_date !== current_date) {
+                    current_color = getDistinctRandomColor(current_color);
+                    prev_date = current_date;
+                }
+                pound_bill_grid_body.append('<div class="pound-id" style="color: ' + current_color + '">' + poundId + '</div>');
+            } else {
+                pound_bill_grid_body.append('<div class="pound-id"' + poundId + '</div>');
             }
-            if (prev_date !== current_date) {
-                current_color = getDistinctRandomColor(current_color);
-                prev_date = current_date;
-            }
-            pound_bill_grid_body.append('<div class="pound-id" style="color: ' + current_color + '">' + poundId + '</div>');
         } else {
-            pound_bill_grid_body.append('<div class="pound-id"' + poundId + '</div>');
+            if (poundId === null) {
+                poundId = '';
+            }
+            pound_bill_grid_body.append('<div style="color: white; background-color: red" class="pound-id">' + poundId + '</div>');
         }
+
 
         // 插入车牌号
         pound_bill_grid_body.append('<div class="plate-number">' + poundBill.plateNumber + '</div>');
@@ -458,7 +469,6 @@
         let $gridHead = $('#grid-head');
         let $gridBody = $('#grid-body');
         let length = $gridHead.find('div').length;
-        console.log(length)
         $gridHead.css({
             'display': 'grid',
             'grid-template-columns': `repeat(${length}, 1fr)`,
@@ -710,21 +720,23 @@
         let $selectPlateNumber = $('#select-plate-number');
         let $filter = $('#filter-record');
         let $plateNumber = $('.batch-operations input[name="plate-number"]');
+        let $poundId = $('.batch-operations input[name="pound-id"]');
         $selectPlateNumber.on('click', function () {
             let plateNumber = $plateNumber.val().trim();
-            if ($filter.val() === 'printed' && plateNumber === '') {
-                $plateNumber.val('警告：车牌号未空且查询已打印');
-                return;
-            }
-            window.location.href = '/showList/plate-number-filter/?plateNumber=' + plateNumber + '&filter=' + $filter.val();
+            // if ($filter.val() === 'printed' && plateNumber === '' && $poundId.val() !== '') {
+            //     $plateNumber.val('警告：车牌号未空且查询已打印');
+            //     return;
+            // }
+            window.location.href = '/showList/plate-number-filter/?plateNumber=' + plateNumber + '&filter=' + $filter.val() + '&poundId=' + $poundId.val();
         })
         let url = new URL(window.location.href);
         let params = new URLSearchParams(url.search);
         let plateNumber = params.get('plateNumber'); // 解码后的 plateNumber
         let filter = params.get('filter'); // filter 参数值
+        let poundId = params.get('poundId');
         $plateNumber.val(plateNumber);
-        console.log(plateNumber);
-        if (!filter === null && filter.length !== 0) {
+        $poundId.val(poundId);
+        if (filter !== null && filter.length !== 0) {
             $filter.val(filter);
         }
     })

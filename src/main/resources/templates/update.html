@@ -174,7 +174,7 @@
 
 
 </body>
-
+<script src="/js/js-cookie.js"></script>
 <!-- 自动追加两位小数点-->
 <script th:inline="javascript" type="text/javascript">
     let poundBillModel = /*[[${poundBillModel}]]*/ {};
@@ -261,6 +261,9 @@
             dto.outputUnit = outputUnit.val();
             dto.inputUnit = inputUnit.val();
             dto.weigher = weigher.val();
+
+            Cookies.set('currentModifyID', dto.id, { expires: 0.2 });
+
             $.ajax({
                 url: '/update/' + dto.id + '?IOType=' + dto.IOType,
                 type: 'POST',

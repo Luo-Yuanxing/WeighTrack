@@ -32,12 +32,12 @@ public interface ShowListMapper {
     int showTodayListAllCount();
 
 
-    @Select("SELECT * FROM poundbill WHERE (#{plateNumber} = '' OR plateNumber LIKE CONCAT(#{plateNumber}, '%')) and tareWeight = 0 and printed = false ORDER BY creatTime DESC")
-    PoundBillModel[] showListByPlateNumberNotInPound(String plateNumber);
+    @Select("SELECT * FROM poundbill WHERE (#{plateNumber} = '' OR plateNumber LIKE CONCAT('%', #{plateNumber}, '%')) and (#{poundId} = '' OR poundId LIKE CONCAT('%', #{poundId}, '%')) and tareWeight = 0 and printed = false ORDER BY creatTime DESC")
+    PoundBillModel[] showListByPlateNumberNotInPound(String plateNumber, String poundId);
 
-    @Select("SELECT * FROM poundbill WHERE (#{plateNumber} = '' OR plateNumber LIKE CONCAT(#{plateNumber}, '%')) and tareWeight != 0 and printed = false ORDER BY creatTime DESC")
-    PoundBillModel[] showListByPlateNumberAlreadyInPound(String plateNumber);
+    @Select("SELECT * FROM poundbill WHERE (#{plateNumber} = '' OR plateNumber LIKE CONCAT('%', #{plateNumber}, '%')) and (#{poundId} = '' OR poundId LIKE CONCAT('%', #{poundId}, '%')) and tareWeight != 0 and printed = false ORDER BY creatTime DESC")
+    PoundBillModel[] showListByPlateNumberAlreadyInPound(String plateNumber, String poundId);
 
-    @Select("SELECT * FROM poundbill WHERE (#{plateNumber} = '' OR plateNumber LIKE CONCAT(#{plateNumber}, '%')) and printed = true ORDER BY creatTime DESC")
-    PoundBillModel[] showListByPlateNumberPrinted(String plateNumber);
+    @Select("SELECT * FROM poundbill WHERE (#{plateNumber} = '' OR plateNumber LIKE CONCAT('%', #{plateNumber}, '%')) and (#{poundId} = '' OR poundId LIKE CONCAT('%', #{poundId}, '%')) and printed = true ORDER BY creatTime DESC")
+    PoundBillModel[] showListByPlateNumberPrinted(String plateNumber, String poundId);
 }

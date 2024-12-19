@@ -50,14 +50,17 @@ public class ShowListService {
         }
     }
 
-    public PoundBillModel[] showListByPlateNumber(String plateNumber, String filter) {
+    public PoundBillModel[] showListByPlateNumber(String plateNumber, String filter, String poundId) {
         if (plateNumber == null || plateNumber.isEmpty()) {
             plateNumber = "";
         }
+        if (poundId == null || poundId.isEmpty()) {
+            poundId = "";
+        }
         return switch (filter) {
-            case "not-in-pound" -> showListMapper.showListByPlateNumberNotInPound(plateNumber);
-            case "already-in-pound" -> showListMapper.showListByPlateNumberAlreadyInPound(plateNumber);
-            case "printed" -> showListMapper.showListByPlateNumberPrinted(plateNumber);
+            case "not-in-pound" -> showListMapper.showListByPlateNumberNotInPound(plateNumber, poundId);
+            case "already-in-pound" -> showListMapper.showListByPlateNumberAlreadyInPound(plateNumber, poundId);
+            case "printed" -> showListMapper.showListByPlateNumberPrinted(plateNumber, poundId);
             default -> {
                 log.error("filter error");
                 yield null;

@@ -38,8 +38,8 @@ public class PrintService {
         return poundBillModel;
     }
 
-    public void updateById(int id, LocalDateTime printTime) {
-        printMapper.updateById(id, printTime);
+    public void updateById(int id, LocalDateTime printTime, String poundID) {
+        printMapper.updateById(id, printTime, poundID);
 
     }
 }

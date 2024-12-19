@@ -2,7 +2,6 @@ package io.github.weightrack.controller;
 
 import io.github.weightrack.dto.PrintDTO;
 import io.github.weightrack.module.PoundBillModel;
-import io.github.weightrack.service.PoundBillService;
 import io.github.weightrack.service.PrintService;
 import io.github.weightrack.utils.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +22,6 @@ public class PrintController {
 
     @Autowired
     PrintService printService;
-
-    @Autowired
-    PoundBillService poundBillService;
 
     // 使用一个线程安全的队列来串行化请求
     private final BlockingQueue<Runnable> printQueue = new LinkedBlockingQueue<>();
@@ -90,7 +86,7 @@ public class PrintController {
             ImageUtil.printRun(image);
             log.info("print to id: {}", poundBillModel.getId());
             poundBillModel.setPrinted(true);
-            printService.updateById(poundBillModel.getId(), poundBillModel.getPrintTime());
+            printService.updateById(poundBillModel.getId(), poundBillModel.getPrintTime(), poundBillModel.getPoundID());
         });
         if (!addedToQueue) {
             log.error("Failed to add print task to queue");

@@ -13,6 +13,6 @@ public interface printMapper {
     @Select("SELECT COUNT(*) FROM poundbill WHERE IOType = #{IOType} and DATE(creatTime) = CURDATE() AND printed = 1")
     int getTodayPrintedCount(String IOType);
 
-    @Update("update poundbill set printed = 1, printTime = #{printTime} where id = #{id}")
-    void updateById(int id, LocalDateTime printTime);
+    @Update("update poundbill set poundID = #{poundID}, printed = 1, printTime = #{printTime} where id = #{id}")
+    void updateById(int id, LocalDateTime printTime, String poundID);
 }

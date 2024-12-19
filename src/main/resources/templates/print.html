@@ -142,7 +142,7 @@
         <tr th:if="${poundBillModel.printTime}">
             <td>
                 <span>打印时间（上次打印）</span>
-                <button class="update-btn">我要修改</button>
+<!--                <button class="update-btn">我要修改</button>-->
             </td>
             <td class="print-time" th:text="${#temporals.format(poundBillModel.printTime, 'HH:mm')}"></td>
         </tr>
