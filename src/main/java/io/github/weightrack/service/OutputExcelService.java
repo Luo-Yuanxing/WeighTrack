@@ -39,10 +39,10 @@ public class OutputExcelService {
         }
 
         if (excelFile.exists()) {
-            log.info("打开文件 每日过磅明细.xlsx  at: {}", excelFile.getAbsolutePath());
+            log.info("打开文件 过磅明细.xlsx  at: {}", excelFile.getAbsolutePath());
         } else {
-            log.error("每日过磅明细.xlsx 找不到  at:{}", excelFile.getAbsolutePath());
-            return "error: 找不到文件： 每日过磅明细.xlsx";
+            log.error("过磅明细.xlsx 找不到  at:{}", excelFile.getAbsolutePath());
+            return "error: 找不到文件： 过磅明细.xlsx";
         }
         int modifyLength = ExcelUtil.appendExcel(poundBillModels, IOType, excelFile);
         log.info("sheet: {}， 插入了{}行记录", IOType.equals("1") ? "入库记录" : "出库记录", modifyLength);
