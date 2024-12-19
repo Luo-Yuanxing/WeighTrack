@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 
 @Service
 public class PrintService {
@@ -35,5 +36,10 @@ public class PrintService {
         }
         poundBillModel.setPrinted(true);
         return poundBillModel;
+    }
+
+    public void updateById(int id, LocalDateTime printTime) {
+        printMapper.updateById(id, printTime);
+
     }
 }

@@ -1,5 +1,6 @@
 package io.github.weightrack.service;
 
+import io.github.weightrack.dto.UpdateDTO;
 import io.github.weightrack.mapper.PoundBillMapper;
 import io.github.weightrack.mapper.ShowListMapper;
 import io.github.weightrack.module.PoundBillModel;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 
@@ -70,6 +73,13 @@ public class PoundBillService {
         if (poundBillModel.getPrimaryWeight() != 0 && poundBillModel.getNetWeight() != 0) {
             poundBillModel.setProfitLossWeight(poundBillModel.getNetWeight() - poundBillModel.getPrimaryWeight());
         }
+
+        if (poundBillModel.getPrintTimeString() != null && !poundBillModel.getPrintTimeString().isEmpty()) {
+            String printTimeString = poundBillModel.getPrintTimeString();
+            LocalDate now = LocalDate.now();
+            LocalDateTime printTime = LocalDateTime.of(now, LocalTime.parse(printTimeString, DateTimeFormatter.ofPattern("HH:mm:ss")));
+            poundBillModel.setPrintTime(printTime);
+        }
     }
 
     public void insertPoundBill(PoundBillModel poundBillModel) {
@@ -89,22 +99,11 @@ public class PoundBillService {
         poundBillMapper.insert(poundBillModel);
     }
 
-    public PoundBillModel updateById(PoundBillModel newPoundBillModel, int id, String printTime) {
-
-        // 新数据
-        parseString(newPoundBillModel);
-        newPoundBillModel.setId(id);
-        newPoundBillModel.setModifyTime(LocalDateTime.now());
-
-        PoundBillModel oldPoundBillModel = poundBillMapper.selectById(id);
-        newPoundBillModel = oldPoundBillModel.updatePoundBillModel(newPoundBillModel);
-
-        if (printTime != null && !printTime.equals("null")) {
-            newPoundBillModel.updatePrintTime(printTime);
-        }
-        parseString(newPoundBillModel);
-        poundBillMapper.updateById(newPoundBillModel);
-        return newPoundBillModel;
+    public void updateById(int id, UpdateDTO updateDTO) {
+        PoundBillModel poundBillModel = PoundBillModel.fromDTO(updateDTO);
+        parseString(poundBillModel);
+        poundBillModel.setId(id);
+        poundBillMapper.update(poundBillModel);
     }
 
     public PoundBillModel selectById(int id) {

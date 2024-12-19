@@ -53,7 +53,7 @@ public class PrintController {
 
     @ResponseBody
     @PostMapping("/print/{id}")
-    public String printWork(@PathVariable("id") int id, @RequestBody PrintDTO printDTO, Model model) {
+    public String printWork(@PathVariable("id") int id, @RequestBody PrintDTO printDTO) {
         // 将打印请求封装成一个任务，放入队列中
         boolean addedToQueue = printQueue.offer(() -> {
             LocalDateTime now = LocalDateTime.now();
@@ -74,7 +74,7 @@ public class PrintController {
             }
 
             String[] data = new String[11];
-            data[0] = now.format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"));
+            data[0] = poundBillModel.getCreatTime().format(DateTimeFormatter.ofPattern("yyyy年MM月dd日"));
             data[1] = poundBillModel.getPoundID();
             data[2] = poundBillModel.getPlateNumber();
             data[3] = poundBillModel.getCoalType();
@@ -83,14 +83,14 @@ public class PrintController {
             data[6] = String.valueOf(poundBillModel.getGrossWeight());
             data[7] = String.valueOf(poundBillModel.getTareWeight());
             data[8] = String.valueOf(poundBillModel.getNetWeight());
-            data[9] = now.format(DateTimeFormatter.ofPattern("HH:mm"));
+            data[9] = poundBillModel.getPrintTime().format(DateTimeFormatter.ofPattern("HH:mm"));
             data[10] = poundBillModel.getWeigher();
 
             BufferedImage image = ImageUtil.createImage(data);
             ImageUtil.printRun(image);
             log.info("print to id: {}", poundBillModel.getId());
             poundBillModel.setPrinted(true);
-            poundBillService.updateById(poundBillModel, poundBillModel.getId(), "null");
+            printService.updateById(poundBillModel.getId(), poundBillModel.getPrintTime());
         });
         if (!addedToQueue) {
             log.error("Failed to add print task to queue");

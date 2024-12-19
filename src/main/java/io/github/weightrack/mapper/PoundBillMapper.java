@@ -12,7 +12,7 @@ public interface PoundBillMapper {
     void insert(PoundBillModel poundBillModel);
 
     @Update("update poundbill set IOType=#{IOType}, coalType=#{coalType}, plateNumber=#{plateNumber}, grossWeight=#{grossWeight}, tareWeight=#{tareWeight}, netWeight=#{netWeight}, primaryWeight=#{primaryWeight}, profitLossWeight=#{profitLossWeight}, emptyLoadTime=#{emptyLoadTime}, fullLoadTime=#{fullLoadTime}, outputUnit=#{outputUnit}, inputUnit=#{inputUnit}, weigher=#{weigher}, printTime=#{printTime}, printed=#{printed}, poundID=#{poundID}, modifyTime=now(), printTime=#{printTime} where id=#{id}")
-    void updateById(PoundBillModel poundBillModel);
+    void update(PoundBillModel poundBillModel);
 
     @Select("select * from poundbill where id = #{id}")
     PoundBillModel selectById(int id);

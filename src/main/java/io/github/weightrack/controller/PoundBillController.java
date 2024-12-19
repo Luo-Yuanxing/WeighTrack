@@ -1,5 +1,6 @@
 package io.github.weightrack.controller;
 
+import io.github.weightrack.dto.UpdateDTO;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.User;
 import io.github.weightrack.service.CoalTypeService;
@@ -72,32 +73,20 @@ public class PoundBillController {
         return "update";
     }
 
+    @ResponseBody
     @PostMapping("/update/{id}")
     public String updatePoundBillById(@PathVariable("id") int id,
                                       @RequestParam("IOType") String IOType,
-                                      @RequestParam("coalType") String coalType,
-                                      @RequestParam("plate-number") String plateNumber,
-                                      @RequestParam("gross-weight") String grossWeight,
-                                      @RequestParam("tare") String tare,
-                                      @RequestParam("primary-weight") String primaryWeight,
-                                      @RequestParam("output-unit") String outputUnit,
-                                      @RequestParam("input-unit") String inputUnit,
-                                      @RequestParam("print-time") String printTime,
-                                      @RequestParam("weigher") String weigher) throws URISyntaxException {
+                                      @RequestBody UpdateDTO updateDTO) {
 
-        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
-
-        poundBillModel = poundBillService.updateById(poundBillModel, id, printTime);
-        String url = "redirect:/showList/";
+        updateDTO.setIOType(IOType);
+        poundBillService.updateById(id, updateDTO);
+        PoundBillModel poundBillModel = poundBillService.selectById(id);
         if (poundBillModel.getCreatTime().toLocalDate().equals(LocalDate.now())) {
-            url += "today/";
-        }
-        if (poundBillModel.getIOType().equals("1")) {
-            url += "in/1";
+            return "{\"result\": \"ok\", \"isToday\": true}";
         } else {
-            url += "out/1";
+            return "{\"result\": \"ok\", \"isToday\": false}";
         }
-        return url;
     }
 
     @ResponseBody
