@@ -26,7 +26,15 @@
             color: #343a40;
         }
 
+        .form-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
         form {
+            width: 60%;
             background-color: #ffffff;
             margin: 10px;
             border-radius: 10px;
@@ -130,95 +138,85 @@
 </script>
 <div class="container-fluid">
     <div th:insert="~{nav :: nav}"></div>
-    <form id="pound_form" method="post" action="/creat">
-        <span class="form-title">新增磅单数据</span>
+    <div class="form-container">
+        <form id="pound_form" method="post" action="/creat">
+            <span class="form-title">新增磅单数据</span>
 
-        <div class="input-group">
-            <span class="input-group-addon input-desc">出入库类型</span>
-            <select class="IOType form-control" name="IOType" aria-describedby="basic-addon3">
-                <option value="1">入库</option>
-                <option value="0">出库</option>
-            </select>
-        </div>
+            <div class="input-group">
+                <span class="input-group-addon input-desc">出入库类型</span>
+                <select class="IOType form-control" name="IOType" aria-describedby="basic-addon3">
+                    <option value="1">入库</option>
+                    <option value="0">出库</option>
+                </select>
+            </div>
 
-        <div class="input-group">
-            <span class="input-group-addon input-desc"><a href="/coalTypeEdit">煤种</a></span>
-            <select class="form-control" name="coalType" id="coal-type" aria-describedby="basic-addon3">
-                <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}"
-                        th:text="${coalType.name}"></option>
-                <option value="other">其他</option>
-            </select>
-        </div>
-        <!-- 新增一个输入框，当选择"其他"时显示 -->
-        <div class="input-group" id="other-coal-type" style="display:none;">
-            <span class="input-group-addon input-desc new-coal-type">新煤种</span>
-            <input type="text" class="form-control" name="other-coal-type" aria-describedby="basic-addon3">
-        </div>
+            <div class="input-group">
+                <span class="input-group-addon input-desc"><a href="/coalTypeEdit">煤种</a></span>
+                <select class="form-control" name="coalType" id="coal-type" aria-describedby="basic-addon3">
+                    <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}"
+                            th:text="${coalType.name}"></option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+            <!-- 新增一个输入框，当选择"其他"时显示 -->
+            <div class="input-group" id="other-coal-type" style="display:none;">
+                <span class="input-group-addon input-desc new-coal-type">新煤种</span>
+                <input type="text" class="form-control" name="other-coal-type" aria-describedby="basic-addon3">
+            </div>
 
-        <div class="input-group">
-            <span class="input-group-addon input-desc">车牌号</span>
-            <input type="text" class="plate-number form-control" name="plate-number" aria-describedby="basic-addon3">
-        </div>
-        <div class="input-group">
-            <div class="input-group-addon input-desc">毛重</div>
-            <input type="text" class="form-control" name="gross-weight" aria-describedby="basic-addon3">
-            <div class="exclude-border input-group-addon">
-                <span>吨</span>
+            <div class="input-group">
+                <span class="input-group-addon input-desc">车牌号</span>
+                <input type="text" class="plate-number form-control" name="plate-number"
+                       aria-describedby="basic-addon3">
             </div>
-            <div class="exclude-border input-group-addon">
-                <span>自动追加两位小数点</span>
+            <div class="input-group">
+                <div class="input-group-addon input-desc">毛重</div>
+                <input type="text" class="form-control" name="gross-weight" aria-describedby="basic-addon3">
+                <div class="exclude-border input-group-addon">
+                    <span>吨</span>
+                </div>
+                <div class="exclude-border input-group-addon">
+                    <span>自动追加两位小数点</span>
+                </div>
             </div>
-        </div>
-        <div class="input-group">
-            <div class="input-group-addon input-desc">皮重</div>
-            <input type="text" class="form-control" name="tare" aria-describedby="basic-addon3">
-            <div class="exclude-border input-group-addon">
-                <span>吨</span>
+            <div class="input-group">
+                <div class="input-group-addon input-desc">皮重</div>
+                <input type="text" class="form-control" name="tare" aria-describedby="basic-addon3">
+                <div class="exclude-border input-group-addon">
+                    <span>吨</span>
+                </div>
+                <div class="exclude-border input-group-addon">
+                    <span>自动追加两位小数点</span>
+                </div>
             </div>
-            <div class="exclude-border input-group-addon">
-                <span>自动追加两位小数点</span>
+            <div class="input-group primary-weight">
+                <div class="input-group-addon input-desc">原发</div>
+                <input type="text" class="form-control" name="primary-weight" aria-describedby="basic-addon3">
+                <div class="exclude-border input-group-addon">
+                    <span>吨</span>
+                </div>
+                <div class="exclude-border input-group-addon">
+                    <span>自动追加两位小数点</span>
+                </div>
             </div>
-        </div>
-        <div class="input-group primary-weight">
-            <div class="input-group-addon input-desc">原发</div>
-            <input type="text" class="form-control" name="primary-weight" aria-describedby="basic-addon3">
-            <div class="exclude-border input-group-addon">
-                <span>吨</span>
+            <div class="input-group">
+                <span class="input-group-addon input-desc">发货单位</span>
+                <input type="text" class="form-control output-unit" name="output-unit" aria-describedby="basic-addon3">
             </div>
-            <div class="exclude-border input-group-addon">
-                <span>自动追加两位小数点</span>
+            <div class="input-group">
+                <span class="input-group-addon input-desc">收货单位</span>
+                <input type="text" class="form-control input-unit" name="input-unit" aria-describedby="basic-addon3">
             </div>
-        </div>
-        <!--        <div class="input-group">-->
-        <!--            <script src='/js/form-date.js'></script>-->
-        <!--            <span class="input-group-addon input-desc">过空时间</span>-->
-        <!--            <input class="exclude-border form-control" type="text" id="empty-load-time" name="empty-load-time"-->
-        <!--                   aria-label="选择时间">-->
-        <!--        </div>-->
-        <!--        <div class="input-group">-->
-        <!--            <script src='/js/form-date.js'></script>-->
-        <!--            <span class="input-group-addon input-desc">过重时间</span>-->
-        <!--            <input class="exclude-border form-control" type="text" id="full-load-time" name="full-load-time"-->
-        <!--                   aria-label="选择时间">-->
-        <!--        </div>-->
-        <div class="input-group">
-            <span class="input-group-addon input-desc">发货单位</span>
-            <input type="text" class="form-control output-unit" name="output-unit" aria-describedby="basic-addon3">
-        </div>
-        <div class="input-group">
-            <span class="input-group-addon input-desc">收货单位</span>
-            <input type="text" class="form-control input-unit" name="input-unit" aria-describedby="basic-addon3">
-        </div>
-        <div class="input-group">
-            <span class="input-group-addon input-desc">司磅员</span>
-            <select class="form-control" name="weigher" aria-describedby="basic-addon3">
-                <option value="罗亚平">罗亚平</option>
-            </select>
-        </div>
-        <input class="input-group" type="submit" value="提交"/>
-        <div style="height: 20px"></div>
+            <div class="input-group">
+                <span class="input-group-addon input-desc">司磅员</span>
+                <select class="form-control" name="weigher" aria-describedby="basic-addon3">
+                </select>
+            </div>
+            <input class="input-group" type="submit" value="提交"/>
+            <div style="height: 20px"></div>
 
-    </form>
+        </form>
+    </div>
 
 </div>
 <script src="/js/form-date.js"></script>
@@ -379,6 +377,7 @@
     });
 </script>
 
+<!--历史输入记录-->
 <script>
     let userInput = {
         IOType: '',
@@ -394,14 +393,14 @@
     $(function () {
         // 检查是否有用户输入数据，如果没有则初始化为默认值
         if (!Cookies.get('userInput')) {
-            Cookies.set('userInput', JSON.stringify(userInput), { expires: 0.2 });
+            Cookies.set('userInput', JSON.stringify(userInput), {expires: 0.2});
         }
 
         // 更新 Cookies 的函数
         const updateUserInputCookie = (key, value) => {
             let userInput = JSON.parse(Cookies.get('userInput'));
             userInput[key] = value;
-            Cookies.set('userInput', JSON.stringify(userInput), { expires: 0.2 });
+            Cookies.set('userInput', JSON.stringify(userInput), {expires: 0.2});
         };
 
         // 监听输入字段变化并更新 Cookies
@@ -427,6 +426,26 @@
     });
 </script>
 
+<!--司磅员-->
+<script>
+    $(function () {
+        let $weigher = $('#pound_form > .input-group > select[name="weigher"]');
+        $.ajax({
+            url: '/weigher-list',
+            method: 'GET',
+            success: function (data) {
+                data = JSON.parse(data);
+                for (let weigher of data) {
+                    $weigher.append(`
+                    <option value="${weigher}">${weigher}</option>
+                `)
+                }
+                let currentUserRealName = JSON.parse(Cookies.get('user')).realName;
+                $weigher.val(currentUserRealName);
+            }
+        })
+    })
+</script>
 
 </body>
 </html>

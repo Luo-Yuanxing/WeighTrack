@@ -22,8 +22,14 @@
             background-color: #f8f9fa; /* 背景颜色可选 */
         }
 
+        .form-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         form {
-            max-width: 1000px;
+            width: 60%;
             background-color: #ffffff;
             margin: 10px auto;
             border-radius: 10px;
@@ -82,96 +88,102 @@
 <script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <div th:insert="~{nav :: nav}"></div>
-<form id="pound_form">
-    <span class="form-title">修改磅单数据</span>
+<div class="form-container">
+    <form id="pound_form">
 
-    <!-- 隐藏的ID字段，用于标识修改的记录 -->
-    <input type="hidden" name="id" th:value="${poundBillModel.id}"/>
-    <div class="input-group">
-        <span class="input-group-addon input-desc">出入库类型</span>
-        <select th:field="*{poundBillModel.IOType}" class="form-control" name="IOType"
-                aria-describedby="basic-addon3">
-            <option value="1">入库</option>
-            <option value="0">出库</option>
-        </select>
-    </div>
+        <span class="form-title">修改磅单数据</span>
 
-    <div class="input-group">
-        <span class="input-group-addon input-desc">煤种</span>
-        <select th:field="*{poundBillModel.coalType}" class="form-control" name="coalType" id="coalType"
-                aria-describedby="basic-addon3">
-            <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}"
-                    th:text="${coalType.name}">
-            </option>
-        </select>
-    </div>
-
-    <div class="input-group">
-        <span class="input-group-addon input-desc">车牌号</span>
-        <input th:value="${poundBillModel.plateNumber}" type="text" class="form-control" name="plate-number"
-               aria-describedby="basic-addon3">
-    </div>
-
-    <div class="input-group">
-        <span class="input-group-addon input-desc">毛重</span>
-        <input th:value="${poundBillModel.grossWeight}" type="text" class="form-control weigh" name="gross-weight"
-               aria-describedby="basic-addon3">
-        <span class="exclude-border input-group-addon">吨</span>
-        <div class="exclude-border input-group-addon">
-            <span>自动追加两位小数点</span>
+        <!-- 隐藏的ID字段，用于标识修改的记录 -->
+        <input type="hidden" name="id" th:value="${poundBillModel.id}"/>
+        <div class="input-group">
+            <span class="input-group-addon input-desc">出入库类型</span>
+            <select th:field="*{poundBillModel.IOType}" class="form-control" name="IOType"
+                    aria-describedby="basic-addon3">
+                <option value="1">入库</option>
+                <option value="0">出库</option>
+            </select>
         </div>
-    </div>
 
-    <div class="input-group">
-        <span class="input-group-addon input-desc">皮重</span>
-        <input th:value="${poundBillModel.tareWeight}" type="text" class="form-control weigh" name="tare"
-               aria-describedby="basic-addon3">
-        <span class="exclude-border input-group-addon">吨</span>
-        <div class="exclude-border input-group-addon">
-            <span>自动追加两位小数点</span>
+        <div class="input-group">
+            <span class="input-group-addon input-desc">煤种</span>
+            <select th:field="*{poundBillModel.coalType}" class="form-control" name="coalType" id="coalType"
+                    aria-describedby="basic-addon3">
+                <option th:each="coalType : ${coalTypes}" th:value="${coalType.name}"
+                        th:text="${coalType.name}">
+                </option>
+            </select>
         </div>
-    </div>
 
-    <div class="input-group">
-        <span class="input-group-addon input-desc">原发</span>
-        <input th:value="${poundBillModel.primaryWeight}" type="text" class="form-control weigh" name="primary-weight"
-               aria-describedby="basic-addon3">
-        <span class="exclude-border input-group-addon">吨</span>
-        <div class="exclude-border input-group-addon">
-            <span>自动追加两位小数点</span>
+        <div class="input-group">
+            <span class="input-group-addon input-desc">车牌号</span>
+            <input th:value="${poundBillModel.plateNumber}" type="text" class="form-control" name="plate-number"
+                   aria-describedby="basic-addon3">
         </div>
-    </div>
 
-    <div class="input-group">
-        <span class="input-group-addon input-desc get-now-time">打印时间(点击设置现在)</span>
-        <input th:unless="${poundBillModel.printTime}" value=""  type="text" class="form-control" name="print-time" aria-describedby="basic-addon3">
-        <input th:if="${poundBillModel.printTime}" th:value="${#temporals.format(poundBillModel.printTime, 'HH:mm:ss')}" type="text" class="form-control" name="print-time" aria-describedby="basic-addon3">
-    </div>
+        <div class="input-group">
+            <span class="input-group-addon input-desc">毛重</span>
+            <input th:value="${poundBillModel.grossWeight}" type="text" class="form-control weigh" name="gross-weight"
+                   aria-describedby="basic-addon3">
+            <span class="exclude-border input-group-addon">吨</span>
+            <div class="exclude-border input-group-addon">
+                <span>自动追加两位小数点</span>
+            </div>
+        </div>
 
-    <div class="input-group">
-        <span class="input-group-addon input-desc">发货单位</span>
-        <input th:value="${poundBillModel.outputUnit}" type="text" class="form-control" name="output-unit"
-               aria-describedby="basic-addon3">
-    </div>
+        <div class="input-group">
+            <span class="input-group-addon input-desc">皮重</span>
+            <input th:value="${poundBillModel.tareWeight}" type="text" class="form-control weigh" name="tare"
+                   aria-describedby="basic-addon3">
+            <span class="exclude-border input-group-addon">吨</span>
+            <div class="exclude-border input-group-addon">
+                <span>自动追加两位小数点</span>
+            </div>
+        </div>
 
-    <div class="input-group">
-        <span class="input-group-addon input-desc">收货单位</span>
-        <input th:value="${poundBillModel.inputUnit}" type="text" class="form-control" name="input-unit"
-               aria-describedby="basic-addon3">
-    </div>
+        <div class="input-group">
+            <span class="input-group-addon input-desc">原发</span>
+            <input th:value="${poundBillModel.primaryWeight}" type="text" class="form-control weigh"
+                   name="primary-weight"
+                   aria-describedby="basic-addon3">
+            <span class="exclude-border input-group-addon">吨</span>
+            <div class="exclude-border input-group-addon">
+                <span>自动追加两位小数点</span>
+            </div>
+        </div>
 
-    <div class="input-group">
-        <span class="input-group-addon input-desc">司磅员</span>
-        <select th:selected="${poundBillModel.weigher}" class="form-control" name="weigher"
-                aria-describedby="basic-addon3">
-            <option value="罗亚平" selected>罗亚平</option>
-        </select>
-    </div>
+        <div class="input-group">
+            <span class="input-group-addon input-desc get-now-time">打印时间(点击设置现在)</span>
+            <input th:unless="${poundBillModel.printTime}" value="" type="text" class="form-control" name="print-time"
+                   aria-describedby="basic-addon3">
+            <input th:if="${poundBillModel.printTime}"
+                   th:value="${#temporals.format(poundBillModel.printTime, 'HH:mm:ss')}" type="text"
+                   class="form-control" name="print-time" aria-describedby="basic-addon3">
+        </div>
 
-    <input class="input-group" type="submit" value="确认修改"/>
-    <div style="height: 20px"></div>
-</form>
+        <div class="input-group">
+            <span class="input-group-addon input-desc">发货单位</span>
+            <input th:value="${poundBillModel.outputUnit}" type="text" class="form-control" name="output-unit"
+                   aria-describedby="basic-addon3">
+        </div>
 
+        <div class="input-group">
+            <span class="input-group-addon input-desc">收货单位</span>
+            <input th:value="${poundBillModel.inputUnit}" type="text" class="form-control" name="input-unit"
+                   aria-describedby="basic-addon3">
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-addon input-desc">司磅员</span>
+            <select th:selected="${poundBillModel.weigher}" class="form-control" name="weigher"
+                    aria-describedby="basic-addon3">
+                <option value="罗亚平" selected>罗亚平</option>
+            </select>
+        </div>
+
+        <input class="input-group" type="submit" value="确认修改"/>
+        <div style="height: 20px"></div>
+    </form>
+</div>
 
 </body>
 <script src="/js/js-cookie.js"></script>
@@ -262,7 +274,7 @@
             dto.inputUnit = inputUnit.val();
             dto.weigher = weigher.val();
 
-            Cookies.set('currentModifyID', dto.id, { expires: 0.2 });
+            Cookies.set('currentModifyID', dto.id, {expires: 0.2});
 
             $.ajax({
                 url: '/update/' + dto.id + '?IOType=' + dto.IOType,

@@ -9,6 +9,8 @@
 <body>
 <div th:fragment="nav" class="nav">
     <script src="/js/dayjs.min.js"></script>
+    <script src="/js/jQuery-3.7.1.js"></script>
+    <script src="/js/js-cookie.js"></script>
     <nav class="navbar navbar-light">
         <div class="container-fluid">
             <div class="navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -35,7 +37,8 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li style="background-color: darkviolet"><a href="/recycle-bin?pageNum=1&pageSize=50">回收站</a></li>
+                    <li style="background-color: darkviolet"><a href="/recycle-bin?pageNum=1&pageSize=50">回收站</a>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">入库数据汇总 <span class="caret"></span></a>
@@ -59,6 +62,9 @@
                             <li role="separator" class="divider"></li>
                             <li><a class="select-time-out" href="#">选择时间</a></li>
                         </ul>
+                    </li>
+                    <li>
+                        <a class="log-out"><span class="glyphicon glyphicon-log-out">注销</span></a>
                     </li>
                 </ul>
             </div>
@@ -259,6 +265,20 @@
             $selectTimeOut.on('click', function () {
                 fixModal("0");
             });
+        })
+    </script>
+    <script>
+        $(function () {
+            $('.log-out').on('click', function () {
+                Cookies.set('user', null);
+                $.ajax({
+                    url: '/logout',
+                    type: 'POST',
+                    success: function () {
+                        window.location.href = '/login';
+                    }
+                })
+            })
         })
     </script>
 
