@@ -1,37 +1,71 @@
 package io.github.weightrack.controller;
 
-import io.github.weightrack.service.UserService;
-import io.github.weightrack.exception.UserNotFound;
+import com.alibaba.fastjson2.JSON;
+import io.github.weightrack.dto.LogonDTO;
+import io.github.weightrack.dto.SignInDTO;
+import io.github.weightrack.exception.UsersException;
 import io.github.weightrack.module.User;
+import io.github.weightrack.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+@Slf4j
 @Controller
 public class UserController {
+
+    @Autowired
+    UserService userService;
 
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 
-    @Autowired
-    UserService userService;
-
+    @ResponseBody
     @PostMapping("/login")
-    public String login(HttpServletRequest request, @RequestParam("username") String username, @RequestParam("password") String password, Model model) {
+    public String login(HttpServletRequest request, @RequestBody SignInDTO signInDTO) {
+        LogonDTO logonDTO = new LogonDTO();
         try {
-            User user = userService.findUserByUsername(username, password);
+            User user = userService.findUserByUsername(signInDTO.getUsername(), signInDTO.getPassword());
             request.getSession().setAttribute("user", user);
-        } catch (UserNotFound userNotFound) {
-            model.addAttribute("error", userNotFound.getMessage());
-            return "login";
+            log.info("{}登录成功", user.getUsername());
+            logonDTO.setUser(user);
+            return JSON.toJSONString(logonDTO);
+        } catch (UsersException userNotFound) {
+            log.info("{}尝试登录失败", signInDTO.getUsername());
+            logonDTO.setUser(null);
+            logonDTO.setMessage(userNotFound.getMessage());
+            return JSON.toJSONString(logonDTO);
         }
-        model.addAttribute("success", "ok");
-        return "login";
+    }
+
+    @ResponseBody
+    @PostMapping("/signup")
+    public String signup(HttpServletRequest request, @RequestBody SignInDTO signInDTO) {
+        LogonDTO logonDTO = new LogonDTO();
+        try {
+            User user = userService.insertUser(signInDTO.getUsername(), signInDTO.getPassword(), signInDTO.getRealName());
+            request.getSession().setAttribute("user", user);
+            log.info("{}注册成功", user.getUsername());
+            logonDTO.setUser(user);
+            logonDTO.setMessage("注册成功");
+            return JSON.toJSONString(logonDTO);
+        } catch (UsersException usersException) {
+            log.info("{}尝试注册失败", signInDTO.getUsername());
+            logonDTO.setMessage(usersException.getMessage());
+            return JSON.toJSONString(logonDTO);
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest request) {
+        request.getSession().invalidate();
     }
 }
