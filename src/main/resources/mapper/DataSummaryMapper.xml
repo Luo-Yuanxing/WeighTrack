@@ -15,6 +15,7 @@
         <if test="IOType == 0">
             , group_concat(inputUnit separator ',') AS 'unit'
         </if>
+        , sum(printed) as totalTrips
         FROM
         poundbill
         WHERE

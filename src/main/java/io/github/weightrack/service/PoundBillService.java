@@ -4,6 +4,7 @@ import io.github.weightrack.dto.UpdateDTO;
 import io.github.weightrack.mapper.PoundBillMapper;
 import io.github.weightrack.mapper.ShowListMapper;
 import io.github.weightrack.module.PoundBillModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 
+@Slf4j
 @Service
 public class PoundBillService {
 
@@ -118,6 +120,7 @@ public class PoundBillService {
         PoundBillModel[] poundBillModels = poundBillMapper.selectAll();
         for (PoundBillModel poundBillModel : poundBillModels) {
             if (poundBillModel.getPrintTime() == null && !poundBillModel.getCreatTime().toLocalDate().equals(LocalDate.now())) {
+                log.info("id: {} 已放入回收站", poundBillModel.getId());
                 poundBillMapper.deleteById(poundBillModel.getId());
             }
         }

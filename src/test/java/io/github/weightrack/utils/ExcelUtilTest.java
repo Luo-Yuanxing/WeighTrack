@@ -12,13 +12,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExcelUtil {
+public class ExcelUtilTest {
 
-    public static List<PoundBillModel> insertPoundBillByExcel() throws Exception {
+    public static List<PoundBillModel> insertPoundBillByExcel_IN() throws Exception {
         //  NUMERIC	 STRING	 STRING	 STRING	 NUMERIC(毛重)	 NUMERIC	 FORMULA	 NUMERIC	 FORMULA	 NUMERIC	 STRING	 STRING	 STRING	 BLANK
         List<PoundBillModel> poundBillModels = new ArrayList<>();
 
-        FileInputStream fileIn = new FileInputStream("D:\\零时文件\\WeChat Files\\luoyaping2012\\FileStorage\\File\\2024-12\\每日过磅明细-1.xlsx");
+        FileInputStream fileIn = new FileInputStream("C:\\Users\\lyp\\IdeaProjects\\WeighTrack\\过磅明细.xlsx");
         Workbook workbook = new XSSFWorkbook(fileIn);
         Sheet sheet = workbook.getSheet("入库明细");
         int length = sheet.getLastRowNum();
@@ -117,7 +117,7 @@ public class ExcelUtil {
         //  NUMERIC	 STRING	 STRING	 STRING	 NUMERIC(毛重)	 NUMERIC	 FORMULA	 NUMERIC	 FORMULA	 NUMERIC	 STRING	 STRING	 STRING	 BLANK
         List<PoundBillModel> poundBillModels = new ArrayList<>();
 
-        FileInputStream fileIn = new FileInputStream("D:\\零时文件\\WeChat Files\\luoyaping2012\\FileStorage\\File\\2024-12\\每日过磅明细-1.xlsx");
+        FileInputStream fileIn = new FileInputStream("C:\\Users\\lyp\\IdeaProjects\\WeighTrack\\过磅明细.xlsx");
         Workbook workbook = new XSSFWorkbook(fileIn);
         Sheet sheet = workbook.getSheet("出库明细");
         int length = sheet.getLastRowNum();

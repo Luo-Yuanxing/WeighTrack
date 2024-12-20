@@ -2,7 +2,7 @@ package io.github.weightrack;
 
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.service.PoundBillService;
-import io.github.weightrack.utils.ExcelUtil;
+import io.github.weightrack.utils.ExcelUtilTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class WeighTrackApplicationTests {
 
     @Test
     void contextLoads() throws Exception {
-        List<PoundBillModel> poundBillModelsIn = ExcelUtil.insertPoundBillByExcel();
+        List<PoundBillModel> poundBillModelsIn = ExcelUtilTest.insertPoundBillByExcel_IN();
         for (PoundBillModel poundBillModel : poundBillModelsIn) {
             if (poundBillModel.getCoalType() != null) {
                 poundBillService.insertPoundBill(poundBillModel);
@@ -27,7 +27,7 @@ public class WeighTrackApplicationTests {
             }
         }
 
-        List<PoundBillModel> poundBillModelsOut = ExcelUtil.insertPoundBillByExcel_OUT();
+        List<PoundBillModel> poundBillModelsOut = ExcelUtilTest.insertPoundBillByExcel_OUT();
         for (PoundBillModel poundBillModel : poundBillModelsOut) {
             if (poundBillModel.getCoalType() != null) {
                 poundBillService.insertPoundBill(poundBillModel);
