@@ -22,7 +22,7 @@ public interface RecycleBinMapper {
     int delete(int id);
 
     @Delete("delete from poundbill where removed = 1")
-    void deleteAll();
+    int deleteAll();
 
     @Select("SELECT * FROM poundbill WHERE removed = 1 and (#{plateNumber} = '' OR plateNumber LIKE CONCAT('%', #{plateNumber}, '%')) and (#{poundId} = '' OR poundId LIKE CONCAT('%', #{poundId}, '%')) ORDER BY creatTime DESC")
     PoundBillModel[] showListIsRemoved(String plateNumber, String poundId);

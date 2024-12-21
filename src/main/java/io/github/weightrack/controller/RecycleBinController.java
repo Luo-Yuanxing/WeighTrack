@@ -2,6 +2,7 @@ package io.github.weightrack.controller;
 
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.service.RecycleBinService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+@Slf4j
 @Controller
 public class RecycleBinController {
 
@@ -40,18 +42,21 @@ public class RecycleBinController {
     @ResponseBody
     @GetMapping("/recycle-bin/recover/{id}")
     public boolean recover(@PathVariable int id) {
+        log.info("恢复回收站数据，id = {}", id);
         return recycleBinService.recover(id);
     }
     @ResponseBody
     @GetMapping("/recycle-bin/delete/{id}")
     public boolean delete(@PathVariable int id) {
+        log.info("删除回收站数据，id = {}", id);
         return recycleBinService.delete(id);
     }
 
     @ResponseBody
     @GetMapping("/recycle-bin/delete-all")
     public void deleteAll() {
-        recycleBinService.deleteAll();
+        int length = recycleBinService.deleteAll();
+        log.info("回收站已清空，清理{}条数据", length);
     }
 
     @GetMapping("/recycle/plate-number-filter")

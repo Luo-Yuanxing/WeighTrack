@@ -122,8 +122,13 @@
             dto.password = $("#password").val();
             dto.realName = $("#real-name").val();
 
-            $('.real-name-input-group').css('display', 'block');
+            let $realNameInputGroup = $('.real-name-input-group');
+            if ($realNameInputGroup.css('display') === 'none') {
+                $realNameInputGroup.css('display', 'block');
+                return;
+            }
             if (!dto.username || !dto.password || !dto.realName) {
+                $('.error-message > div').text('缺少用户名、密码、司磅员名称');
                 return;
             }
             $.ajax({
@@ -153,11 +158,13 @@
             dto.password = $("#password").val();
             dto.realName = $("#real-name").val();
 
-            if ($('.real-name-input-group').css('display') === 'block') {
-                $('.real-name-input-group').css('display', 'none');
+            let $realNameInputGroup = $('.real-name-input-group');
+            if ($realNameInputGroup.css('display') === 'block') {
+                $realNameInputGroup.css('display', 'none');
                 return;
             }
             if (!dto.username || !dto.password) {
+                $('.error-message > div').text('缺少用户名或密码');
                 return;
             }
             $.ajax({

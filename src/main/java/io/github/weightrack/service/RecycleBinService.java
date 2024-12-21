@@ -32,8 +32,8 @@ public class RecycleBinService {
         return recycleBinMapper.delete(id) == 1;
     }
 
-    public void deleteAll() {
-        recycleBinMapper.deleteAll();
+    public int deleteAll() {
+        return recycleBinMapper.deleteAll();
     }
 
     public Object showListIsRemoved(String plateNumber, String poundId) {

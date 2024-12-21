@@ -6,6 +6,7 @@ import io.github.weightrack.module.User;
 import io.github.weightrack.service.CoalTypeService;
 import io.github.weightrack.service.PoundBillService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 
+@Slf4j
 @Controller
 public class PoundBillController {
 
@@ -92,6 +94,7 @@ public class PoundBillController {
     @ResponseBody
     @GetMapping("/delete/{id}")
     public void deletePoundBillById(@PathVariable("id") int id) {
+        log.info("id: {}已放入回收站", id);
         poundBillService.deleteById(id);
     }
 }

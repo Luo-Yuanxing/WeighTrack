@@ -3,6 +3,7 @@ package io.github.weightrack.service;
 import io.github.weightrack.exception.UsersException;
 import io.github.weightrack.mapper.UserMapper;
 import io.github.weightrack.module.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,7 +13,13 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;  // 注入MyBatis的Mapper
 
-    public User findUserByUsername(String username, String password) throws UsersException {
+    public User findUserByUsername(@NotNull String username, @NotNull String password) throws UsersException {
+        if (username.isEmpty()) {
+            throw new UsersException("用户名不能为空");
+        }
+        if (password.isEmpty()) {
+            throw new UsersException("密码不能为空");
+        }
         User user = userMapper.findByUsername(username);
         if (user == null) {
             throw new UsersException("未找到此用户");
@@ -24,7 +31,16 @@ public class UserService {
         return user;
     }
 
-    public User insertUser(String username, String password, String realName) throws UsersException {
+    public User insertUser(@NotNull String username, @NotNull String password, @NotNull String realName) throws UsersException {
+        if (username.isEmpty()) {
+            throw new UsersException("用户名不能为空");
+        }
+        if (password.isEmpty()) {
+            throw new UsersException("密码不能为空");
+        }
+        if (realName.isEmpty()) {
+            throw new UsersException("司磅员名称不能为空");
+        }
         User user = userMapper.findByUsername(username);
         if (user != null) {
             userMapper.updateLastLogin(username);
