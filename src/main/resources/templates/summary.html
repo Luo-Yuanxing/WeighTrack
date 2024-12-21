@@ -213,18 +213,8 @@
 
                 // 插入单位
                 let units = [...new Set(row['unit'].split(','))];
-                for (let unit of units) {
-                    for (let index in unit) {
-                        if (unit[index].length === 0) {
-                            unit.pop();
-                        }
-                    }
-                }
-                if (units.length === 1 && units[0].length === 0) {
-                    units = ['#']
-                    console.log(units)
-                }
-                $gb.append(`<div class="unit">${units}</div>`)
+                $gb.append(`<div class="unit">${row['unit']}</div>`);
+
                 // 插入车次
                 $gb.append(`<div class="weight total-trips">${row['totalTrips']}</div>`)
                 // 插入行合计

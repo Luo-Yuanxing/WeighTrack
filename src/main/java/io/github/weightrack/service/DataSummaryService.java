@@ -7,8 +7,7 @@ import org.intellij.lang.annotations.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DataSummaryService {
@@ -20,7 +19,6 @@ public class DataSummaryService {
     DataSummaryMapper dataSummaryMapper;
 
     public List<Map<String, Object>> getCountGroupByCoalType(String IOType, String start, String end) {
-        //        System.out.println(countByCoalTypes);
         return dataSummaryMapper.getCountGroupByCoalType(IOType, start, end);
     }
 
@@ -30,6 +28,19 @@ public class DataSummaryService {
 
         List<Map<String, Object>> countGroupByDate;
         countGroupByDate = dataSummaryMapper.getCountGroupByDate(IOType, start, end, coalTypes);
+        for (Map<String, Object> map : countGroupByDate) {
+            if (map.get("unit").toString().isEmpty()) {
+                map.put("unit", "#");
+                continue;
+            }
+            String[] units = map.get("unit").toString().split(",");
+            Set<String> set = new HashSet<>(Arrays.asList(units));
+            set.remove("");
+            if (set.isEmpty()) {
+                set.add("#");
+            }
+            map.put("unit", String.join(",", set));
+        }
         return countGroupByDate;
     }
 }
