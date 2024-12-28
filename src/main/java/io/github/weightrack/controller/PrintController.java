@@ -20,11 +20,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Controller
 public class PrintController {
 
-    @Autowired
-    PrintService printService;
-
     // 使用一个线程安全的队列来串行化请求
     private final BlockingQueue<Runnable> printQueue = new LinkedBlockingQueue<>();
+    @Autowired
+    PrintService printService;
 
     public PrintController() {
         // 启动一个线程来按顺序处理队列中的打印任务
