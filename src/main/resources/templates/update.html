@@ -23,6 +23,7 @@
         }
 
         .form-container {
+            height: 85vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -42,7 +43,8 @@
             font-size: 24px; /* 字体大小 */
             font-weight: bold; /* 加粗 */
             color: #343a40; /* 颜色 */
-            margin-bottom: 20px; /* 底部间距 */
+            margin-top: 50px;
+            margin-bottom: 30px;
             text-transform: uppercase; /* 全部大写（可选） */
             letter-spacing: 1px; /* 字间距（可选） */
         }
@@ -58,7 +60,7 @@
 
         input[type="submit"] {
             display: block;
-            margin-top: 50px;
+            margin-top: 60px;
             padding: 10px;
             font-size: 16px;
             background-color: #007bff;
@@ -125,9 +127,6 @@
             <input th:value="${poundBillModel.grossWeight}" type="text" class="form-control weigh" name="gross-weight"
                    aria-describedby="basic-addon3">
             <span class="exclude-border input-group-addon">吨</span>
-            <div class="exclude-border input-group-addon">
-                <span>自动追加两位小数点</span>
-            </div>
         </div>
 
         <div class="input-group">
@@ -135,9 +134,6 @@
             <input th:value="${poundBillModel.tareWeight}" type="text" class="form-control weigh" name="tare"
                    aria-describedby="basic-addon3">
             <span class="exclude-border input-group-addon">吨</span>
-            <div class="exclude-border input-group-addon">
-                <span>自动追加两位小数点</span>
-            </div>
         </div>
 
         <div class="input-group">
@@ -146,9 +142,6 @@
                    name="primary-weight"
                    aria-describedby="basic-addon3">
             <span class="exclude-border input-group-addon">吨</span>
-            <div class="exclude-border input-group-addon">
-                <span>自动追加两位小数点</span>
-            </div>
         </div>
 
         <div class="input-group">

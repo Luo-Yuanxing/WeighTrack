@@ -175,7 +175,7 @@
         <option value="printed">已打印</option>
     </select>
 </div>
-<div class="today-summary-panel">
+<div th:if="${today}" class="today-summary-panel">
     <div class="panel panel-primary" style="display: inline-block">
         <div class="panel-heading">已登记：</div>
         <div class="panel-body" th:text="${todaySummaryPanel.getRegistered()}"></div>
