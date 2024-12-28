@@ -137,6 +137,14 @@
             background-color: #a82540 !important;
         }
 
+        .today-summary-panel div {
+            display: inline-block;
+        }
+        .panel {
+            margin-bottom: 0;
+            border: 0;
+        }
+
     </style>
 
 
@@ -157,8 +165,7 @@
     <button id="print-all">打印本页全部数据</button>
     <button id="print-selected">打印已选择的记录</button>
     <button class="delete-style" id="delete-selected">删除已选择的记录</button>
-    <button th:if="${today && IOType == '1'}" id="output-excel">将今日入库数据导入excel</button>
-    <button th:if="${today && IOType == '0'}" id="output-excel">将今日出库数据导入excel</button>
+    <button id="output-excel">导出到Excel</button>
     <span id="select-plate-number" class="glyphicon glyphicon-search"></span>
     <input type="text" name="plate-number" placeholder="车牌号">
     <input type="text" name="pound-id" placeholder="磅单编号">
@@ -167,9 +174,21 @@
         <option value="already-in-pound">已过空</option>
         <option value="printed">已打印</option>
     </select>
-
 </div>
-
+<div class="today-summary-panel">
+    <div class="panel panel-primary" style="display: inline-block">
+        <div class="panel-heading">已登记：</div>
+        <div class="panel-body" th:text="${todaySummaryPanel.getRegistered()}"></div>
+    </div>
+    <div class="panel panel-danger" style="display: inline-block">
+        <div class="panel-heading">未过空：</div>
+        <div class="panel-body" th:text="${todaySummaryPanel.getEmptyWeighing()}"></div>
+    </div>
+    <div class="panel panel-success" style="display: inline-block">
+        <div class="panel-heading">已过空：</div>
+        <div class="panel-body" th:text="${todaySummaryPanel.getFullWeighing()}"></div>
+    </div>
+</div>
 
 <input type="file" id="fileInput" style="display: none">
 

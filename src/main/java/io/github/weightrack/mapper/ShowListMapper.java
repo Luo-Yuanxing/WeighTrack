@@ -40,4 +40,13 @@ public interface ShowListMapper {
 
     @Select("SELECT * FROM poundbill WHERE removed = 0 and (#{plateNumber} = '' OR plateNumber LIKE CONCAT('%', #{plateNumber}, '%')) and (#{poundId} = '' OR poundId LIKE CONCAT('%', #{poundId}, '%')) and printed = true ORDER BY creatTime DESC")
     PoundBillModel[] showListByPlateNumberPrinted(String plateNumber, String poundId);
+
+    @Select("select count(*) from poundbill where IOType = #{IOType} and removed = 0 and date(now()) = date(creatTime)")
+    int getTodayCount(String IOType);
+
+    @Select("select count(*) from poundbill where tareWeight = 0 and removed = 0 and date(now()) = date(creatTime) and IOType = #{IOType}")
+    int getTodayEmptyWeighing(String IOType);
+
+    @Select("select count(*) from poundbill where tareWeight != 0 and removed = 0 and date(now()) = date(creatTime) and IOType = #{IOType}")
+    int getTodayFullWeighing(String IOType);
 }

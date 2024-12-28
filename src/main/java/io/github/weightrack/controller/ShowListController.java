@@ -1,7 +1,7 @@
 package io.github.weightrack.controller;
 
-import io.github.weightrack.service.ShowListService;
 import io.github.weightrack.module.PoundBillModel;
+import io.github.weightrack.service.ShowListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,15 +10,14 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class ShowListController {
 
+    private final int pageSize = 50;
     @Autowired
     ShowListService showListService;
-
-    private final int pageSize = 50;
 
     @ResponseBody
     @PostMapping("/showList/page_num")
     public int getPageNumber(@RequestParam("isToday") boolean isToday,
-                                 @RequestParam("IOType") String IOType) {
+                             @RequestParam("IOType") String IOType) {
         return showListService.getPageNumber(pageSize, isToday, IOType);
     }
 
@@ -55,6 +54,7 @@ public class ShowListController {
         model.addAttribute("poundBillModels", poundBillModels);
         model.addAttribute("IOType", "1");
         model.addAttribute("today", true);
+        model.addAttribute("todaySummaryPanel", showListService.getTodaySummaryPanel("1"));
         return "showList";
     }
 
@@ -64,6 +64,7 @@ public class ShowListController {
         model.addAttribute("poundBillModels", poundBillModels);
         model.addAttribute("IOType", "0");
         model.addAttribute("today", true);
+        model.addAttribute("todaySummaryPanel", showListService.getTodaySummaryPanel("0"));
         return "showList";
     }
 
@@ -73,6 +74,7 @@ public class ShowListController {
         model.addAttribute("poundBillModels", poundBillModels);
         model.addAttribute("IOType", "all");
         model.addAttribute("today", true);
+        model.addAttribute("todaySummaryPanel", showListService.getTodaySummaryPanel("all"));
         return "showList";
     }
 

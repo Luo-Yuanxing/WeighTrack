@@ -2,6 +2,7 @@ package io.github.weightrack.service;
 
 import io.github.weightrack.mapper.ShowListMapper;
 import io.github.weightrack.module.PoundBillModel;
+import io.github.weightrack.module.TodaySummaryPanel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,5 +67,13 @@ public class ShowListService {
                 yield null;
             }
         };
+    }
+
+    public TodaySummaryPanel getTodaySummaryPanel(String IOType) {
+        TodaySummaryPanel todaySummaryPanel = new TodaySummaryPanel();
+        todaySummaryPanel.setRegistered(showListMapper.getTodayCount(IOType));
+        todaySummaryPanel.setEmptyWeighing(showListMapper.getTodayEmptyWeighing(IOType));
+        todaySummaryPanel.setFullWeighing(showListMapper.getTodayFullWeighing(IOType));
+        return todaySummaryPanel;
     }
 }
