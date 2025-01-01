@@ -12,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 @Slf4j
@@ -38,6 +36,7 @@ public class PoundBillController {
             @RequestParam("input-unit") String inputUnit,
             @RequestParam("weigher") String weigher,
             @RequestParam("other-coal-type") String otherCoalType,
+            @RequestParam("creator-id") String creatorId,
             HttpServletRequest request) {
 
         if (coalType.equals("other")) {
@@ -45,11 +44,9 @@ public class PoundBillController {
             coalTypeService.insertCoalType(coalType);
         }
 
-        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
+        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(creatorId, IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
         Object user = request.getSession().getAttribute("user");
-        if (user instanceof User) {
-            poundBillModel.setCreatorId(((User) user).getId());
-        } else {
+        if (!(user instanceof User)) {
             return "redirect:/login";
         }
 

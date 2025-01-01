@@ -6,6 +6,7 @@ import lombok.Data;
 @SuppressWarnings("ALL")
 @Data
 public class LogonDTO {
-    User user;
-    String message;
+    private User user;
+    private String message;
+    private int userId;
 }

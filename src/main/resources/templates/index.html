@@ -119,7 +119,7 @@
     $(function () {
         let userInput = Cookies.get('userInput');
         userInput = JSON.parse(userInput);
-        console.log(userInput)
+        // console.log(userInput)
         if (userInput) {
             if (userInput.IOType) {
                 $('.IOType').val(userInput.IOType);
@@ -203,9 +203,13 @@
             </div>
             <div class="input-group">
                 <span class="input-group-addon input-desc">司磅员</span>
-                <select class="form-control" name="weigher" aria-describedby="basic-addon3">
-                </select>
+                <input class="weigher form-control" name="weigher" aria-describedby="basic-addon3">
             </div>
+            <!-- creator-id-->
+            <div class="input-group" style="display: none;">
+                <input type="text" class="creator-id form-control" name="creator-id" aria-describedby="basic-addon3">
+            </div>
+
             <input class="input-group" type="submit" value="提交"/>
             <div style="height: 20px"></div>
 
@@ -213,7 +217,6 @@
     </div>
 
 </div>
-<script src="/js/form-date.js"></script>
 <!--拦截回车提交表单-->
 <script>
     $('#pound_form').on('keydown', function (event) {
@@ -423,21 +426,13 @@
 <!--司磅员-->
 <script>
     $(function () {
-        let $weigher = $('#pound_form > .input-group > select[name="weigher"]');
-        $.ajax({
-            url: '/weigher-list',
-            method: 'GET',
-            success: function (data) {
-                data = JSON.parse(data);
-                for (let weigher of data) {
-                    $weigher.append(`
-                    <option value="${weigher}">${weigher}</option>
-                `)
-                }
-                let currentUserRealName = JSON.parse(Cookies.get('user')).realName;
-                $weigher.val(currentUserRealName);
-            }
-        })
+        let $weigher = $('.weigher');
+        let currentUserRealName = JSON.parse(Cookies.get('user')).realName;
+        $weigher.val(currentUserRealName);
+
+        let $creatorId = $('.creator-id');
+        let currentUserId = JSON.parse(Cookies.get('user')).id;
+        $creatorId.val(currentUserId);
     })
 </script>
 

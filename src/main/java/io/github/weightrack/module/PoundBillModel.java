@@ -49,7 +49,8 @@ public class PoundBillModel {
 
     private String poundID;
 
-    public static PoundBillModel createPoundBillModel(String IOType,
+    public static PoundBillModel createPoundBillModel(String creatorId,
+                                                      String IOType,
                                                       String coalType,
                                                       String plateNumber,
                                                       String grossWeight,
@@ -68,7 +69,7 @@ public class PoundBillModel {
         poundBillModel.setOutputUnit(outputUnit);
         poundBillModel.setInputUnit(inputUnit);
         poundBillModel.setWeigher(weigher);
-
+        poundBillModel.setCreatorId(Integer.parseInt(creatorId));
         return poundBillModel;
     }
 
@@ -83,7 +84,6 @@ public class PoundBillModel {
         poundBillModel.setPrintTimeString(updateDTO.getPrintTime());
         poundBillModel.setOutputUnit(updateDTO.getOutputUnit());
         poundBillModel.setInputUnit(updateDTO.getInputUnit());
-        poundBillModel.setWeigher(updateDTO.getWeigher());
         return poundBillModel;
     }
 }
