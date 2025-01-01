@@ -167,10 +167,7 @@
 
         <div class="input-group">
             <span class="input-group-addon input-desc">司磅员</span>
-            <select th:selected="${poundBillModel.weigher}" class="form-control" name="weigher"
-                    aria-describedby="basic-addon3">
-                <option value="罗亚平" selected>罗亚平</option>
-            </select>
+            <input th:value="${poundBillModel.weigher}" readonly="readonly" class="weigher form-control" name="weigher" aria-describedby="basic-addon3">
         </div>
 
         <input class="input-group" type="submit" value="确认修改"/>
@@ -304,6 +301,11 @@
             })
         })
     })
+</script>
+
+<!--司磅员-->
+<script>
+
 </script>
 </html>
 

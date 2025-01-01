@@ -11,7 +11,7 @@ public interface PoundBillMapper {
             "VALUES (#{IOType}, #{coalType}, #{plateNumber}, #{grossWeight}, #{tareWeight}, #{netWeight}, #{primaryWeight}, #{profitLossWeight}, #{emptyLoadTime}, #{fullLoadTime}, #{outputUnit}, #{inputUnit}, #{weigher}, #{modifyTime}, #{creatorId}, #{poundID}, #{printTime}, #{printed}, #{creatTime})")
     void insert(PoundBillModel poundBillModel);
 
-    @Update("update poundbill set IOType=#{IOType}, coalType=#{coalType}, plateNumber=#{plateNumber}, grossWeight=#{grossWeight}, tareWeight=#{tareWeight}, netWeight=#{netWeight}, primaryWeight=#{primaryWeight}, profitLossWeight=#{profitLossWeight}, outputUnit=#{outputUnit}, inputUnit=#{inputUnit}, weigher=#{weigher}, printTime=#{printTime}, modifyTime=now() where id=#{id}")
+    @Update("update poundbill set IOType=#{IOType}, coalType=#{coalType}, plateNumber=#{plateNumber}, grossWeight=#{grossWeight}, tareWeight=#{tareWeight}, netWeight=#{netWeight}, primaryWeight=#{primaryWeight}, profitLossWeight=#{profitLossWeight}, outputUnit=#{outputUnit}, inputUnit=#{inputUnit}, printTime=#{printTime}, modifyTime=now() where id=#{id}")
     void update(PoundBillModel poundBillModel);
 
     @Select("select * from poundbill where id = #{id}")

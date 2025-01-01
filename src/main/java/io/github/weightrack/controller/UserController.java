@@ -32,13 +32,13 @@ public class UserController {
     public String login(HttpServletRequest request, @RequestBody SignInDTO signInDTO) {
         LogonDTO logonDTO = new LogonDTO();
         try {
-            User user = userService.findUserByUsername(signInDTO.getUsername(), signInDTO.getPassword());
+            User user = userService.findUserByUsernameAndPassword(signInDTO.getUsername(), signInDTO.getPassword());
             request.getSession().setAttribute("user", user);
-            log.info("{}登录成功", user.getUsername());
+            log.info("{} 登录成功", user.getUsername());
             logonDTO.setUser(user);
             return JSON.toJSONString(logonDTO);
         } catch (UsersException userNotFound) {
-            log.info("{}尝试登录失败", signInDTO.getUsername());
+            log.info("{} 尝试登录失败", signInDTO.getUsername());
             logonDTO.setUser(null);
             logonDTO.setMessage(userNotFound.getMessage());
             return JSON.toJSONString(logonDTO);
@@ -50,14 +50,14 @@ public class UserController {
     public String signup(HttpServletRequest request, @RequestBody SignInDTO signInDTO) {
         LogonDTO logonDTO = new LogonDTO();
         try {
-            User user = userService.insertUser(signInDTO.getUsername(), signInDTO.getPassword(), signInDTO.getRealName());
+            User user = userService.insertUser(new User(signInDTO.getUsername(), signInDTO.getPassword(), signInDTO.getRealName(), "normal"));
             request.getSession().setAttribute("user", user);
-            log.info("{}注册成功", user.getUsername());
+            log.info("{} 注册成功", user.getUsername());
             logonDTO.setUser(user);
             logonDTO.setMessage("注册成功");
             return JSON.toJSONString(logonDTO);
         } catch (UsersException usersException) {
-            log.info("{}尝试注册失败", signInDTO.getUsername());
+            log.info("{} 尝试注册失败，失败原因：{}", signInDTO.getUsername(), usersException.getMessage());
             logonDTO.setMessage(usersException.getMessage());
             return JSON.toJSONString(logonDTO);
         }
