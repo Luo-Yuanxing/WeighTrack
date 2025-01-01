@@ -1,2 +1,1 @@
-/mvnw text eol=lf
-*.cmd text eol=crlf
+*.java linguist-language=java
