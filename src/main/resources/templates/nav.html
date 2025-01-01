@@ -63,6 +63,9 @@
                             <li><a class="select-time-out" href="#">选择时间</a></li>
                         </ul>
                     </li>
+                    <li th:if="${session.user.role} eq 'admin'">
+                        <a href="/user-edit" class="user-edit">用户管理</a>
+                    </li>
                     <li>
                         <a class="log-out"><span class="glyphicon glyphicon-log-out">退出登录</span></a>
                     </li>

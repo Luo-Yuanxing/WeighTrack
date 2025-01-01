@@ -1,0 +1,457 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>鸿聚一号煤场出入库明细 - 用户管理</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- nav.css   -->
+    <link rel="stylesheet" href="/css/nav.css">
+
+    <script src="/js/html5shiv.js"></script>
+    <script src="/js/respond.js"></script>
+
+    <style>
+        h2 {
+            text-align: center;
+            margin: 10px auto;
+        }
+
+        #user-list {
+            text-align: center;
+        }
+
+        .grid-col-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 定义三列 */
+            gap: 1px; /* 表格单元之间的间隔 */
+        }
+
+        #option-template {
+            display: none;
+        }
+
+        .centering {
+            align-items: center;
+        }
+
+        //========================== grid-head ====================
+        .grid-head {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 增加轻微阴影效果 */
+            color: #333; /* 文字颜色 */
+        }
+
+        .grid-head div {
+            text-align: center;
+            font-weight: bold;
+            color: #333; /* 默认文字颜色 */
+        }
+
+        /* 蓝色主题标题栏 */
+        .grid-head div {
+            color: midnightblue; /* 标题文字颜色为蓝色 */
+        }
+
+        /* 修改“已打印”文字颜色 */
+        .grid-head .is-printed {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* 垂直和水平居中的列 */
+        .grid-head div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 给文本增加一些底部间距 */
+        .grid-head div {
+            margin: 5px auto;
+        }
+
+        /* ========================== 操作按钮样式 ==================== */
+        .options.grid-col-2 a {
+            display: inline-block;
+            padding: 1px 2px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 0 1px; /* 为按钮添加左右间距 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加微小的阴影 */
+        }
+
+        .update {
+            background-color: olivedrab;
+            color: white;
+        }
+
+        .update:hover {
+            background-color: #7fa82a;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
+        }
+
+        .batch-operations button, .batch-operations span {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .batch-operations button:hover, .batch-operations span:hover {
+            background-color: #0056b3;
+        }
+
+        .delete-style {
+            background-color: crimson;
+            color: white;
+        }
+
+        .delete-style:hover {
+            background-color: #a82540;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
+        }
+
+        .today-summary-panel div {
+            display: inline-block;
+        }
+
+        /* 模态框覆盖层样式 */
+        .user-edit-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* 弹窗内容样式 */
+        .user-edit-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* 弹窗内容样式 */
+        .user-edit-update-panel {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 500px;
+        }
+
+        /* 输入框组样式 */
+        .user-edit-input-group {
+            margin-bottom: 15px;
+        }
+
+        .user-edit-input-group label {
+            width: 20%;
+        }
+
+        .user-edit-input-group input {
+            width: 80%;
+        }
+
+        /* 关闭按钮样式 */
+        .user-edit-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .user-edit-close:hover, .user-edit-close:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        /* 按钮样式 */
+        #user-edit-submitBtn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #user-edit-submitBtn:hover {
+            background-color: #0056b3;
+        }
+
+
+    </style>
+
+
+</head>
+
+<body>
+
+<script src="/js/jQuery-3.7.1.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/html5shiv.js"></script>
+<script src="/js/respond.js"></script>
+<script src="/js/dayjs.min.js"></script>
+
+<div th:insert="~{nav :: nav}"></div>
+<h2 class="table-title"></h2>
+
+<div id="user-list">
+    <div id="grid-head" class="grid-head centering"
+         style="background-color: gainsboro; position: sticky; top: 0; z-index: 10;">
+        <div>操作</div>
+        <div>账号</div>
+        <div>密码</div>
+        <div>姓名</div>
+        <div>上次登录时间</div>
+    </div>
+    <div id="grid-body" class="centering">
+
+    </div>
+</div>
+
+<link rel="stylesheet" href="/css/pagination.css">
+<div>
+    <ul class="pagination">
+        <li class="laquo">
+            <span aria-hidden="true">&laquo;</span>
+        </li>
+        <li class="raquo">
+            <span aria-hidden="true">&raquo;</span>
+        </li>
+    </ul>
+
+</div>
+
+<div id="option-template">
+    <div class="options grid-col-2">
+        <a class="update">编辑</a>
+        <a class="delete delete-style">删除</a>
+    </div>
+</div>
+
+<div id="user-edit-modal-overlay" class="user-edit-modal-overlay" style="display: none;">
+    <div class="user-edit-update-panel">
+        <span id="user-edit-close-update-panel" class="user-edit-close">&times;</span>
+        <h2>修改用户</h2>
+        <div class="user-edit-input-group">
+            <label for="user-edit-username">用户名:</label>
+            <input type="text" id="user-edit-username" name="username">
+        </div>
+        <div class="user-edit-input-group">
+            <label for="user-edit-password">密码:</label>
+            <input type="text" id="user-edit-password" name="password">
+        </div>
+        <div class="user-edit-input-group">
+            <label for="user-edit-realName">真实姓名:</label>
+            <input type="text" id="user-edit-realName" name="realName">
+        </div>
+        <button id="user-edit-submitBtn">提交</button>
+    </div>
+</div>
+
+<script src="/js/js-cookie.js"></script>
+<!--填充数据-->
+<script th:inline="javascript">
+    $('.table-title').text('用户列表');
+    let $gridBody = $('#grid-body');
+    let userList = /*[[${userList}]]*/ {};
+
+    for (let user of userList) {
+
+        // 插入操作div
+        let $option = $("#option-template").clone().removeAttr("id");
+        $option.find('.update').attr('id', 'user-id:' + user.id);
+        $option.find('.delete').attr('id', 'user-id:' + user.id);
+        // 强制应用样式
+        $option.find('a').css({
+            'border-radius': '5px', // 确保圆角样式
+            'transition': 'all 0.3s ease', // 确保过渡效果
+        });
+        $gridBody.append($option.find('.options').eq(0));
+
+        // 插入账号
+        $gridBody.append('<div>' + user.username + '</div>');
+
+        // 插入密码
+        $gridBody.append('<div>' + user.password + '</div>');
+
+        // 插入姓名
+        $gridBody.append('<div>' + user.realName + '</div>');
+
+        // 插入上次登陆时间
+        $gridBody.append('<div>' + user.lastLogin + '</div>');
+    }
+    // css
+    $(function () {
+        let $gridHead = $('#grid-head');
+        let $gridBody = $('#grid-body');
+        let length = $gridHead.find('div').length;
+        $gridHead.css({
+            'display': 'grid',
+            'grid-template-columns': `repeat(${length}, 1fr)`,
+            'gap': '1px'
+        })
+        $gridBody.css({
+            'display': 'grid',
+            'grid-template-columns': `repeat(${length}, 1fr)`,
+            'gap': '1px'
+        })
+    })
+    let currentEditId = null;
+    $(function () {
+        let userEditUpdateDTO = {
+            id: null,
+            username: null,
+            password: null,
+            realName: null
+        }
+        // 打开编辑弹窗
+        $('.update').click(function () {
+            let $user = $('#user-edit-modal-overlay');
+            $user.css('display', 'flex');
+            let userId = $(this).attr('id').split(':')[1];
+            currentEditId = userId;
+            userList.forEach(user => {
+                if (user.id === parseInt(userId)) {
+                    $('#user-edit-username').val(user.username);
+                    $('#user-edit-password').val(user.password);
+                    $('#user-edit-realName').val(user.realName);
+                }
+            })
+        });
+        // 关闭编辑弹窗
+        $('#user-edit-close-update-panel').click(function () {
+            $('#user-edit-modal-overlay').css('display', 'none');
+        });
+
+        // 提交编辑请求
+        $('#user-edit-submitBtn').on('click', function () {
+            // 检查是否有修改
+            userList.forEach(user => {
+                if (user.id === parseInt(currentEditId)) {
+                    if ($('#user-edit-username').val() === user.username && $('#user-edit-password').val() === user.password && $('#user-edit-realName').val() === user.realName) {
+                        alert('没有任何修改');
+                        return
+                    }
+
+                    userEditUpdateDTO.id = parseInt(currentEditId);
+                    userEditUpdateDTO.username = $('#user-edit-username').val();
+                    userEditUpdateDTO.password = $('#user-edit-password').val();
+                    userEditUpdateDTO.realName = $('#user-edit-realName').val();
+                    fetch('/user-edit', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(userEditUpdateDTO),
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            data = JSON.parse(data);
+                            if (data.code === '0') {
+                                alert('修改成功');
+                                window.location.reload();
+                            } else {
+                                alert('修改失败' + data.message)
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+            })
+        })
+
+        async function verifyAdminPassword(adminPassword) {
+            let isValid = false;
+            try {
+                const response = await fetch('/verify-admin-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({'password': adminPassword}),
+                });
+                const data = await response.text();
+                const parsedData = JSON.parse(data);
+                if (parsedData) {
+                    isValid = true;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            return isValid;
+        }
+
+
+        // 提交删除请求
+        $('.delete').click(function () {
+            let deleteId = $(this).attr('id').split(':')[1];
+            if (confirm('确定删除该用户吗？')) {
+                let userInput = prompt("请输入管理员密码：");
+                // 验证管理员密码
+                if (verifyAdminPassword(userInput)) {
+                    fetch('/user-edit/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({deleteId: deleteId}),
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            data = JSON.parse(data);
+                            if (data.code === '0') {
+                                alert('删除成功');
+                                window.location.reload();
+                            } else {
+                                alert('删除失败：' + data.message)
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                } else {
+                    alert('管理员密码错误');
+                }
+
+
+
+            }
+        })
+    })
+</script>
+
+</body>
+
+</html>
+

@@ -1,5 +1,6 @@
 package io.github.weightrack.initializer;
 
+import com.zaxxer.hikari.HikariDataSource;
 import io.github.weightrack.exception.UsersException;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.User;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -23,12 +25,18 @@ public class SQLInitializer {
 
     @Value("${admin.password}")
     public String password;
+
+    @Value("${admin.username}")
+    public String username;
+
     @Autowired
     CoalTypeService coalTypeService;
     @Autowired
     PoundBillService poundBillService;
     @Autowired
     UserService userService;
+    @Autowired
+    private HikariDataSource dataSource;
 
     @PostConstruct
     public void initCoalType() {
@@ -63,6 +71,42 @@ public class SQLInitializer {
     }
 
     @PostConstruct
+    public void initUserTable() {
+        log.info("检查user表");
+        Connection connection = null;
+        Statement stmt = null;
+        ResultSet resultSet = null;
+        try {
+            // 获取数据库连接
+            connection = dataSource.getConnection();
+
+            // 获取数据库元数据
+            DatabaseMetaData metaData = connection.getMetaData();
+
+            // 检查 users 表中是否有 role 字段
+            resultSet = metaData.getColumns(null, null, "users", "role");
+
+            if (!resultSet.next()) {
+                // 如果不存在 role 字段，则添加该字段
+                String alterTableSQL = "ALTER TABLE users ADD COLUMN role VARCHAR(100) DEFAULT 'normal' NOT NULL";
+                stmt = connection.createStatement();
+                stmt.executeUpdate(alterTableSQL);
+                log.info("添加 role 字段到表 user");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                log.error(e.getMessage());
+            }
+        }
+    }
+
+    @PostConstruct
     public void initAdmin() {
         log.info("初始化管理员");
         User user = null;
@@ -76,7 +120,7 @@ public class SQLInitializer {
         }
         if (user == null) {
 
-            user = new User("administrators", password, "管理员", "admin");
+            user = new User("administrators", password, "系统管理员", "admin");
             try {
                 userService.insertUser(user);
             } catch (UsersException ignored) {
