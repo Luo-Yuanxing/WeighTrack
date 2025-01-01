@@ -37,9 +37,10 @@ create table users
 (
     id        int auto_increment
         primary key,
-    username  varchar(255)                       not null,
-    password  varchar(255)                       not null,
-    realName  varchar(255)                       not null comment '真实名称',
-    lastLogin datetime default CURRENT_TIMESTAMP not null
+    username  varchar(255)                           not null,
+    password  varchar(255)                           not null,
+    realName  varchar(255)                           not null comment '真实名称',
+    role      varchar(100) default 'normal'          not null,
+    lastLogin datetime     default CURRENT_TIMESTAMP not null
 );
 
