@@ -59,7 +59,7 @@ public class UserService {
     }
 
     public User[] findAll() {
-        return userMapper.findAll();
+        return userMapper.getAllUsers();
     }
 
     public int delete(String username) {
@@ -80,5 +80,17 @@ public class UserService {
             log.error("数据库中存在多个相同的用户名");
             throw new UsersException("数据库中存在多个相同的用户名");
         }
+    }
+
+    public int updateById(User user) {
+        return userMapper.updateById(user);
+    }
+
+    public int deleteById(int deleteId) {
+        return userMapper.deleteById(deleteId);
+    }
+
+    public User findUserById(int id) {
+        return userMapper.findById(id);
     }
 }

@@ -9,11 +9,14 @@ import io.github.weightrack.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -67,5 +70,17 @@ public class UserController {
     @PostMapping("/logout")
     public void logout(HttpServletRequest request) {
         request.getSession().invalidate();
+    }
+
+    @Value("${admin.password}")
+    public String password;
+
+    @Value("${admin.username}")
+    public String username;
+
+    @ResponseBody
+    @PostMapping("/verify-admin-password")
+    public boolean verifyAdminPassword(@RequestBody Map<String, String> data) {
+        return data.get("password").equals(password);
     }
 }

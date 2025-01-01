@@ -3,6 +3,8 @@ package io.github.weightrack.mapper;
 import io.github.weightrack.module.User;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
+
 @Mapper
 public interface UserMapper {
 
@@ -22,11 +24,20 @@ public interface UserMapper {
     int insertUser(User user);
 
     @Select("select * from users")
-    User[] findAll();
+    User[] getAllUsers();
 
     @Delete("delete from users where username=#{username}")
     int delete(String username);
 
     @Update("update users set password=#{password}, realName=#{realName} where username=#{username}")
-    void updateUser(User user);
+    int updateUser(User user);
+
+    @Update("update users set username=#{username}, password=#{password}, realName=#{realName} where id=#{id}")
+    int updateById(User user);
+
+    @Delete("delete from users where id=#{deleteId}")
+    int deleteById(int deleteId);
+
+    @Select("select * from users where id=#{id}")
+    User findById(int id);
 }

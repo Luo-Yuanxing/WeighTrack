@@ -116,6 +116,7 @@
             username: '',
             password: '',
             realName: '',
+            lastLogin: '',
             id: ''
         }
         $("#signup").on('click', function () {
@@ -175,7 +176,7 @@
                 data: JSON.stringify(dto),
                 success: function (data) {
                     data = JSON.parse(data);
-                    if (data.user.username) {
+                    if (data.user && data.user.username) {
                         console.log('登录成功');
                         delete data.user.password;
                         Cookies.set('user', JSON.stringify(data.user), {expires: 7});
