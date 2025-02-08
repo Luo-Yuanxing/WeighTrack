@@ -14,27 +14,4 @@ import java.util.List;
 @SpringBootTest
 public class WeighTrackApplicationTests {
 
-    @Autowired
-    PoundBillService poundBillService;
-
-    @Test
-    void contextLoads() throws Exception {
-        List<PoundBillModel> poundBillModelsIn = ExcelUtilTest.insertPoundBillByExcel_IN();
-        for (PoundBillModel poundBillModel : poundBillModelsIn) {
-            if (poundBillModel.getCoalType() != null) {
-                poundBillService.insertPoundBill(poundBillModel);
-                log.info("insert into poundBill {}", poundBillModel);
-            }
-        }
-
-        List<PoundBillModel> poundBillModelsOut = ExcelUtilTest.insertPoundBillByExcel_OUT();
-        for (PoundBillModel poundBillModel : poundBillModelsOut) {
-            if (poundBillModel.getCoalType() != null) {
-                poundBillService.insertPoundBill(poundBillModel);
-                log.info("insert into poundBill {}", poundBillModel);
-            }
-        }
-    }
-
-
 }
