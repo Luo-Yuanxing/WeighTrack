@@ -14,5 +14,5 @@ public class UpdateDTO {
     private String printTime;
     private String outputUnit;
     private String inputUnit;
-
+    private String note;
 }

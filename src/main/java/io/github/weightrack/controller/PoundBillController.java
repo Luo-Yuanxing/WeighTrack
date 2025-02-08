@@ -1,5 +1,6 @@
 package io.github.weightrack.controller;
 
+import com.alibaba.fastjson2.JSON;
 import io.github.weightrack.dto.UpdateDTO;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.User;
@@ -94,4 +95,13 @@ public class PoundBillController {
         log.info("id: {}已放入回收站", id);
         poundBillService.deleteById(id);
     }
+
+    @ResponseBody
+    @PostMapping("/api/pound-bill/list")
+    public String getPoundBillList(@RequestBody PoundBillListDTO poundBillListDTO) {
+        String ids = String.join(",", poundBillListDTO.getIds());
+        PoundBillModel[] poundBillModels = poundBillService.getListByIds(ids);
+        return JSON.toJSONString(poundBillModels);
+    }
+
 }

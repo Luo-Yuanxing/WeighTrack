@@ -170,6 +170,11 @@
             <input th:value="${poundBillModel.weigher}" readonly="readonly" class="weigher form-control" name="weigher" aria-describedby="basic-addon3">
         </div>
 
+        <div class="input-group">
+            <span class="input-group-addon input-desc poundbill-note">备注</span>
+            <input th:value="${poundBillModel.note}" class="form-control" name="note" aria-describedby="basic-addon3">
+        </div>
+
         <input class="input-group" type="submit" value="确认修改"/>
         <div style="height: 20px"></div>
     </form>
@@ -236,7 +241,8 @@
             printTime: '',
             outputUnit: '',
             inputUnit: '',
-            weigher: ''
+            weigher: '',
+            note: ''
         };
         $poundForm.submit(function (event) {
             event.preventDefault();
@@ -251,6 +257,7 @@
             let outputUnit = $('#pound_form input[name=output-unit]');
             let inputUnit = $('#pound_form input[name=input-unit]');
             let weigher = $('#pound_form select[name=weigher]');
+            let note = $('#pound_form input[name=note]');
 
             dto.id = id.val();
             dto.IOType = IOType.val();
@@ -263,6 +270,7 @@
             dto.outputUnit = outputUnit.val();
             dto.inputUnit = inputUnit.val();
             dto.weigher = weigher.val();
+            dto.note = note.val();
 
             Cookies.set('currentModifyID', dto.id, {expires: 0.2});
 

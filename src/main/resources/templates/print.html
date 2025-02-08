@@ -104,63 +104,72 @@
     <h4 class="text-left">打印预览</h4>
     <a class="checkout" th:if="${message}" href="javascript:history.go(-2)"
        th:text="${message}+' 点击返回查询列表'"></a>
+    <div class="label-operate-group" style="display: none">
+        <label class="label-operate-item-title">打印机：</label>
+        <select title="打印机列表：" class="label-operate-item-value" id="select-printlist"></select>
+    </div>
     <h3 class="text-center">鸿聚一号煤场</h3>
     <h3 class="text-center">过磅单</h3>
 
     <table>
+        <tr style="display: none">
+            <td class="pound-uid" th:text="${poundBillModel.id}"></td>
+        </tr>
         <tr>
             <td>日期</td>
-            <td th:text="${#dates.format(#dates.createNow(), 'yyyy年MM月dd日')}"></td>
+            <td class="CreatDate" th:text="${#dates.format(#dates.createNow(), 'yyyy年MM月dd日')}"></td>
         </tr>
         <tr>
             <td>磅单编号</td>
-            <td th:text="${poundBillModel.poundID}"></td>
+            <td class="PoundID" th:text="${poundBillModel.poundID}"></td>
         </tr>
         <tr>
             <td>车牌号</td>
-            <td th:text="${poundBillModel.plateNumber}"></td>
+            <td class="PlateNumber" th:text="${poundBillModel.plateNumber}"></td>
         </tr>
         <tr>
             <td>煤种</td>
-            <td th:text="${poundBillModel.coalType}"></td>
+            <td class="CoalType" th:text="${poundBillModel.coalType}"></td>
         </tr>
         <tr>
             <td>发货单位</td>
-            <td th:text="${poundBillModel.outputUnit}"></td>
+            <td class="OutputUnit" th:text="${poundBillModel.outputUnit}"></td>
         </tr>
         <tr>
             <td>收货单位</td>
-            <td th:text="${poundBillModel.inputUnit}"></td>
+            <td class="InputUnit" th:text="${poundBillModel.inputUnit}"></td>
         </tr>
         <tr>
             <td>毛重</td>
-            <td th:text="${poundBillModel.grossWeight}"></td>
+            <td class="GrossWeigh" th:text="${poundBillModel.grossWeight}"></td>
         </tr>
         <tr>
             <td>皮重</td>
-            <td th:text="${poundBillModel.tareWeight}"></td>
+            <td class="TareWeigh" th:text="${poundBillModel.tareWeight}"></td>
         </tr>
         <tr>
             <td>净重</td>
-            <td class="float_2" th:text="${poundBillModel.netWeight}"></td>
+            <td class="NetWeigh float_2" th:text="${poundBillModel.netWeight}"></td>
+        </tr>
+        <tr th:if="${poundBillModel.IOType == '1'}">
+            <td>原发</td>
+            <td class="PrimaryWeigh float_2" th:text="${poundBillModel.netWeight}"></td>
         </tr>
         <tr th:if="${poundBillModel.printTime}">
             <td>
                 <span>打印时间（上次打印）</span>
-<!--                <button class="update-btn">我要修改</button>-->
             </td>
             <td class="print-time" th:text="${#temporals.format(poundBillModel.printTime, 'HH:mm')}"></td>
         </tr>
         <tr th:unless="${poundBillModel.printTime}">
             <td>
                 <span>打印时间（首次打印）</span>
-<!--                <button class="update-btn">我要修改</button>-->
             </td>
             <td class="print-time" th:text="${#dates.format(#dates.createNow(), 'HH:mm')}"></td>
         </tr>
         <tr>
             <td>司磅员</td>
-            <td th:text="${poundBillModel.weigher}"></td>
+            <td class="Weigher" th:text="${poundBillModel.weigher}"></td>
         </tr>
     </table>
 
@@ -177,6 +186,11 @@
 <script src="/js/bootstrap.js"></script>
 <script src="/js/bootstrap-datetimepicker.js"></script>
 <script src="/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="/js/print.js"></script>
+<script src="/js/dtpweb.js"></script>
+<script src="/js/dtpweb.d.ts"></script>
+<script src="/js/utils.d.ts"></script>
+
 <script>
     $(function () {
         $('.update-btn').on('click', function () {
@@ -187,44 +201,31 @@
         });
 
         $('.submit').on('click', function () {
-            let currentUrl = window.location.href;
-            let match = currentUrl.match(/\/(\d+)$/);
-            let id = 1;
-            if (match) {
-                id = parseInt(match[1]);
-            }
-            let updatePrintTime = $('.update-print-time').text();
-            let isUpdatePrintTime;
-            isUpdatePrintTime = updatePrintTime !== "";
+            let printData = {
+                poundID: $('.PoundID').text().trim(),
+                printDateTime: $('.CreatDate').text().trim() + ' ' + $('.print-time').text().trim(),
+                plateNumber: $('.PlateNumber').text().trim(),
+                outputUnit: $('.OutputUnit').text().trim(),
+                inputUnit: $('.InputUnit').text().trim(),
+                coalType: $('.CoalType').text().trim(),
+                grossWeight: $('.GrossWeigh').text().trim(),
+                tare: $('.TareWeigh').text().trim(),
+                primaryWeight: $('.PrimaryWeigh').text().trim(),
+                netWeight: $('.NetWeigh').text().trim(),
+                Weigher: $('.Weigher').text().trim(),
+                note: '', // 这里没有对应的 HTML 元素，你可以根据需要添加
+            };
 
-            try {
-                $.ajax({
-                    url: '/print/' + id,
-                    method: 'POST',
-                    contentType: 'application/json',  // 设置请求头为application/json
-                    data: JSON.stringify({           // 将数据转换为JSON字符串
-                        id: id,
-                        isUpdatePrintTime: isUpdatePrintTime,
-                        updatePrintTime: updatePrintTime
-                    }),
+            drawTableTest(printData);
 
-                    success: function (response) {
-                        // 请求成功后的回调函数
-                        if (response === 'ok') {
-                            alert('打印成功');
-                        }
-                    },
-                    error: function () {
-                        // 请求失败后的回调函数
-                        alert('打印失败');
-                    }
-                });
+            $.ajax({
+                url: '/print/' + $('.pound-uid').text(),
+                type: 'POST',
+                contentType: 'application/json',
+                success: () => {alert('打印成功');},
+            })
 
-            } catch (error) {
-                alert('打印请求失败：' + error);
-            }
         });
-
     });
 
     $(document).ready(function () {

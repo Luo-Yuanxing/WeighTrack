@@ -40,7 +40,6 @@
             align-items: center;
         }
 
-        //========================== grid-head ====================
         .grid-head {
             display: grid;
             grid-template-columns: repeat(13, 1fr);
@@ -140,6 +139,7 @@
         .today-summary-panel div {
             display: inline-block;
         }
+
         .panel {
             margin-bottom: 0;
             border: 0;
@@ -174,6 +174,10 @@
         <option value="already-in-pound">已过空</option>
         <option value="printed">已打印</option>
     </select>
+    <div class="label-operate-group">
+        <label class="label-operate-item-title">打印机：</label>
+        <select title="打印机列表：" class="label-operate-item-value" id="select-printlist"></select>
+    </div>
 </div>
 <div th:if="${today}" class="today-summary-panel">
     <div class="panel panel-primary" style="display: inline-block">
@@ -239,6 +243,11 @@
 </div>
 
 <script src="/js/js-cookie.js"></script>
+<script src="/js/print.js"></script>
+<script src="/js/dtpweb.js"></script>
+<script src="/js/dtpweb.d.ts"></script>
+<script src="/js/utils.d.ts"></script>
+
 <!--填充数据-->
 <script th:inline="javascript">
     function getRandomColor() {
@@ -397,7 +406,7 @@
                     current_color = getDistinctRandomColor(current_color);
                     prev_date = current_date;
                 }
-                pound_bill_grid_body.append('<div class="pound-id" style="color: ' + current_color + '">' + poundId + '</div>');
+                pound_bill_grid_body.append('<div class="pound-id-" style="color: ' + current_color + '">' + poundId + '</div>');
             } else {
                 pound_bill_grid_body.append('<div class="pound-id"' + poundId + '</div>');
             }
@@ -517,8 +526,8 @@
         // 获取当前页面的 URL
         let currentUrl = window.location.href;
         if (currentUrl.includes('plate-number-filter')) {
-            $('.laquo').css('display','none');
-            $('.raquo').css('display','none');
+            $('.laquo').css('display', 'none');
+            $('.raquo').css('display', 'none');
             return;
         }
         let match = currentUrl.match(/\/(\d+)$/);
@@ -652,42 +661,53 @@
 
 </script>
 <!--批量打印-->
+<script src="/js/dayjs.min.js"></script>
 <script>
-    function sendAjaxRequest(id) {
-        try {
-            const response = $.ajax({
-                url: '/print/' + id,
-                method: 'POST',
-                contentType: 'application/json',  // 设置请求头为application/json
-                data: JSON.stringify({           // 将数据转换为JSON字符串
-                    id: id,
-                    isUpdatePrintTime: false,
-                }),
-
-                success: function (response) {
-                    // 请求成功后的回调函数
-                    if (response === 'ok') {
-                        console.log('打印成功');
-                    } else {
-                        alert(id + '打印失败:' + response);
-                    }
-                },
-                error: function () {
-                    // 请求失败后的回调函数
-                    alert('打印失败: ' + id);
-                }
-            });
-        } catch (error) {
-            console.error('Request failed for index', id, error);
-        }
+    function sendAjaxRequest(selectedIds) {
+        selectedIds.sort();
+        $.ajax({
+            url: '/api/pound-bill/list',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                ids: selectedIds
+            }),
+            success: function (response) {
+                JSON.parse(response).forEach(function (poundBill) {
+                    let newPrintData = {...printData}
+                    newPrintData.poundID = poundBill.poundID;
+                    newPrintData.printDateTime = dayjs(poundBill.printTime).format('YYYY年MM月DD日 HH:mm');
+                    newPrintData.plateNumber = poundBill.plateNumber;
+                    newPrintData.outputUnit = poundBill.outputUnit;
+                    newPrintData.inputUnit = poundBill.inputUnit;
+                    newPrintData.coalType = poundBill.coalType;
+                    newPrintData.grossWeight = poundBill.grossWeight;
+                    // noinspection JSUnresolvedReference
+                    newPrintData.tare = poundBill.tareWeight;
+                    newPrintData.primaryWeight = poundBill.primaryWeight;
+                    newPrintData.netWeight = poundBill.netWeight;
+                    newPrintData.Weigher = poundBill.weigher;
+                    newPrintData.note = poundBill.note;
+                    drawTableTest(newPrintData);
+                })
+            }
+        })
     }
 
-    function sendRequestsSequentially(requestId) {
-        for (let id of requestId) {
-            sendAjaxRequest(id);
-        }
-    }
-
+    let printData = {
+        poundID: '',
+        printDateTime: '',
+        plateNumber: '',
+        outputUnit: '',
+        inputUnit: '',
+        coalType: '',
+        grossWeight: '',
+        tare: '',
+        primaryWeight: '',
+        netWeight: '',
+        Weigher: '',
+        note: '', // 这里没有对应的 HTML 元素，你可以根据需要添加
+    };
 
     $(function () {
         $('#print-selected').on('click', function () {
@@ -704,8 +724,8 @@
                 }
             });
 
-            sendRequestsSequentially(selectedIds.sort());
-            setTimeout(() => window.location.reload(), 5000);
+            sendAjaxRequest(selectedIds);
+            setTimeout(() => alert('打印已完成，请打印结束后手动刷新页面'), 1000);
         })
 
         $('#print-all').on('click', function () {
@@ -716,8 +736,9 @@
             $('.checkbox').each(function () {
                 selectedIds.push($(this).val());
             });
-            sendRequestsSequentially(selectedIds.sort());
-            setTimeout(() => window.location.reload(), 5000);
+
+            sendAjaxRequest(selectedIds);
+            setTimeout(() => alert('打印已完成，请打印结束后手动刷新页面'), 1000);
         })
 
         $('#delete-selected').on('click', function () {
@@ -774,10 +795,6 @@
         let $poundId = $('.batch-operations input[name="pound-id"]');
         $selectPlateNumber.on('click', function () {
             let plateNumber = $plateNumber.val().trim();
-            // if ($filter.val() === 'printed' && plateNumber === '' && $poundId.val() !== '') {
-            //     $plateNumber.val('警告：车牌号未空且查询已打印');
-            //     return;
-            // }
             window.location.href = '/showList/plate-number-filter/?plateNumber=' + plateNumber + '&filter=' + $filter.val() + '&poundId=' + $poundId.val();
         })
         let url = new URL(window.location.href);

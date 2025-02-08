@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource("classpath:admin.properties")
+@PropertySource("classpath:app.properties")
 @ConfigurationProperties(prefix = "admin")
 @Data
 public class AdminConfig {

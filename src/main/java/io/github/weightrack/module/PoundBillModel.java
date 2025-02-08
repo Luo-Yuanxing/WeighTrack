@@ -38,6 +38,7 @@ public class PoundBillModel {
     private String outputUnit;
     private String inputUnit;
     private String weigher;
+    private String note;
 
     private LocalDateTime creatTime;
     private LocalDateTime modifyTime;
@@ -84,6 +85,7 @@ public class PoundBillModel {
         poundBillModel.setPrintTimeString(updateDTO.getPrintTime());
         poundBillModel.setOutputUnit(updateDTO.getOutputUnit());
         poundBillModel.setInputUnit(updateDTO.getInputUnit());
+        poundBillModel.setNote(updateDTO.getNote());
         return poundBillModel;
     }
 }
