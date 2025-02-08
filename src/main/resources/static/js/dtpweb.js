@@ -792,7 +792,7 @@ var dtpweb = function (t) {
     var y, b, m, P, A, v, R, w = {
             METHOD_POST: "POST",
             METHOD_GET: "GET",
-            IP: "192.168.0.102",
+            IP: "127.0.0.1",
             PORT1: 15216,
             PORT2: 35216,
             TIME_OUT: 2e3,
