@@ -26,6 +26,4 @@ public interface PoundBillMapper {
     @Select("select count(*) from poundbill where removed = 0")
     int count();
 
-    @Select("SELECT * FROM poundbill  WHERE id IN (${ids})")
-    PoundBillModel[] getListByIds(String ids);
 }

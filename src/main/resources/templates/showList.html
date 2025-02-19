@@ -370,8 +370,8 @@
         $option.find('.delete').on('click', function () {
             if (confirm("确定要删除这条记录吗？")) {
                 $.ajax({
-                    url: '/delete/' + poundBill.id, // 请求的URL
-                    type: 'GET', // 请求方式，GET 或 POST
+                    url: '/api/poundBill/delete/' + poundBill.id, // 请求的URL
+                    type: 'POST', // 请求方式，GET 或 POST
                     success: function () {
                         // 请求成功后的回调函数
                         alert('删除成功');
@@ -481,14 +481,18 @@
         if (isToday) {
             if (IOType === '1') {
                 $tableTitle.text('今日入库磅单');
-            } else {
+            } else if (IOType === '0') {
                 $tableTitle.text('今日出库磅单');
+            } else if (IOType === '2') {
+                $tableTitle.text('今日返仓磅单');
             }
         } else {
             if (IOType === '1') {
                 $tableTitle.text('历史入库磅单');
-            } else {
+            } else if (IOType === '0') {
                 $tableTitle.text('历史出库磅单');
+            } else if (IOType === '2') {
+                $tableTitle.text('历史返仓磅单');
             }
         }
 
@@ -543,6 +547,8 @@
             IOType = 'in';
         } else if (currentUrl.includes('out')) {
             IOType = 'out';
+        } else if (currentUrl.includes('return')) {
+            IOType = 'return';
         } else {
             return;
         }
@@ -666,7 +672,7 @@
     function sendAjaxRequest(selectedIds) {
         selectedIds.sort();
         $.ajax({
-            url: '/api/pound-bill/list',
+            url: '/api/print/list',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -688,6 +694,7 @@
                     newPrintData.netWeight = poundBill.netWeight;
                     newPrintData.Weigher = poundBill.weigher;
                     newPrintData.note = poundBill.note;
+                    console.log('print id: ' + poundBill.id);
                     drawTableTest(newPrintData);
                 })
             }
@@ -706,7 +713,7 @@
         primaryWeight: '',
         netWeight: '',
         Weigher: '',
-        note: '', // 这里没有对应的 HTML 元素，你可以根据需要添加
+        note: '',
     };
 
     $(function () {
@@ -748,8 +755,8 @@
             $('.checkbox').each(function () {
                 if ($(this).prop('checked')) {
                     $.ajax({
-                        url: '/delete/' + $(this).val(),
-                        method: 'GET'
+                        url: '/api/poundBill/delete/' + $(this).val(),
+                        method: 'POST'
                     })
                 }
             });
@@ -775,6 +782,8 @@
                 success: function (response) {
                     if (response === 'ok') {
                         alert('导出成功');
+                    } else {
+                        alert(response);
                     }
                 },
                 error: function () {

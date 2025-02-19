@@ -1,4 +1,4 @@
-package io.github.weightrack.controller;
+package io.github.weightrack.dto;
 
 import lombok.Data;
 

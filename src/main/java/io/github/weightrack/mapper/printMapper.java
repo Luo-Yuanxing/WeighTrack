@@ -1,6 +1,7 @@
 package io.github.weightrack.mapper;
 
 
+import io.github.weightrack.module.PoundBillModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -15,4 +16,7 @@ public interface printMapper {
 
     @Update("update poundbill set poundID = #{poundID}, printed = 1, printTime = #{printTime} where id = #{id}")
     void updateById(int id, LocalDateTime printTime, String poundID);
+
+    @Select("SELECT * FROM poundbill  WHERE id IN (${ids})")
+    PoundBillModel[] getListByIds(String ids);
 }

@@ -150,6 +150,7 @@
                 <select class="IOType form-control" name="IOType" aria-describedby="basic-addon3">
                     <option value="1">入库</option>
                     <option value="0">出库</option>
+                    <option value="2">返仓</option>
                 </select>
             </div>
 
@@ -367,7 +368,7 @@
         $IOType.on('change', function () {
             if ($IOType.val() === '0') {
                 $primary_weight.hide();
-            } else if ($IOType.val() === '1') {
+            } else if ($IOType.val() === '1' || $IOType.val() === '2') {
                 $primary_weight.show();
             }
         });

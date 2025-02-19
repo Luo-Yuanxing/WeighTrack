@@ -5,6 +5,9 @@ import io.github.weightrack.mapper.printMapper;
 import io.github.weightrack.module.PoundBillModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -25,11 +28,11 @@ public class PrintService {
         String dateStr = dateFormat.format(new Date(System.currentTimeMillis()));
 
         String countStr = String.format("%04d", count + 1);
-        String poundID;
-        if (poundBillModel.getIOType().equals("1")) {
-            poundID = "R" + dateStr + countStr;
-        } else {
-            poundID = "C" + dateStr + countStr;
+        String poundID = "E"; // 若E为开头则出bug
+        switch (poundBillModel.getIOType()) {
+            case "1" -> poundID = "R" + dateStr + countStr;
+            case "0" -> poundID = "C" + dateStr + countStr;
+            case "2" -> poundID = "F" + dateStr + countStr;
         }
         if (poundBillModel.getPoundID() == null || poundBillModel.getPoundID().isEmpty()) {
             poundBillModel.setPoundID(poundID);
@@ -41,5 +44,9 @@ public class PrintService {
     public void updateById(int id, LocalDateTime printTime, String poundID) {
         printMapper.updateById(id, printTime, poundID);
 
+    }
+
+    public PoundBillModel[] getListByIds(String ids) {
+        return printMapper.getListByIds(ids);
     }
 }
