@@ -134,7 +134,5 @@ public class PoundBillService {
         return poundBillMapper.count();
     }
 
-    public PoundBillModel[] getListByIds(String ids) {
-        return poundBillMapper.getListByIds(ids);
-    }
+
 }

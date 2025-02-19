@@ -1,5 +1,6 @@
 package io.github.weightrack.service;
 
+import io.github.weightrack.exception.ExcelException;
 import io.github.weightrack.mapper.OutputExcelMapper;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.utils.ExcelUtil;
@@ -35,7 +36,7 @@ public class OutputExcelService {
         if (excelFile == null) {
             // 示例：打印文件路径
             log.error("Excel文件对象获取失败");
-            return "error";
+            return "error: 找不到默认位置的Excel文件";
         }
 
         if (excelFile.exists()) {
@@ -44,8 +45,19 @@ public class OutputExcelService {
             log.error("过磅明细.xlsx 找不到  at:{}", excelFile.getAbsolutePath());
             return "error: 找不到文件： 过磅明细.xlsx";
         }
-        int modifyLength = ExcelUtil.appendExcel(poundBillModels, IOType, excelFile);
-        log.info("sheet: {}， 插入了{}行记录", IOType.equals("1") ? "入库记录" : "出库记录", modifyLength);
+        int modifyLength;
+        try {
+            modifyLength = ExcelUtil.appendExcel(poundBillModels, IOType, excelFile);
+        } catch (ExcelException e) {
+            return "error: " + e.getMessage();
+        }
+        String IOTypeName = switch (IOType) {
+            case "0" -> "出库记录";
+            case "1" -> "入库记录";
+            case "2" -> "返仓记录";
+            default -> "未知记录";
+        };
+        log.info("sheet: {}， 插入了{}行记录", IOTypeName, modifyLength);
         return "ok";
     }
 }

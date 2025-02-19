@@ -1,6 +1,7 @@
 package io.github.weightrack.controller;
 
 import com.alibaba.fastjson2.JSON;
+import io.github.weightrack.dto.PoundBillListDTO;
 import io.github.weightrack.dto.UpdateDTO;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.User;
@@ -54,10 +55,10 @@ public class PoundBillController {
         poundBillService.insertPoundBill(poundBillModel);
 
         String url = "redirect:/showList/today/";
-        if (poundBillModel.getIOType().equals("1")) {
-            url += "in/1";
-        } else {
-            url += "out/1";
+        switch (poundBillModel.getIOType()) {
+            case "1" -> url += "in/1";
+            case "0" -> url += "out/1";
+            case "2" -> url += "return/1";
         }
         // 返回视图名称
         return url;
@@ -90,18 +91,10 @@ public class PoundBillController {
     }
 
     @ResponseBody
-    @GetMapping("/delete/{id}")
-    public void deletePoundBillById(@PathVariable("id") int id) {
-        log.info("id: {}已放入回收站", id);
+    @PostMapping("/api/poundBill/delete/{id}")
+    public String deletePoundBillById(@PathVariable("id") int id) {
         poundBillService.deleteById(id);
-    }
-
-    @ResponseBody
-    @PostMapping("/api/pound-bill/list")
-    public String getPoundBillList(@RequestBody PoundBillListDTO poundBillListDTO) {
-        String ids = String.join(",", poundBillListDTO.getIds());
-        PoundBillModel[] poundBillModels = poundBillService.getListByIds(ids);
-        return JSON.toJSONString(poundBillModels);
+        return "ok";
     }
 
 }

@@ -48,6 +48,15 @@ public class ShowListController {
         return "showList";
     }
 
+    @GetMapping("/showList/return/{pageNumber}")
+    public String showListReturn(Model model, @PathVariable int pageNumber) {
+        PoundBillModel[] poundBillModels = showListService.showList("return", pageSize, pageNumber);
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "2");
+        model.addAttribute("today", false);
+        return "showList";
+    }
+
     @GetMapping("/showList/today/in/{pageNumber}")
     public String showListTodayIn(Model model, @PathVariable int pageNumber) {
         PoundBillModel[] poundBillModels = showListService.showTodayList("in", pageSize, pageNumber);
@@ -65,6 +74,16 @@ public class ShowListController {
         model.addAttribute("IOType", "0");
         model.addAttribute("today", true);
         model.addAttribute("todaySummaryPanel", showListService.getTodaySummaryPanel("0"));
+        return "showList";
+    }
+
+    @GetMapping("/showList/today/return/{pageNumber}")
+    public String showListTodayReturn(Model model, @PathVariable int pageNumber) {
+        PoundBillModel[] poundBillModels = showListService.showTodayList("return", pageSize, pageNumber);
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "2");
+        model.addAttribute("today", true);
+        model.addAttribute("todaySummaryPanel", showListService.getTodaySummaryPanel("2"));
         return "showList";
     }
 

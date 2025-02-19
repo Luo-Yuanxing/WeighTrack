@@ -99,32 +99,40 @@
             case 'today': {
                 if (IOType === '1') {
                     $summary_title.text("今日入库汇总");
-                } else {
+                } else if (IOType === '0') {
                     $summary_title.text("今日出库汇总");
+                } else if (IOType === '2') {
+                    $summary_title.text("今日返仓汇总");
                 }
                 break;
             }
             case 'month': {
                 if (IOType === '1') {
                     $summary_title.text("本月入库汇总");
-                } else {
+                } else if (IOType === '0') {
                     $summary_title.text("本月出库汇总");
+                } else if (IOType === '2') {
+                    $summary_title.text("本月返仓汇总");
                 }
                 break;
             }
             case 'year': {
                 if (IOType === '1') {
                     $summary_title.text("年度入库汇总");
-                } else {
+                } else if (IOType === '0') {
                     $summary_title.text("年度出库汇总");
+                } else if (IOType === '2') {
+                    $summary_title.text("年度返仓汇总");
                 }
                 break;
             }
             case 'all': {
                 if (IOType === '1') {
                     $summary_title.text("历史入库汇总");
-                } else {
+                } else if (IOType === '0') {
                     $summary_title.text("历史出库汇总");
+                } else if (IOType === '2') {
+                    $summary_title.text("历史返仓汇总");
                 }
                 break;
             }

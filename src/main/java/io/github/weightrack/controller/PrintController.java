@@ -1,5 +1,7 @@
 package io.github.weightrack.controller;
 
+import com.alibaba.fastjson2.JSON;
+import io.github.weightrack.dto.PoundBillListDTO;
 import io.github.weightrack.dto.PrintDTO;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.service.PrintService;
@@ -25,20 +27,6 @@ public class PrintController {
     @Autowired
     PrintService printService;
 
-    public PrintController() {
-        // 启动一个线程来按顺序处理队列中的打印任务
-        new Thread(() -> {
-            try {
-                while (true) {
-                    Runnable task = printQueue.take();  // 阻塞式等待任务
-                    task.run();  // 执行任务
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }).start();
-    }
-
     @GetMapping("/print/{id}")
     public String print(@PathVariable("id") int id, Model model) {
         PoundBillModel poundBillModel = printService.selectById(id);
@@ -59,5 +47,37 @@ public class PrintController {
         poundBillModel.setPrinted(true);
         printService.updateById(poundBillModel.getId(), poundBillModel.getPrintTime(), poundBillModel.getPoundID());
         return "ok";
+    }
+
+    /**
+     * 获取待打印数组数据，批量打印接口
+     * @param poundBillListDTO poundBillListDTO.ids = [int]
+     * @return JSON
+     */
+    @ResponseBody
+    @PostMapping("/api/print/list")
+    public String getPoundBillList(@RequestBody PoundBillListDTO poundBillListDTO) {
+        String ids = String.join(",", poundBillListDTO.getIds());
+        PoundBillModel[] poundBillModels = new PoundBillModel[poundBillListDTO.getIds().length];
+        int index = 0;
+        for (String id : poundBillListDTO.getIds()) {
+            LocalDateTime now = LocalDateTime.now();
+            PoundBillModel poundBillModel;
+            try {
+                poundBillModel = printService.selectById(Integer.parseInt(id));
+            } catch (Exception e) {
+                log.error("id: {} 打印失败，不能解析为 int", id);
+                continue;
+            }
+
+            if (poundBillModel.getPrintTime() == null) {
+                poundBillModel.setPrintTime(now);
+            }
+            poundBillModel.setPrinted(true);
+            printService.updateById(poundBillModel.getId(), poundBillModel.getPrintTime(), poundBillModel.getPoundID());
+            poundBillModels[index++] = poundBillModel;
+        }
+        log.info("id: {}已批量打印", ids);
+        return JSON.toJSONString(poundBillModels);
     }
 }
