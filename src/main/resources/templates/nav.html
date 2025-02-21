@@ -26,6 +26,7 @@
                             <li><a href="/showList/in/1">入库记录</a></li>
                             <li><a href="/showList/out/1">出库记录</a></li>
                             <li><a href="/showList/return/1">返仓记录</a></li>
+                            <li><a href="/showList/turnover/1">内部周转记录</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -35,6 +36,7 @@
                             <li><a href="/showList/today/in/1">今日入库记录</a></li>
                             <li><a href="/showList/today/out/1">今日出库记录</a></li>
                             <li><a href="/showList/today/return/1">今日返仓记录</a></li>
+                            <li><a href="/showList/today/turnover/1">今日内部周转记录</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -75,6 +77,18 @@
                             <li><a href="/summary?IOType=2&date-range=all&time-slot=">全部汇总</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a class="select-time-return" href="#">选择时间</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">内部周转数据汇总 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/summary?IOType=3&date-range=today&time-slot=">今日汇总</a></li>
+                            <li><a href="/summary?IOType=3&date-range=month&time-slot=">本月汇总</a></li>
+                            <li><a href="/summary?IOType=3&date-range=year&time-slot=">年度汇总</a></li>
+                            <li><a href="/summary?IOType=3&date-range=all&time-slot=">全部汇总</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a class="select-time-turnover" href="#">选择时间</a></li>
                         </ul>
                     </li>
                     <li th:if="${session.user.role} eq 'admin'">
@@ -250,11 +264,8 @@
 
                 let url = '/summary?IOType=';
                 let timeSlot = startDate.format('YYYY-MM-DD') + ';' + endDate.format('YYYY-MM-DD')
-                if (IOType === '1') {
-                    url += IOType + '&date-range=other&time-slot=' + timeSlot;
-                } else {
-                    url += IOType + '&date-range=other&time-slot=' + timeSlot;
-                }
+                url += IOType + '&date-range=other&time-slot=' + timeSlot;
+
                 window.location.href = url;
             });
 
@@ -274,12 +285,16 @@
                 } else if (IOType === '2') {
                     $('#dateModal h2').text("选择返仓日期范围");
                     $('#IOType').val('2');
+                } else if (IOType === '3') {
+                    $('#dateModal h2').text("选择内部周转日期范围");
+                    $('#IOType').val('3');
                 }
             }
 
             let $selectTimeIn = $('.select-time-in');
             let $selectTimeOut = $('.select-time-out');
             let $selectTimeReturn = $('.select-time-return');
+            let $selectTimeTurnover = $('.select-time-turnover');
             $selectTimeIn.on('click', function () {
                 fixModal("1");
             });
@@ -288,6 +303,9 @@
             });
             $selectTimeReturn.on('click', function () {
                 fixModal("2");
+            });
+            $selectTimeTurnover.on('click', function () {
+                fixModal("3");
             });
         })
     </script>

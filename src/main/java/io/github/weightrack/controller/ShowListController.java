@@ -21,6 +21,15 @@ public class ShowListController {
         return showListService.getPageNumber(pageSize, isToday, IOType);
     }
 
+// ===============================================
+//              展示全部历史数据
+// ===============================================
+
+    /**
+     * @deprecated 这个方法已经不再推荐使用，未来版本将会删除此方法。
+     * @since 2.2
+     */
+    @Deprecated
     @GetMapping("/showList/all/{pageNumber}")
     public String showList(Model model, @PathVariable int pageNumber) {
         PoundBillModel[] poundBillModels = showListService.showList("all", pageSize, pageNumber);
@@ -57,6 +66,19 @@ public class ShowListController {
         return "showList";
     }
 
+    @GetMapping("/showList/turnover/{pageNumber}")
+    public String showListTurnover(Model model, @PathVariable int pageNumber) {
+        PoundBillModel[] poundBillModels = showListService.showList("turnover", pageSize, pageNumber);
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "3");
+        model.addAttribute("today", false);
+        return "showList";
+    }
+
+// ===============================================
+//              展示今日历史数据
+// ===============================================
+
     @GetMapping("/showList/today/in/{pageNumber}")
     public String showListTodayIn(Model model, @PathVariable int pageNumber) {
         PoundBillModel[] poundBillModels = showListService.showTodayList("in", pageSize, pageNumber);
@@ -87,6 +109,21 @@ public class ShowListController {
         return "showList";
     }
 
+    @GetMapping("/showList/today/turnover/{pageNumber}")
+    public String showListTodayTurnover(Model model, @PathVariable int pageNumber) {
+        PoundBillModel[] poundBillModels = showListService.showTodayList("turnover", pageSize, pageNumber);
+        model.addAttribute("poundBillModels", poundBillModels);
+        model.addAttribute("IOType", "3");
+        model.addAttribute("today", true);
+        model.addAttribute("todaySummaryPanel", showListService.getTodaySummaryPanel("3"));
+        return "showList";
+    }
+
+    /**
+     * @deprecated 这个方法已经不再推荐使用，未来版本将会删除此方法。
+     * @since 2.2
+     */
+    @Deprecated
     @GetMapping("/showList/today/all/{pageNumber}")
     public String showListTodayAll(Model model, @PathVariable int pageNumber) {
         PoundBillModel[] poundBillModels = showListService.showTodayList("all", pageSize, pageNumber);

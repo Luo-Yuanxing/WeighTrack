@@ -394,11 +394,19 @@
         // 插入煤种
         pound_bill_grid_body.append('<div class="coal-type">' + poundBill.coalType + '</div>');
 
-        // 插入磅单编号
+// 插入磅单编号
         let poundId = poundBill.poundID;
         if (currentModifyID === undefined || poundBill.id !== parseInt(currentModifyID)) {
             if (poundId !== null) {
-                let current_date = poundId.substring(5, 7);
+                let current_date;
+                // 处理NDyymmddxxxx格式
+                if (poundId.startsWith("ND")) {
+                    current_date = poundId.substring(2, 4);  // 提取年月日部分
+                } else {
+                    current_date = poundId.substring(1, 3); // 如果是其他字母开头的格式，比如R、C、E等
+                }
+
+                // 如果日期不相同，生成新的颜色
                 if (prev_date === null) {
                     prev_date = current_date;
                 }
@@ -406,16 +414,29 @@
                     current_color = getDistinctRandomColor(current_color);
                     prev_date = current_date;
                 }
-                pound_bill_grid_body.append('<div class="pound-id-" style="color: ' + current_color + '">' + poundId + '</div>');
+
+                // 根据不同的poundId格式决定颜色或样式
+                let poundDivClass = 'pound-id'; // 默认样式类
+                let poundDivStyle = 'color: ' + current_color; // 默认颜色样式
+
+                if (poundId.startsWith("ND")) {
+                    poundDivClass = 'pound-id-nd'; // 为ND格式设置特定的类
+                    poundDivStyle = 'color: ' + getDistinctRandomColor(current_color); // 给ND类型的磅单设置独特颜色
+                }
+
+                // 插入新的磅单编号
+                pound_bill_grid_body.append('<div class="' + poundDivClass + '" style="' + poundDivStyle + '">' + poundId + '</div>');
             } else {
-                pound_bill_grid_body.append('<div class="pound-id"' + poundId + '</div>');
+                pound_bill_grid_body.append('<div class="pound-id" style="color: white; background-color: red;">' + (poundId || '-') + '</div>');
             }
         } else {
+            // 当前修改ID的情况，标记为红色，背景色为白色
             if (poundId === null) {
                 poundId = '-';
             }
             pound_bill_grid_body.append('<div style="color: white; background-color: red" class="pound-id">' + poundId + '</div>');
         }
+
 
 
         // 插入车牌号
@@ -478,25 +499,27 @@
     $(function () {
         // add title
         let $tableTitle = $('.table-title');
-        if (isToday) {
-            if (IOType === '1') {
-                $tableTitle.text('今日入库磅单');
-            } else if (IOType === '0') {
-                $tableTitle.text('今日出库磅单');
-            } else if (IOType === '2') {
-                $tableTitle.text('今日返仓磅单');
-            }
-        } else {
-            if (IOType === '1') {
-                $tableTitle.text('历史入库磅单');
-            } else if (IOType === '0') {
-                $tableTitle.text('历史出库磅单');
-            } else if (IOType === '2') {
-                $tableTitle.text('历史返仓磅单');
-            }
-        }
+        let titlePrefix = isToday ? '今日' : '历史';
 
+        switch (IOType) {
+            case '1':
+                $tableTitle.text(titlePrefix + '入库磅单');
+                break;
+            case '0':
+                $tableTitle.text(titlePrefix + '出库磅单');
+                break;
+            case '2':
+                $tableTitle.text(titlePrefix + '返仓磅单');
+                break;
+            case '3':
+                $tableTitle.text(titlePrefix + '内部周转磅单');
+                break;
+            default:
+                $tableTitle.text('未知磅单');
+                break;
+        }
     });
+
     $(function () {
         $('.checkBoxContainer').on('click', function () {
             let checkBox = $(this).find('input');
@@ -549,6 +572,8 @@
             IOType = 'out';
         } else if (currentUrl.includes('return')) {
             IOType = 'return';
+        } else if (currentUrl.includes('turnover')) {
+            IOType = 'turnover';
         } else {
             return;
         }
@@ -563,6 +588,9 @@
             success: function (response) {
                 // 假设返回的数据是一个整数，表示总页数
                 let totalPages = parseInt(response);
+                if (totalPages < 1) {
+                    return;
+                }
                 let isContinueLeft = false;
                 let isContinueRight = false;
                 for (let i = 1; i <= totalPages; i++) {
