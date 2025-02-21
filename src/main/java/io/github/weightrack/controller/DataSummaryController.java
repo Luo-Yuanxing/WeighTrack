@@ -54,8 +54,13 @@ public class DataSummaryController {
 
     // 验证IOType参数
     private void validateIOType(String IOType) {
-        if (!IOType.equals("1") && !IOType.equals("0") && !IOType.equals("2")) {
-            throw new RuntimeException("无效url参数");
+        switch (IOType) {
+            case "0": break;
+            case "1": break;
+            case "2": break;
+            case "3": break;
+            default:
+                throw new IllegalArgumentException("无效的IOType参数");
         }
     }
 
