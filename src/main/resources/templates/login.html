@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,8 +49,8 @@
             margin-top: 5px;
         }
 
-        button {
-            width: 100%;
+        .sign a {
+            width: 40%;
             padding: 10px;
             background-color: #4CAF50;
             color: white;
@@ -59,9 +59,10 @@
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s;
+            text-align: center;
         }
 
-        button:hover {
+        .sign a:hover {
             background-color: #45a049;
         }
 
@@ -74,37 +75,124 @@
     </style>
 </head>
 <body>
+<script src="/js/jQuery-3.7.1.js"></script>
 <div class="login-container">
-    <h2>登录数据录入系统</h2>
+    <h2>鸿聚一号煤场出入库明细</h2>
 
     <form action="/login" method="post">
         <div class="form-group">
             <label for="username">账号:</label>
-            <input type="text" id="username" name="username" required="required" />
+            <input type="text" id="username" name="username"/>
         </div>
 
         <div class="form-group">
             <label for="password">密码:</label>
-            <input type="password" id="password" name="password" required="required" />
+            <input type="password" id="password" name="password"/>
         </div>
 
-        <button type="submit">Login</button>
+        <div class="form-group real-name-input-group" style="display: none">
+            <label for="real-name">司磅员名称:</label>
+            <input type="text" id="real-name" name="real-name"/>
+        </div>
+
+        <div class="sign" style="display: flex; justify-content: space-between;">
+            <a id="signup">注册</a>
+            <a id="login">登录</a>
+        </div>
+
     </form>
 
-    <div th:if="${error}" class="error-message">
-        <div class="alert alert-danger" th:text="${error}"></div>
+    <div class="error-message">
+        <div class="alert alert-danger"></div>
     </div>
 
-    <span class="success-ok" th:text="${success}" style="display: none"></span>
 </div>
 
-<script src="/js/jQuery-3.7.1.js"></script>
+<script src="/js/js-cookie.js"></script>
+
 <script>
-    $(document).ready(function() {
-        if ($('.success-ok').text() === 'ok') {
-            history.go(-2);
+    $(function () {
+        let dto = {
+            username: '',
+            password: '',
+            realName: '',
+            lastLogin: '',
+            id: ''
         }
-    });
+        $("#signup").on('click', function () {
+            dto.username = $("#username").val();
+            dto.password = $("#password").val();
+            dto.realName = $("#real-name").val();
+
+            let $realNameInputGroup = $('.real-name-input-group');
+            if ($realNameInputGroup.css('display') === 'none') {
+                $realNameInputGroup.css('display', 'block');
+                return;
+            }
+            if (!dto.username || !dto.password || !dto.realName) {
+                $('.error-message > div').text('缺少用户名、密码、司磅员名称');
+                return;
+            }
+            $.ajax({
+                url: "/signup",
+                method: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(dto),
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.user && data.user.username) {
+                        console.log(data.user.username + '注册成功');
+                        delete data.user.password;
+                        Cookies.set('user', JSON.stringify(data.user), {expires: 7});
+                        window.location.href = '/';
+                    } else {
+                        $('.error-message > div').text(data.message);
+                    }
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                }
+            })
+        })
+
+        $("#login").on('click', function () {
+            dto.username = $("#username").val();
+            dto.password = $("#password").val();
+            dto.realName = $("#real-name").val();
+
+            let $realNameInputGroup = $('.real-name-input-group');
+            if ($realNameInputGroup.css('display') === 'block') {
+                $realNameInputGroup.css('display', 'none');
+                return;
+            }
+            if (!dto.username || !dto.password) {
+                $('.error-message > div').text('缺少用户名或密码');
+                return;
+            }
+            $.ajax({
+                url: "/login",
+                method: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(dto),
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.user && data.user.username) {
+                        console.log('登录成功');
+                        delete data.user.password;
+                        Cookies.set('user', JSON.stringify(data.user), {expires: 7});
+                        window.location.href = '/';
+                    } else {
+                        let msg = data.message;
+                        $('.error-message > div').text(msg)
+                    }
+                },
+                error: function (data) {
+                    alert('登陆失败：' + data.responseText)
+                }
+            })
+        })
+
+    })
 </script>
 </body>
 </html>

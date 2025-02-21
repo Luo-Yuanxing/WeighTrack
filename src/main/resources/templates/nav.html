@@ -8,6 +8,9 @@
 
 <body>
 <div th:fragment="nav" class="nav">
+    <script src="/js/dayjs.min.js"></script>
+    <script src="/js/jQuery-3.7.1.js"></script>
+    <script src="/js/js-cookie.js"></script>
     <nav class="navbar navbar-light">
         <div class="container-fluid">
             <div class="navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -17,47 +20,311 @@
                 </ul>
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">历史记录 <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">历史记录 <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="/showList/in/1">入库记录</a></li>
                             <li><a href="/showList/out/1">出库记录</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="/showList/all/1">合并记录</a></li>
+                            <li><a href="/showList/return/1">返仓记录</a></li>
+                            <li><a href="/showList/turnover/1">内部周转记录</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">今日记录 <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">今日记录 <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="/showList/today/in/1">今日入库记录</a></li>
                             <li><a href="/showList/today/out/1">今日出库记录</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="/showList/today/all/1">合并记录</a></li>
+                            <li><a href="/showList/today/return/1">今日返仓记录</a></li>
+                            <li><a href="/showList/today/turnover/1">今日内部周转记录</a></li>
                         </ul>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
+                    <li style="background-color: darkviolet"><a href="/recycle-bin?pageNum=1&pageSize=50">回收站</a>
+                    </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">入库数据汇总 <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">入库数据汇总 <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="/summary?IOType=1&date-range=today">今日汇总</a></li>
-                            <li><a href="/summary?IOType=1&date-range=month">本月汇总</a></li>
-                            <li><a href="/summary?IOType=1&date-range=year">年度汇总</a></li>
-                            <li><a href="/summary?IOType=1&date-range=all">全部汇总</a></li>
+                            <li><a href="/summary?IOType=1&date-range=today&time-slot=">今日汇总</a></li>
+                            <li><a href="/summary?IOType=1&date-range=month&time-slot=">本月汇总</a></li>
+                            <li><a href="/summary?IOType=1&date-range=year&time-slot=">年度汇总</a></li>
+                            <li><a href="/summary?IOType=1&date-range=all&time-slot=">全部汇总</a>
+                            <li role="separator" class="divider"></li>
+                            <li><a class="select-time-in" href="#">选择时间</a>
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">出库数据汇总 <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">出库数据汇总 <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="/summary?IOType=0&date-range=today">今日汇总</a></li>
-                            <li><a href="/summary?IOType=0&date-range=month">本月汇总</a></li>
-                            <li><a href="/summary?IOType=0&date-range=year">年度汇总</a></li>
-                            <li><a href="/summary?IOType=0&date-range=all">全部汇总</a></li>
+                            <li><a href="/summary?IOType=0&date-range=today&time-slot=">今日汇总</a></li>
+                            <li><a href="/summary?IOType=0&date-range=month&time-slot=">本月汇总</a></li>
+                            <li><a href="/summary?IOType=0&date-range=year&time-slot=">年度汇总</a></li>
+                            <li><a href="/summary?IOType=0&date-range=all&time-slot=">全部汇总</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a class="select-time-out" href="#">选择时间</a></li>
                         </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">返仓数据汇总 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/summary?IOType=2&date-range=today&time-slot=">今日汇总</a></li>
+                            <li><a href="/summary?IOType=2&date-range=month&time-slot=">本月汇总</a></li>
+                            <li><a href="/summary?IOType=2&date-range=year&time-slot=">年度汇总</a></li>
+                            <li><a href="/summary?IOType=2&date-range=all&time-slot=">全部汇总</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a class="select-time-return" href="#">选择时间</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">内部周转数据汇总 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/summary?IOType=3&date-range=today&time-slot=">今日汇总</a></li>
+                            <li><a href="/summary?IOType=3&date-range=month&time-slot=">本月汇总</a></li>
+                            <li><a href="/summary?IOType=3&date-range=year&time-slot=">年度汇总</a></li>
+                            <li><a href="/summary?IOType=3&date-range=all&time-slot=">全部汇总</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a class="select-time-turnover" href="#">选择时间</a></li>
+                        </ul>
+                    </li>
+                    <li th:if="${session.user.role} eq 'admin'">
+                        <a href="/user-edit" class="user-edit">用户管理</a>
+                    </li>
+                    <li>
+                        <a class="log-out"><span class="glyphicon glyphicon-log-out">退出登录</span></a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+    <!-- 弹窗 -->
+    <div id="dateModal" class="modal">
+        <div class="modal-content">
+            <span id="closeBtn" class="close">&times;</span>
+            <h2></h2>
+            <input id="IOType" type="text" name="IOType" style="display: none">
+            <input class="example" type="text" disabled value="示例：25年2月5日">
+            <div>
+                <label for="startYear">开始日期：</label>
+                <input type="number" id="startYear">年
+                <input type="number" id="startMonth">月
+                <input type="number" id="startDay">日
+            </div>
+            <div>
+                <label for="endYear">结束日期：</label>
+                <input type="number" id="endYear">年
+                <input type="number" id="endMonth">月
+                <input type="number" id="endDay">日
+            </div>
+            <button id="submitBtn">提交</button>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            const $submitBtn = $('#submitBtn');
+            const $startYear = $('#startYear');
+            const $startMonth = $('#startMonth');
+            const $startDay = $('#startDay');
+            const $endYear = $('#endYear');
+            const $endMonth = $('#endMonth');
+            const $endDay = $('#endDay');
+
+            // 获取当前年份后两位
+            const currentYear = new Date().getFullYear() % 100;
+
+            // 每个月的最大天数，闰年情况下2月天数是29
+            const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+            function validateAndSetDates() {
+                let isValid = true;
+
+                // 处理开始年份
+                if (!$startYear.val()) {
+                    $startYear.val(currentYear);
+                } else {
+                    const startYearValue = $startYear.val();
+
+                    // 年份检查：个位数补零，三位数弹出警告
+                    if (startYearValue.length === 1) {
+                        $startYear.val('0' + startYearValue);  // 补充为两位数
+                    } else if (startYearValue.length === 2) {
+                        // 两位数无需处理
+                    } else if (startYearValue.length > 2) {
+                        alert('年份不能超过两位数！');
+                        $startYear.addClass('wring');
+                        isValid = false;
+                    } else {
+                        $startYear.removeClass('wring');
+                    }
+                }
+
+                // 处理结束年份
+                if (!$endYear.val()) {
+                    $endYear.val(currentYear);
+                } else {
+                    const endYearValue = $endYear.val();
+
+                    // 年份检查：个位数补零，三位数弹出警告
+                    if (endYearValue.length === 1) {
+                        $endYear.val('0' + endYearValue);  // 补充为两位数
+                    } else if (endYearValue.length === 2) {
+                        // 两位数无需处理
+                    } else if (endYearValue.length > 2) {
+                        alert('年份不能超过两位数！');
+                        $endYear.addClass('wring');
+                        isValid = false;
+                    } else {
+                        $endYear.removeClass('wring');
+                    }
+                }
+
+                // 处理月份和日期
+                const dateInputs = [
+                    {monthInput: $startMonth, dayInput: $startDay},
+                    {monthInput: $endMonth, dayInput: $endDay}
+                ];
+
+                for (let i = 0; i < dateInputs.length; i++) {
+                    const monthInput = dateInputs[i].monthInput;
+                    const dayInput = dateInputs[i].dayInput;
+                    const month = parseInt(monthInput.val(), 10);
+                    const day = parseInt(dayInput.val(), 10);
+
+                    // 处理空白月份
+                    if (!monthInput.val()) {
+                        if (i === 0) {  // 如果是开始时间
+                            monthInput.val('1');  // 开始时间月为空则设为1月
+                        } else {  // 如果是结束时间
+                            monthInput.val('12');  // 结束时间月为空则设为12月
+                        }
+                    }
+
+                    // 检查月份是否合法
+                    const updatedMonth = parseInt(monthInput.val(), 10);
+                    if (updatedMonth < 1 || updatedMonth > 12) {
+                        alert('月份必须在1到12之间！');
+                        monthInput.addClass('wring');
+                        isValid = false;
+                    } else {
+                        monthInput.removeClass('wring');
+                    }
+
+                    // 处理空白日期
+                    if (!dayInput.val()) {
+                        if (i === 0) {  // 如果是开始时间
+                            dayInput.val('1');  // 开始日期为空则设为开始月份的第一天
+                        } else {  // 如果是结束时间
+                            dayInput.val(daysInMonth[updatedMonth - 1].toString());  // 结束日期为空则设为结束月份的最后一天
+                        }
+                    }
+
+                    // 检查日期是否合法
+                    const updatedDay = parseInt(dayInput.val(), 10);
+                    if (updatedDay < 1 || updatedDay > daysInMonth[updatedMonth - 1]) {
+                        alert(`月份${updatedMonth}的最大天数是${daysInMonth[updatedMonth - 1]}天！`);
+                        dayInput.addClass('wring');
+                        isValid = false;
+                    } else {
+                        dayInput.removeClass('wring');
+                    }
+                }
+
+                return isValid;
+            }
+
+            // 提交按钮点击事件
+            $submitBtn.on('click', function (e) {
+                e.preventDefault();
+                if (!validateAndSetDates()) {
+                    return;
+                }
+                // 获取IOType
+                let IOType = $('#IOType').val();
+                if (!IOType) {
+                    console.error("$submitBtn : IOType is not defined");
+                    return;
+                }
+
+                let startYear = parseInt($startYear.val(), 10);
+                let startMonth = parseInt($startMonth.val(), 10);
+                let startDay = parseInt($startDay.val(), 10);
+                let endYear = parseInt($endYear.val(), 10);
+                let endMonth = parseInt($endMonth.val(), 10);
+                let endDay = parseInt($endDay.val(), 10);
+                // 使用 Day.js 生成日期对象，确保年份格式为四位
+                const startDate = dayjs(`20${startYear.toString().padStart(2, '0')}-${startMonth.toString().padStart(2, '0')}-${startDay.toString().padStart(2, '0')}`);
+                const endDate = dayjs(`20${endYear.toString().padStart(2, '0')}-${endMonth.toString().padStart(2, '0')}-${endDay.toString().padStart(2, '0')}`);
+
+                console.log(startDate.format('YYYY-MM-DD')); // 格式化输出，查看结果
+                console.log(endDate.format('YYYY-MM-DD')); // 格式化输出，查看结果
+
+                let url = '/summary?IOType=';
+                let timeSlot = startDate.format('YYYY-MM-DD') + ';' + endDate.format('YYYY-MM-DD')
+                url += IOType + '&date-range=other&time-slot=' + timeSlot;
+
+                window.location.href = url;
+            });
+
+            $('#closeBtn').click(function () {
+                $('#dateModal').css('display', 'none');
+            })
+
+
+            function fixModal(IOType) {
+                $('#dateModal').css('display', 'block');
+                if (IOType === '1') {
+                    $('#dateModal h2').text("选择入库日期范围");
+                    $('#IOType').val('1');
+                } else if (IOType === '0') {
+                    $('#dateModal h2').text("选择出库日期范围");
+                    $('#IOType').val('0');
+                } else if (IOType === '2') {
+                    $('#dateModal h2').text("选择返仓日期范围");
+                    $('#IOType').val('2');
+                } else if (IOType === '3') {
+                    $('#dateModal h2').text("选择内部周转日期范围");
+                    $('#IOType').val('3');
+                }
+            }
+
+            let $selectTimeIn = $('.select-time-in');
+            let $selectTimeOut = $('.select-time-out');
+            let $selectTimeReturn = $('.select-time-return');
+            let $selectTimeTurnover = $('.select-time-turnover');
+            $selectTimeIn.on('click', function () {
+                fixModal("1");
+            });
+            $selectTimeOut.on('click', function () {
+                fixModal("0");
+            });
+            $selectTimeReturn.on('click', function () {
+                fixModal("2");
+            });
+            $selectTimeTurnover.on('click', function () {
+                fixModal("3");
+            });
+        })
+    </script>
+    <script>
+        $(function () {
+            $('.log-out').on('click', function () {
+                Cookies.set('user', null);
+                Cookies.clear();
+                $.ajax({
+                    url: '/logout',
+                    type: 'POST',
+                    success: function () {
+                        window.location.href = '/login';
+                    }
+                })
+            })
+        })
+    </script>
+
 </div>
 
 </body>

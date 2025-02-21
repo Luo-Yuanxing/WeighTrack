@@ -1,15 +1,24 @@
+create table coal_type
+(
+    id   int auto_increment
+        primary key,
+    name varchar(100) not null,
+    constraint name
+        unique (name)
+);
+
 create table poundbill
 (
     id               int auto_increment
         primary key,
-    IOType           int                                  null,
+    IOType           char(10)                             null,
     coalType         varchar(30)                          null,
     plateNumber      varchar(30)                          null,
     grossWeight      float                                null,
     tareWeight       float                                null,
     netWeight        float                                null,
     primaryWeight    float                                null,
-    ProfitLossWeight float                                null,
+    profitLossWeight float                                null,
     emptyLoadTime    datetime                             null,
     fullLoadTime     datetime                             null,
     outputUnit       varchar(100)                         null,
@@ -20,6 +29,18 @@ create table poundbill
     creatorId        int                                  null,
     poundID          varchar(200)                         null,
     printTime        datetime                             null,
-    printed          tinyint(1) default 0                 null
+    printed          tinyint(1) default 0                 not null,
+    removed          tinyint(1) default 0                 not null comment 'ture：已删除，false：未删除'
+);
+
+create table users
+(
+    id        int auto_increment
+        primary key,
+    username  varchar(255)                           not null,
+    password  varchar(255)                           not null,
+    realName  varchar(255)                           not null comment '真实名称',
+    role      varchar(100) default 'normal'          not null,
+    lastLogin datetime     default CURRENT_TIMESTAMP not null
 );
 

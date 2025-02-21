@@ -1,0 +1,22 @@
+###
+POST localhost/login
+Content-Type: application/json
+
+{
+  "username": "administrators",
+  "password": "123357789ll"
+}
+
+###
+POST localhost/user-edit
+Content-Type: application/json
+
+{
+  "id": 1,
+  "username": "admin1234",
+  "password": "123456",
+  "realName": "lll"
+}
+
+
+###

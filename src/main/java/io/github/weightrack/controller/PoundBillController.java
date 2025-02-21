@@ -1,15 +1,22 @@
 package io.github.weightrack.controller;
 
+import com.alibaba.fastjson2.JSON;
+import io.github.weightrack.dto.PoundBillListDTO;
+import io.github.weightrack.dto.UpdateDTO;
 import io.github.weightrack.module.PoundBillModel;
 import io.github.weightrack.module.User;
 import io.github.weightrack.service.CoalTypeService;
 import io.github.weightrack.service.PoundBillService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
+@Slf4j
 @Controller
 public class PoundBillController {
 
@@ -31,6 +38,7 @@ public class PoundBillController {
             @RequestParam("input-unit") String inputUnit,
             @RequestParam("weigher") String weigher,
             @RequestParam("other-coal-type") String otherCoalType,
+            @RequestParam("creator-id") String creatorId,
             HttpServletRequest request) {
 
         if (coalType.equals("other")) {
@@ -38,18 +46,22 @@ public class PoundBillController {
             coalTypeService.insertCoalType(coalType);
         }
 
-        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
+        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(creatorId, IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
         Object user = request.getSession().getAttribute("user");
-        if (user instanceof User) {
-            poundBillModel.setCreatorId(((User) user).getId());
-        } else {
+        if (!(user instanceof User)) {
             return "redirect:/login";
         }
 
         poundBillService.insertPoundBill(poundBillModel);
 
-        // 返回视图名称
-        return "redirect:/";
+        String url = "redirect:/showList/today/";
+        switch (poundBillModel.getIOType()) {
+            case "1" -> url += "in/1";
+            case "0" -> url += "out/1";
+            case "2" -> url += "return/1";
+            case "3" -> url += "turnover/1";
+        }
+        return url;
     }
 
     @GetMapping("/update/{id}")
@@ -62,28 +74,27 @@ public class PoundBillController {
         return "update";
     }
 
+    @ResponseBody
     @PostMapping("/update/{id}")
     public String updatePoundBillById(@PathVariable("id") int id,
                                       @RequestParam("IOType") String IOType,
-                                      @RequestParam("coalType") String coalType,
-                                      @RequestParam("plate-number") String plateNumber,
-                                      @RequestParam("gross-weight") String grossWeight,
-                                      @RequestParam("tare") String tare,
-                                      @RequestParam("primary-weight") String primaryWeight,
-                                      @RequestParam("output-unit") String outputUnit,
-                                      @RequestParam("input-unit") String inputUnit,
-                                      @RequestParam("print-time") String printTime,
-                                      @RequestParam("weigher") String weigher) {
+                                      @RequestBody UpdateDTO updateDTO) {
 
-        PoundBillModel poundBillModel = PoundBillModel.createPoundBillModel(IOType, coalType, plateNumber, grossWeight, tare, primaryWeight, outputUnit, inputUnit, weigher);
-
-        poundBillService.updateById(poundBillModel, id, printTime);
-        return "redirect:/showList/in/1";
+        updateDTO.setIOType(IOType);
+        poundBillService.updateById(id, updateDTO);
+        PoundBillModel poundBillModel = poundBillService.selectById(id);
+        if (poundBillModel.getCreatTime().toLocalDate().equals(LocalDate.now())) {
+            return "{\"result\": \"ok\", \"isToday\": true}";
+        } else {
+            return "{\"result\": \"ok\", \"isToday\": false}";
+        }
     }
 
     @ResponseBody
-    @GetMapping("/delete/{id}")
-    public void deletePoundBillById(@PathVariable("id") int id) {
+    @PostMapping("/api/poundBill/delete/{id}")
+    public String deletePoundBillById(@PathVariable("id") int id) {
         poundBillService.deleteById(id);
+        return "ok";
     }
+
 }

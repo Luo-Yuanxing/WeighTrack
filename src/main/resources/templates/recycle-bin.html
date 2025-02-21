@@ -1,0 +1,743 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>鸿聚一号煤场出入库明细 - 回收站</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- nav.css   -->
+    <link rel="stylesheet" href="/css/nav.css">
+
+    <script src="/js/html5shiv.js"></script>
+    <script src="/js/respond.js"></script>
+
+    <style>
+        h2 {
+            text-align: center;
+            margin: 10px auto;
+        }
+
+        #grid-pound-bill {
+            text-align: center;
+        }
+
+        .grid-col-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+        }
+
+        #option-template {
+            display: none;
+        }
+
+        .centering {
+            align-items: center;
+        }
+
+        /*========================== grid-head ====================*/
+        .grid-head {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 增加轻微阴影效果 */
+            color: #333; /* 文字颜色 */
+        }
+
+        .grid-head div {
+            text-align: center;
+            font-weight: bold;
+            color: #333; /* 默认文字颜色 */
+        }
+
+        /* 蓝色主题标题栏 */
+        .grid-head div {
+            color: midnightblue; /* 标题文字颜色为蓝色 */
+        }
+
+        /* 修改“已打印”文字颜色 */
+        .grid-head .is-printed {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* 垂直和水平居中的列 */
+        .grid-head div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 给文本增加一些底部间距 */
+        .grid-head div {
+            margin: 5px auto;
+        }
+
+        /* ========================== 操作按钮样式 ==================== */
+        .options.grid-col-2 a {
+            display: inline-block;
+            padding: 1px 2px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 0 1px; /* 为按钮添加左右间距 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加微小的阴影 */
+        }
+
+        .recover {
+            background-color: olivedrab;
+            color: white;
+        }
+
+        .recover:hover {
+            background-color: #7fa82a;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
+        }
+
+        .delete {
+            background-color: brown;
+            color: white;
+        }
+
+        .delete:hover {
+            background-color: #b83e3e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
+        }
+
+        .batch-operations button, .batch-operations span {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .batch-operations button:hover, .batch-operations span:hover {
+            background-color: #0056b3;
+        }
+
+        .delete-style {
+            background-color: crimson !important;
+            color: white;
+        }
+
+        .delete-style:hover {
+            background-color: #a82540 !important;
+        }
+
+        .recover-style {
+            background-color: #5cb85c !important;
+            color: white;
+        }
+        .recover-style:hover {
+            background-color: #34a134 !important;
+            color: white;
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+
+<script src="/js/jQuery-3.7.1.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/html5shiv.js"></script>
+<script src="/js/respond.js"></script>
+<script src="/js/dayjs.min.js"></script>
+
+<div th:insert="~{nav :: nav}"></div>
+<h2> 回收站</h2>
+
+<div class="batch-operations">
+    <button class="delete-style" id="remove-all">清空回收站</button>
+    <button class="delete-style" id="remove-current-page-all">清空本页数据</button>
+    <button class="delete-style" id="delete-select">删除所选数据</button>
+    <button class="recover-style" id="recover-select">恢复所选数据</button>
+    <span id="select-record" class="glyphicon glyphicon-search"></span>
+    <input type="text" name="plate-number" placeholder="车牌号">
+    <input type="text" name="pound-id" placeholder="磅单编号">
+
+
+</div>
+
+
+<input type="file" id="fileInput" style="display: none">
+
+<div id="grid-pound-bill">
+    <div id="grid-head" class="grid-head centering"
+         style="background-color: gainsboro; position: sticky; top: 0; z-index: 10;">
+        <div>多选</div>
+        <div>操作</div>
+        <div>煤种</div>
+        <div>磅单<br>编号</div>
+        <div>车牌号</div>
+        <div>毛重</div>
+        <div>皮重</div>
+        <div>净重</div>
+        <div>原发</div>
+        <div>盈亏</div>
+        <div>创建<br>时间</div>
+        <div>打印<br>时间</div>
+        <div>发货<br>单位</div>
+        <div>收货<br>单位</div>
+        <div th:if="${today}" class="is-printed">已打印</div>
+        <div>司磅员</div>
+    </div>
+    <div id="grid-body" class="centering">
+
+    </div>
+</div>
+
+<link rel="stylesheet" href="/css/pagination.css">
+<div>
+    <ul class="pagination">
+        <li class="laquo">
+            <span aria-hidden="true">&laquo;</span>
+        </li>
+        <li class="raquo">
+            <span aria-hidden="true">&raquo;</span>
+        </li>
+    </ul>
+
+</div>
+
+<div id="option-template">
+    <div class="options grid-col-2">
+        <a class="recover">恢复</a>
+        <a class="delete">删除</a>
+    </div>
+</div>
+
+<script>
+    function recover(id) {
+
+        $.ajax({
+            url: '/recycle-bin/recover/' + id,
+            type: 'GET',
+            success: function () {
+                res = true;
+            }
+        })
+
+    }
+    function deleteRecord(id) {
+
+        $.ajax({
+            url: '/recycle-bin/delete/' + id, // 请求的URL
+            type: 'GET',
+            success: function () {
+                // 请求成功后的回调函数
+                res = true;
+            }
+        });
+
+    }
+</script>
+
+<script src="/js/js-cookie.js"></script>
+<!--填充数据-->
+<script th:inline="javascript">
+    function getRandomColor() {
+        // 随机生成一个色调（H）、饱和度（S）和亮度（L）
+        let h = Math.floor(Math.random() * 360);  // 色调范围0-360
+        let s = Math.floor(Math.random() * 30) + 70;  // 饱和度范围70-100，避免过于灰暗
+        let l = Math.floor(Math.random() * 30) + 40;  // 亮度范围40-70，避免过于鲜艳或过于暗淡
+
+        // HSL转RGB的算法
+        function hslToRgb(h, s, l) {
+            s /= 100;
+            l /= 100;
+            let c = (1 - Math.abs(2 * l - 1)) * s;
+            let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            let m = l - c / 2;
+            let r, g, b;
+
+            if (0 <= h && h < 60) {
+                r = c;
+                g = x;
+                b = 0;
+            } else if (60 <= h && h < 120) {
+                r = x;
+                g = c;
+                b = 0;
+            } else if (120 <= h && h < 180) {
+                r = 0;
+                g = c;
+                b = x;
+            } else if (180 <= h && h < 240) {
+                r = 0;
+                g = x;
+                b = c;
+            } else if (240 <= h && h < 300) {
+                r = x;
+                g = 0;
+                b = c;
+            } else {
+                r = c;
+                g = 0;
+                b = x;
+            }
+
+            r = Math.round((r + m) * 255);
+            g = Math.round((g + m) * 255);
+            b = Math.round((b + m) * 255);
+
+            // 转为十六进制
+            return `#${(1 << 24 | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()}`;
+        }
+
+        return hslToRgb(h, s, l);
+    }
+
+    // 计算两个RGB颜色的欧几里得距离
+    function colorDistance(color1, color2) {
+        // 将十六进制颜色转为RGB
+        function hexToRgb(hex) {
+            let r = parseInt(hex.slice(1, 3), 16);
+            let g = parseInt(hex.slice(3, 5), 16);
+            let b = parseInt(hex.slice(5, 7), 16);
+            return {r, g, b};
+        }
+
+        const c1 = hexToRgb(color1);
+        const c2 = hexToRgb(color2);
+
+        // 使用欧几里得距离计算色差
+        return Math.sqrt(
+            Math.pow(c1.r - c2.r, 2) +
+            Math.pow(c1.g - c2.g, 2) +
+            Math.pow(c1.b - c2.b, 2)
+        );
+    }
+
+    // 获取颜色差异大的颜色
+    function getDistinctRandomColor(lastColor) {
+        let color;
+        do {
+            color = getRandomColor();  // 生成新颜色
+        } while (colorDistance(color, lastColor) < 50 || colorDistance(color, '#FFFFFF') < 100);  // 阈值50，表示颜色太接近时重新生成
+        return color;
+    }
+
+    let pound_bill_grid_body = $('#grid-body');
+    let pound_bill_list = /*[[${poundBillModels}]]*/ {};
+    let isToday = /*[[${today}]]*/ {};
+    let IOType = /*[[${IOType}]]*/ {};
+
+    let prev_date = null;
+    let current_color = getRandomColor();
+    let currentModifyID = Cookies.get('currentModifyID');
+
+    for (let poundBill of pound_bill_list) {
+        // 插入多选框
+        // 创建一个包含多选框和文本的容器
+        let $checkBoxContainer = $('<div class="checkBoxContainer" style="display: flex;justify-content: center;align-items: center; height: 100%; width: 100%"></div>', {
+            class: 'grid-item'
+        });
+
+        // 创建多选框
+        let checkBox = $('<input>', {
+            type: 'checkbox',
+            class: 'checkbox', // 自定义样式类
+            id: 'checkbox-' + poundBill.id, // 设置id，方便定位
+            value: poundBill.id,
+            style: 'margin: 0 auto'
+        });
+
+        // 将多选框和文本添加到容器中
+        $checkBoxContainer.append(checkBox);
+
+        // 将容器插入到grid布局的#grid-body中
+        pound_bill_grid_body.append($checkBoxContainer);
+
+        // 插入操作div
+        let $option = $("#option-template").clone().removeAttr("id");
+        $option.find('.recover').on('click', function () {
+            recover(poundBill.id);
+            alert('该记录已恢复');
+            window.location.reload();
+        })
+        $option.find('.delete').on('click', function () {
+            if (confirm("确定要永久这条记录吗？")) {
+                deleteRecord(poundBill.id)
+                alert('该记录已删除');
+                window.location.reload();
+
+            }
+        });
+        // 强制应用样式
+        $option.find('a').css({
+            'border-radius': '5px', // 确保圆角样式
+            'transition': 'all 0.3s ease', // 确保过渡效果
+        });
+        pound_bill_grid_body.append($option.find('.options').eq(0));
+
+        // 插入煤种
+        pound_bill_grid_body.append('<div class="coal-type">' + poundBill.coalType + '</div>');
+
+        // 插入磅单编号
+        let poundId = poundBill.poundID;
+        if (currentModifyID === undefined || poundBill.id !== parseInt(currentModifyID)) {
+            if (poundId !== null) {
+                let current_date = poundId.substring(5, 7);
+                if (prev_date === null) {
+                    prev_date = current_date;
+                }
+                if (prev_date !== current_date) {
+                    current_color = getDistinctRandomColor(current_color);
+                    prev_date = current_date;
+                }
+                pound_bill_grid_body.append('<div class="pound-id" style="color: ' + current_color + '">' + poundId + '</div>');
+            } else {
+                pound_bill_grid_body.append('<div class="pound-id"' + poundId + '</div>');
+            }
+        } else {
+            if (poundId === null) {
+                poundId = '-';
+            }
+            pound_bill_grid_body.append('<div style="color: white; background-color: red" class="pound-id">' + poundId + '</div>');
+        }
+
+        // 插入车牌号
+        pound_bill_grid_body.append('<div class="plate-number">' + poundBill.plateNumber + '</div>');
+
+        // 插入毛重
+        pound_bill_grid_body.append('<div class="gross-weight">' + poundBill.grossWeight.toFixed(2) + '</div>');
+
+        // 插入皮重
+        pound_bill_grid_body.append('<div class="tare-weight">' + poundBill.tareWeight.toFixed(2) + '</div>');
+
+        // 插入净重
+        let netWeight = poundBill.netWeight;
+        switch (netWeight) {
+            case '1':
+                netWeight = netWeight.toFixed(2);
+                break;
+            case '0':
+                netWeight = '-';
+                break;
+            case 'all':
+                netWeight = netWeight.toFixed(2);
+                break;
+        }
+        pound_bill_grid_body.append('<div class="net-weight">' + netWeight + '</div>');
+
+        // 插入原发
+        pound_bill_grid_body.append('<div class="primary-weight">' + poundBill.primaryWeight.toFixed(2) + '</div>');
+
+        // 插入盈亏
+        pound_bill_grid_body.append('<div class="profit-loss-weight">' + poundBill.profitLossWeight.toFixed(2) + '</div>');
+
+        // 插入创建时间
+        pound_bill_grid_body.append('<div class="print-time">' + dayjs(poundBill.creatTime).format('HH:mm:ss') + '</div>');
+
+        // 插入打印时间
+        let printTime = poundBill.printTime;
+        if (printTime) {
+            printTime = dayjs(printTime).format('HH:mm:ss');
+        } else {
+            printTime = '-';
+        }
+        pound_bill_grid_body.append('<div class="print-time">' + printTime + '</div>');
+
+        // 插入发货单位
+        pound_bill_grid_body.append('<div>' + poundBill.outputUnit + '</div>');
+
+        // 插入收货单位
+        pound_bill_grid_body.append('<div>' + poundBill.inputUnit + '</div>');
+
+        // 插入是否打印
+        if (isToday) {
+            let printed = poundBill.printed === true ? '已打印' : '未打印';
+            pound_bill_grid_body.append('<div>' + printed + '</div>');
+        }
+
+        // 插入司磅员
+        pound_bill_grid_body.append('<div>' + poundBill.weigher + '</div>');
+    }
+    $(function () {
+        // add title
+        let $tableTitle = $('.table-title');
+        if (isToday) {
+            if (IOType === '1') {
+                $tableTitle.text('今日入库磅单');
+            } else {
+                $tableTitle.text('今日出库磅单');
+            }
+        } else {
+            if (IOType === '1') {
+                $tableTitle.text('历史入库磅单');
+            } else {
+                $tableTitle.text('历史出库磅单');
+            }
+        }
+
+    });
+    $(function () {
+        $('.checkBoxContainer').on('click', function () {
+            let checkBox = $(this).find('input');
+            if (checkBox.prop('checked')) {
+                checkBox.prop('checked', false);
+            } else {
+                checkBox.prop('checked', true);
+            }
+        })
+    })
+    $(function () {
+        let $gridHead = $('#grid-head');
+        let $gridBody = $('#grid-body');
+        let length = $gridHead.find('div').length;
+        $gridHead.css({
+            'display': 'grid',
+            'grid-template-columns': `repeat(${length}, 1fr)`,
+            'gap': '1px'
+        })
+        $gridBody.css({
+            'display': 'grid',
+            'grid-template-columns': `repeat(${length}, 1fr)`,
+            'gap': '1px'
+        })
+    })
+</script>
+<!--css-->
+<script>
+    $(function () {
+        $('#grid-body div').each(function () {
+            $(this).css({
+                margin: '10px auto'
+            })
+        })
+    })
+</script>
+<!--分页-->
+<script th:inline="javascript">
+    $(document).ready(function () {
+        let pageSize = 50;
+        // 获取当前页面的 URL
+        let currentUrl = window.location.href;
+        if (currentUrl.includes('plate-number-filter')) {
+            $('.laquo').css('display','none');
+            $('.raquo').css('display','none');
+            return;
+        }
+        let match = window.location.href.match(/pageNum=(\d+)/);
+
+        let curr_page = 1
+
+        if (match) {
+            curr_page = parseInt(match[1]);
+        }
+
+        $.ajax({
+            url: '/recycle-bin/page_num?pageSize=' + pageSize,
+            type: 'GET',
+            success: function (response) {
+                // 假设返回的数据是一个整数，表示总页数
+                let totalPages = parseInt(response);
+                let isContinueLeft = false;
+                let isContinueRight = false;
+                for (let i = 1; i <= totalPages; i++) {
+                    let pageItem = $('<li><a href="#">' + i + '</a></li>');
+                    if (i < curr_page - 3) {
+                        isContinueLeft = true;
+                        continue;
+                    }
+                    if (i > curr_page + 5) {
+                        isContinueRight = true;
+                        continue;
+                    }
+                    if (i === curr_page) {
+                        pageItem.addClass('active');
+                    }
+                    $('.pagination .raquo').before(pageItem);
+                }
+                if (curr_page === 1) {
+                    $('.pagination .laquo').addClass('disabled');
+                }
+                if (curr_page === totalPages) {
+                    $('.pagination .raquo').addClass('disabled');
+                }
+
+                // 绑定分页点击事件
+                $('.pagination li').click(function (e) {
+                        e.preventDefault(); // 阻止默认链接跳转行为
+
+                        // 获取点击的页码
+                        let pageNum = $(this).text();
+
+                        // 如果是点击了当前页，则不做任何操作
+                        if ($(this).hasClass('active')) {
+                            return;
+                        }
+                        if ($(this).hasClass('disabled')) {
+                            return;
+                        }
+                        if ($(this).hasClass('raquo')) {
+                            pageNum = totalPages;
+                        }
+                        if ($(this).hasClass('laquo')) {
+                            pageNum = 1;
+                        }
+
+                        $('.pagination li').removeClass('active');
+                        $(this).addClass('active');
+
+                        window.location.href = currentUrl.replace(/pageNum=\d+/, `pageNum=${pageNum}`);
+                    }
+                );
+
+                // 添加省略号
+                if (isContinueLeft) {
+                    $('.laquo').after(`<li><a>...</a></li>`)
+                }
+                if (isContinueRight) {
+                    $('.raquo').before(`<li><a>...</a></li>`)
+                }
+            },
+            error: function () {
+                console.log('Error occurred while fetching total pages.');
+            }
+        });
+
+
+    });
+</script>
+
+<!--数据修正-->
+<script>
+    $(function () {
+        // 条件样式
+        $('.profit-loss-weight').each(function () {
+            let value = $(this).text();
+            let profit_loss_weight = parseFloat(value);
+            if (!Number.isNaN(profit_loss_weight)) {
+                if (profit_loss_weight < -0.2) {
+                    $(this).css({
+                        "color": "#d32f2f",
+                        "background-color": "#f8d7da",
+                        "border": "1px solid #f5c6cb",
+                        "padding": "0.2em 0.4em",
+                        "border-radius": "5px",
+                        "transition": "all 0.3s ease-in-out"
+                    });
+                } else if (profit_loss_weight > 0.2) {
+                    $(this).css({
+                        "color": "#45d32f",
+                        "background-color": "#d7f8e1",
+                        "border": "1px solid #6fdf5e",
+                        "padding": "0.2em 0.4em",
+                        "border-radius": "5px",
+                        "transition": "all 0.3s ease-in-out"
+                    });
+                }
+            }
+
+        });
+
+    });
+
+</script>
+<!--批量恢复-->
+<script>
+    $(function () {
+
+        // 清空回收站
+        $('#remove-all').on('click', function () {
+            if (!confirm("确认清空回收站！！！！！！！！！")) {
+                return;
+            }
+            $.ajax({
+                url: '/recycle-bin/delete-all',
+                method: 'GET',
+                success: function () {
+                    alert('回收站已清空！');
+                    window.location.reload();
+                },
+                error: function () {
+                    alert('清空失败');
+                }
+            })
+        })
+
+        //
+        $('#remove-current-page-all').on('click', function () {
+            if (!confirm("确认清空本页？")) {
+                return;
+            }
+
+            $('.checkbox').each(function () {
+                deleteRecord($(this).val());
+            });
+            alert('本页已删除')
+            window.location.reload();
+        })
+
+        $('#recover-select').on('click', function () {
+            if (!confirm("确认恢复所选？")) {
+                return;
+            }
+            $('.checkbox').each(function () {
+                if ($(this).prop('checked')) {
+                    recover($(this).val());
+                }
+
+            });
+            alert('所选已恢复');
+            window.location.reload();
+        })
+        $('#delete-select').on('click', function () {
+            if (!confirm("确认删除所选？")) {
+                return;
+            }
+            $('.checkbox').each(function () {
+                if ($(this).prop('checked')) {
+                    deleteRecord($(this).val());
+                }
+
+            });
+            alert('所选已恢复');
+            window.location.reload();
+        })
+
+    })
+</script>
+
+<!--按车牌号搜索-->
+<script>
+    $(function () {
+        let $selectRecord = $('#select-record');
+        let $plateNumber = $('.batch-operations input[name="plate-number"]');
+        let $poundId = $('.batch-operations input[name="pound-id"]');
+        $selectRecord.on('click', function () {
+            let plateNumber = $plateNumber.val().trim();
+            let poundId = $poundId.val().trim();
+            window.location.href = '/recycle/plate-number-filter?plateNumber=' + plateNumber + '&poundId=' + poundId;
+        })
+        let url = new URL(window.location.href);
+        let params = new URLSearchParams(url.search);
+        let plateNumber = params.get('plateNumber'); // 解码后的 plateNumber
+        let filter = params.get('filter'); // filter 参数值
+        let poundId = params.get('poundId');
+        $plateNumber.val(plateNumber);
+        $poundId.val(poundId);
+        if (filter !== null && filter.length !== 0) {
+            $filter.val(filter);
+        }
+    })
+</script>
+</body>
+
+</html>
+

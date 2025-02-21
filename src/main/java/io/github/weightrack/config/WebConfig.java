@@ -20,9 +20,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 注册拦截器，并指定拦截路径和排除路径
-//        registry.addInterceptor(loginInterceptor())
-//                .addPathPatterns("/**")  // 拦截所有请求
-//                .excludePathPatterns("/login", "/logon");
+//         TODO 发布时开启登录拦截
+        registry.addInterceptor(loginInterceptor())
+                .addPathPatterns("/**")  // 拦截所有请求
+                .excludePathPatterns("/signup", "/login", "/logon", "/js/**", "/css/**", "/fonts/**", "/images/**");  // 排除静态资源路径
+
 
         // 注册no-cache 拦截器
         registry.addInterceptor(noCacheInterceptor())

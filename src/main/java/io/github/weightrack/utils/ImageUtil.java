@@ -16,8 +16,8 @@ public class ImageUtil {
         data[8] = String.format("%.2f", Double.parseDouble(data[8]));
 
         int dpi = 300; // 打印机的DPI
-        int widthMm = 80; // 图纸宽度，单位毫米
-        int heightMm = 200; // 图纸高度，单位毫米
+        int widthMm = 90; // 图纸宽度，单位毫米
+        int heightMm = 210; // 图纸高度，单位毫米
 
         // 将图纸尺寸转换为像素
         int widthPx = (int) (widthMm * dpi / 25.4) + 230;
@@ -41,15 +41,15 @@ public class ImageUtil {
         String header1 = "鸿聚一号煤场";
         FontMetrics fm = g2d.getFontMetrics();
         int stringWidth = fm.stringWidth(header1);
-        int xHeader1 = (widthPx - stringWidth) / 2;  // 水平居中
-        int yHeader1 = 110;  // 调整垂直位置
+        int xHeader1 = ((widthPx - stringWidth) / 2) + 30;  // 水平居中
+        int yHeader1 = 200;  // 调整垂直位置
 
         g2d.drawString(header1, xHeader1, yHeader1);  // 绘制第一行标题
 
         // 绘制说明文字：过磅单
         String header2 = "过磅单";
         stringWidth = fm.stringWidth(header2);
-        int xHeader2 = (widthPx - stringWidth) / 2;  // 水平居中
+        int xHeader2 = ((widthPx - stringWidth) / 2) + 30;  // 水平居中
         int yHeader2 = yHeader1 + fm.getHeight();  // 第二行标题，向下偏移更多
 
         g2d.drawString(header2, xHeader2, yHeader2);  // 绘制第二行标题
@@ -62,7 +62,7 @@ public class ImageUtil {
         int rows = columnHeaders.length;
 
         // 设置表格的起始位置（表格位置在说明文字下面）
-        int x = 20;
+        int x = 20 + 45;
         int y = yHeader2 + 45;  // 表格距离标题文字的距离
 
         // 表格单元格的宽度和高度
@@ -79,9 +79,9 @@ public class ImageUtil {
         for (int i = 0; i < rows; i++) {
             // 第一列（表头）
             g2d.setColor(Color.WHITE);
-            g2d.fillRect(x, y + i * cellHeight, cellWidth, cellHeight);
+            g2d.fillRect(x, y + i * cellHeight, cellWidth - 44, cellHeight);
             g2d.setColor(Color.BLACK);
-            g2d.drawRect(x, y + i * cellHeight, cellWidth, cellHeight);
+            g2d.drawRect(x, y + i * cellHeight, cellWidth - 44, cellHeight);
 
             // 计算文本的宽度和位置，确保文本左对齐
             fm.stringWidth(columnHeaders[i]);
@@ -93,9 +93,9 @@ public class ImageUtil {
 
             // 第二列（数据）
             g2d.setColor(Color.WHITE);
-            g2d.fillRect(x + cellWidth, y + i * cellHeight, cellWidth, cellHeight);
+            g2d.fillRect(x + cellWidth - 44, y + i * cellHeight, cellWidth - 44, cellHeight);
             g2d.setColor(Color.BLACK);
-            g2d.drawRect(x + cellWidth, y + i * cellHeight, cellWidth, cellHeight);
+            g2d.drawRect(x + cellWidth - 44, y + i * cellHeight, cellWidth - 44, cellHeight);
 
             // 计算数据文本的宽度和位置，确保文本左对齐
             fm.stringWidth(data[i]);
@@ -104,7 +104,7 @@ public class ImageUtil {
             if (columnHeaders[i].equals("净重（吨）：")) {
                 g2d.setFont(new Font("FangSong", Font.BOLD, 100));
             }
-            g2d.drawString(data[i], stringX + 40, stringY - 10);
+            g2d.drawString(data[i], stringX - 10, stringY - 10);
             g2d.setFont(new Font("FangSong", Font.BOLD, 70));
 
         }
@@ -123,7 +123,7 @@ public class ImageUtil {
 
             // 80mm * 120mm转换为像素 (300 DPI)
             double width = 80 * 300 / 25.4;  // 80mm to pixels
-            double height = 120 * 300 / 25.4; // 120mm to pixels
+            double height = 150 * 300 / 25.4; // 120mm to pixels
             paper.setSize(width, height);
             paper.setImageableArea(0, 0, width, height); // 设置页边距为0
 
@@ -132,9 +132,8 @@ public class ImageUtil {
             // 创建打印对象并设置打印内容
             ImagePrinter imagePrinter = new ImagePrinter(image);
             printerJob.setPrintable(imagePrinter, pageFormat);
-
+//            printerJob.printDialog(); // 显示对话框
             printerJob.print();
-
         } catch (Exception ignored) {
         }
     }
