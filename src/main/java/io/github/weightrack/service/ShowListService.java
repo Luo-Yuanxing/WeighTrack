@@ -19,7 +19,8 @@ public class ShowListService {
             case "in" -> showListMapper.showList("1", offset, pageSize);
             case "out" -> showListMapper.showList("0", offset, pageSize);
             case "return" -> showListMapper.showList("2", offset, pageSize);
-            case "all" -> showListMapper.showListAll(offset, pageSize);
+            case "turnover" -> showListMapper.showList("3", offset, pageSize);
+//            case "all" -> showListMapper.showListAll(offset, pageSize);
             default -> throw new RuntimeException("option error");
         };
     }
@@ -30,7 +31,8 @@ public class ShowListService {
             case "in" -> showListMapper.showTodayList("1", offset, pageSize);
             case "out" -> showListMapper.showTodayList("0", offset, pageSize);
             case "return" -> showListMapper.showTodayList("2", offset, pageSize);
-            case "all" -> showListMapper.showTodayListAll(offset, pageSize);
+            case "turnover" -> showListMapper.showTodayList("3", offset, pageSize);
+//            case "all" -> showListMapper.showTodayListAll(offset, pageSize);
             default -> throw new RuntimeException("option error");
         };
     }
@@ -41,7 +43,8 @@ public class ShowListService {
                 case "in" -> showListMapper.showTodayListCount("1") / pageSize + 1;
                 case "out" -> showListMapper.showTodayListCount("0") / pageSize + 1;
                 case "return" -> showListMapper.showTodayListCount("2") / pageSize + 1;
-                case "all" -> showListMapper.showTodayListAllCount() / pageSize + 1;
+//                case "all" -> showListMapper.showTodayListAllCount() / pageSize + 1;
+                case "turnover" -> showListMapper.showTodayListCount("3") / pageSize + 1;
                 default -> throw new RuntimeException("option error");
             };
         } else {
@@ -49,7 +52,8 @@ public class ShowListService {
                 case "in" -> showListMapper.showListCount("1") / pageSize + 1;
                 case "out" -> showListMapper.showListCount("0") / pageSize + 1;
                 case "return" -> showListMapper.showListCount("2") / pageSize + 1;
-                case "all" -> showListMapper.showListAllCount() / pageSize + 1;
+//                case "all" -> showListMapper.showListAllCount() / pageSize + 1;
+                case "turnover" -> showListMapper.showListCount("3") / pageSize + 1;
                 default -> throw new RuntimeException("option error");
             };
         }

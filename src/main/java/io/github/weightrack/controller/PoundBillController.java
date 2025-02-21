@@ -59,8 +59,8 @@ public class PoundBillController {
             case "1" -> url += "in/1";
             case "0" -> url += "out/1";
             case "2" -> url += "return/1";
+            case "3" -> url += "turnover/1";
         }
-        // 返回视图名称
         return url;
     }
 

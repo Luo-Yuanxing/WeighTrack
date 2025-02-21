@@ -35,12 +35,13 @@ public class ExcelUtil {
                     case "1" -> workbook.getSheet("入库明细");
                     case "0" -> workbook.getSheet("出库明细");
                     case "2" -> workbook.getSheet("返仓明细");
-                    default -> throw new IllegalArgumentException("IOType must be 0, 1 or 2");
+                    case "3" -> workbook.getSheet("内部周转明细");
+                    default -> throw new IllegalArgumentException("IOType must be 0, 1, 2 or 3");
                 };
 
                 if (sheet == null) {
                     log.error("sheet is not found");
-                    throw new ExcelException("Excel 文件不存在要写入的工作表 sheet，工作表名称仅能为：入库明细、出库明细、返仓明细");
+                    throw new ExcelException("Excel 文件不存在要写入的工作表 sheet，工作表名称仅能为：入库明细、出库明细、返仓明细、内部周转明细");
                 }
 
                 int length = sheet.getLastRowNum();
@@ -114,7 +115,7 @@ public class ExcelUtil {
                     Cell netWeightCell = currentRow.createCell(6, CellType.NUMERIC);
                     netWeightCell.setCellValue(poundBillModel.getNetWeight());
 
-                    if (IOType.equals("1") || IOType.equals("2")) {
+                    if (IOType.equals("1") || IOType.equals("2") || IOType.equals("3")) {
 
                         // 设置原发
                         Cell primaryCell = currentRow.createCell(7, CellType.NUMERIC);

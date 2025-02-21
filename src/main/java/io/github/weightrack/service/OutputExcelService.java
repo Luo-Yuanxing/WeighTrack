@@ -55,6 +55,7 @@ public class OutputExcelService {
             case "0" -> "出库记录";
             case "1" -> "入库记录";
             case "2" -> "返仓记录";
+            case "3" -> "内部周转记录";
             default -> "未知记录";
         };
         log.info("sheet: {}， 插入了{}行记录", IOTypeName, modifyLength);

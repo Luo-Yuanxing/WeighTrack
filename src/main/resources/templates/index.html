@@ -151,6 +151,7 @@
                     <option value="1">入库</option>
                     <option value="0">出库</option>
                     <option value="2">返仓</option>
+                    <option value="3">内部周转</option>
                 </select>
             </div>
 
@@ -368,7 +369,7 @@
         $IOType.on('change', function () {
             if ($IOType.val() === '0') {
                 $primary_weight.hide();
-            } else if ($IOType.val() === '1' || $IOType.val() === '2') {
+            } else if ($IOType.val() === '1' || $IOType.val() === '2' || $IOType.val() === '3') {
                 $primary_weight.show();
             }
         });
