@@ -312,8 +312,7 @@
     <script>
         $(function () {
             $('.log-out').on('click', function () {
-                Cookies.set('user', null);
-                Cookies.clear();
+                Cookies.remove('user');
                 $.ajax({
                     url: '/logout',
                     type: 'POST',

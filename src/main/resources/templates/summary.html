@@ -142,7 +142,7 @@
         let $gh = $("#grid-head");
         let head_length;
         if (dateRange !== 'today') {
-            head_length = coalTypes.length + 4;
+            head_length = coalTypes.length + 3;
             $gh.css(
                 {
                     'display': 'grid',
@@ -155,11 +155,11 @@
             coalTypes.forEach(function (name) {
                 $gh.append(`<div>${name}</div>`);
             })
-            if (IOType === '1') {
-                $gh.append(`<div class>发货单位</div>`)
-            } else {
-                $gh.append(`<div class>收货单位</div>`)
-            }
+            // if (IOType === '1') {
+            //     $gh.append(`<div class>发货单位</div>`)
+            // } else {
+            //     $gh.append(`<div class>收货单位</div>`)
+            // }
             $gh.append(`<div class>当日车次</div>`)
         } else {
             if (IOType === '1') {
@@ -220,8 +220,8 @@
                 }
 
                 // 插入单位
-                let units = [...new Set(row['unit'].split(','))];
-                $gb.append(`<div class="unit">${row['unit']}</div>`);
+                // let units = [...new Set(row['unit'].split(','))];
+                // $gb.append(`<div class="unit">${row['unit']}</div>`);
 
                 // 插入车次
                 $gb.append(`<div class="weight total-trips">${row['totalTrips']}</div>`)
@@ -236,7 +236,7 @@
                 $gb.append(`<div class="coal-type">${row['coalType']}</div>`)
                 $gb.append(`<div class="net weight">${parseFloat(row['totalNetWeight']).toFixed(2)}</div>`)
                 $gb.append(`<div class="primary weight">${parseFloat(row['totalPrimaryWeight']).toFixed(2)}</div>`)
-                if (IOType === '1') {
+                if (IOType !== '0') {
                     $gb.append(`<div class="profit-loss weight">${parseFloat(row['totalProfitLossWeight']).toFixed(2)}</div>`)
                 }
                 $gb.append(`<div class="trips">${row['totalTrips']}</div>`)
@@ -256,7 +256,7 @@
                 $gb.append(`<div class="weight">${colSum.toFixed(2)}</div>`)
             }
             // 占位
-            $gb.append(`<div class="unit">#</div>`);
+            // $gb.append(`<div class="unit">#</div>`);
             // 总车次
             let totalTripsAll = 0;
             $('.total-trips').each(function (){
