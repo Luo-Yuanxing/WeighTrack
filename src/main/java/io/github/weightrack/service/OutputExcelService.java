@@ -26,8 +26,12 @@ public class OutputExcelService {
 
         File[] files = rootDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".xlsx"));
         if (files != null && files.length > 0) {
-            excelFile = files[0]; // 拿到第一个符合条件的文件
-            log.info("找到文件: {}", excelFile.getAbsolutePath());
+            for (File file : files) {
+                if (file.getName().startsWith("new")) {
+                    break;
+                }
+                excelFile = file;
+            }
         } else {
             log.error("未找到符合条件的 .xlsx 文件");
         }
