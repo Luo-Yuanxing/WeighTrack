@@ -28,7 +28,7 @@ public class OutputExcelService {
         if (files != null && files.length > 0) {
             for (File file : files) {
                 if (file.getName().startsWith("new")) {
-                    break;
+                    continue;
                 }
                 excelFile = file;
             }
@@ -44,7 +44,7 @@ public class OutputExcelService {
         }
 
         if (excelFile.exists()) {
-            log.info("打开文件 过磅明细.xlsx  at: {}", excelFile.getAbsolutePath());
+            log.debug("打开文件 过磅明细.xlsx  at: {}", excelFile.getAbsolutePath());
         } else {
             log.error("过磅明细.xlsx 找不到  at:{}", excelFile.getAbsolutePath());
             return "error: 找不到文件： 过磅明细.xlsx";
@@ -62,7 +62,7 @@ public class OutputExcelService {
             case "3" -> "内部周转记录";
             default -> "未知记录";
         };
-        log.info("sheet: {}， 插入了{}行记录", IOTypeName, modifyLength);
+        log.debug("sheet: {}， 插入了{}行记录", IOTypeName, modifyLength);
         return "ok";
     }
 }

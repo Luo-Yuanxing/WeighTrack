@@ -13,7 +13,8 @@ public class AutoSaveToExcel {
     @Autowired
     OutputExcelService outputExcelService;
 
-    @Scheduled(cron = "0 */5 * * * *")
+//    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     public void autoSaveToExcel() {
         log.info("自动保存到Excel");
 

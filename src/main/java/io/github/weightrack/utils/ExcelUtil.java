@@ -45,7 +45,7 @@ public class ExcelUtil {
                 }
 
                 int length = sheet.getLastRowNum();
-                log.info("sheet长度：{}", length);
+                log.debug("sheet长度：{}", length);
 
                 int i;
                 for (i = 3; ; i++) {
@@ -69,7 +69,7 @@ public class ExcelUtil {
                         break;
                     }
                 }
-                log.info("当前待插入行索引： {}", i);
+                log.debug("当前待插入行索引： {}", i);
 
                 Date date = java.sql.Date.valueOf(LocalDate.now());
                 // poundBillModels排序
