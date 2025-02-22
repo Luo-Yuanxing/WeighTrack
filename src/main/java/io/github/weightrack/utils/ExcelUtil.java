@@ -106,8 +106,12 @@ public class ExcelUtil {
                     primaryCell.setCellValue(poundBillModel.getPrimaryWeight());
 
                     // 设置盈亏
+                    // 四舍五入保留两位小数
+                    double roundedValue = Math.round(poundBillModel.getProfitLossWeight() * 100.0) / 100.0;
+
+                    // 创建单元格并设置四舍五入后的值
                     Cell profitLossCell = currentRow.createCell(8, CellType.NUMERIC);
-                    profitLossCell.setCellValue(poundBillModel.getProfitLossWeight());
+                    profitLossCell.setCellValue(roundedValue);
 
                     // 设置打印时间
                     Cell printTimeCell = currentRow.createCell(9, CellType.NUMERIC);

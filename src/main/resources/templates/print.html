@@ -151,9 +151,9 @@
             <td>净重</td>
             <td class="NetWeigh float_2" th:text="${poundBillModel.netWeight}"></td>
         </tr>
-        <tr th:if="${poundBillModel.IOType == '1'}">
+        <tr th:if="${poundBillModel.IOType != '0'}">
             <td>原发</td>
-            <td class="PrimaryWeigh float_2" th:text="${poundBillModel.netWeight}"></td>
+            <td class="PrimaryWeigh float_2" th:text="${poundBillModel.primaryWeight}"></td>
         </tr>
         <tr th:if="${poundBillModel.printTime}">
             <td>
@@ -170,6 +170,10 @@
         <tr>
             <td>司磅员</td>
             <td class="Weigher" th:text="${poundBillModel.weigher}"></td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td class="note" th:text="${poundBillModel.note}"></td>
         </tr>
     </table>
 
@@ -213,7 +217,7 @@
                 primaryWeight: $('.PrimaryWeigh').text().trim(),
                 netWeight: $('.NetWeigh').text().trim(),
                 Weigher: $('.Weigher').text().trim(),
-                note: '', // 这里没有对应的 HTML 元素，你可以根据需要添加
+                note: $('.note').text().trim(),
             };
 
             drawTableTest(printData);

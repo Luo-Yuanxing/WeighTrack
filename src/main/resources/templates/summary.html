@@ -103,6 +103,8 @@
                     $summary_title.text("今日出库汇总");
                 } else if (IOType === '2') {
                     $summary_title.text("今日返仓汇总");
+                } else if (IOType === '3') {
+                    $summary_title.text("今日内部周转汇总");
                 }
                 break;
             }
@@ -113,6 +115,8 @@
                     $summary_title.text("本月出库汇总");
                 } else if (IOType === '2') {
                     $summary_title.text("本月返仓汇总");
+                } else if (IOType === '3') {
+                    $summary_title.text("本月内部周转汇总");
                 }
                 break;
             }
@@ -123,6 +127,8 @@
                     $summary_title.text("年度出库汇总");
                 } else if (IOType === '2') {
                     $summary_title.text("年度返仓汇总");
+                } else if (IOType === '3') {
+                    $summary_title.text("年度内部周转汇总");
                 }
                 break;
             }
@@ -133,6 +139,8 @@
                     $summary_title.text("历史出库汇总");
                 } else if (IOType === '2') {
                     $summary_title.text("历史返仓汇总");
+                } else if (IOType === '3') {
+                    $summary_title.text("历史内部周转汇总");
                 }
                 break;
             }
@@ -159,7 +167,7 @@
             $gh.append(`<div>合计</div>`);
 
         } else {
-            if (IOType === '1') {
+            if (IOType !== '0') {
                 head_length = 1 + 3 + 1; // 煤种、净原盈、车次
             } else {
                 head_length = 1 + 2 + 1; // 煤种、净原、车次
@@ -174,7 +182,7 @@
             )
             $gh.append(`<div class="date">煤种</div>`);
 
-            if (IOType === '1') {
+            if (IOType !== '0') {
                 $gh.append(`<div>实收</div>`);
                 $gh.append(`<div>原发</div>`);
                 $gh.append(`<div>盈亏</div>`);
@@ -263,19 +271,33 @@
             });
             $gb.append(`<div class="all-sum weight">${sumAll.toFixed(2)}</div>`);
         } else {
+
             let netSum = 0;
             $('.net').each(function() {
                 netSum += parseFloat($(this).text());
             });
 
+            let primary = 0;
+            $('.primary').each(function() {
+                primary += parseFloat($(this).text());
+            });
+
+            let profitLoss = 0;
+            if (IOType !== '1') {
+                $('.profit-loss').each(function () {
+                    profitLoss += parseFloat($(this).text());
+                })
+            }
+
             let trips = 0;
             $('.trips').each(function() {
                 trips += parseFloat($(this).text());
             });
+
             $gb.append(`<div class="weight">${netSum.toFixed(2)}</div>`);
-            $gb.append(`<div class="weight">#</div>`);
-            if (IOType === '1') {
-                $gb.append(`<div class="weight">#</div>`);
+            $gb.append(`<div class="weight">${primary.toFixed(2)}</div>`);
+            if (IOType !== '0') {
+                $gb.append(`<div class="weight">${profitLoss.toFixed(2)}</div>`);
             }
             $gb.append(`<div class="trips">${trips.toFixed(0)}</div>`);
 
