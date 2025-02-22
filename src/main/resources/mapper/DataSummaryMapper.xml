@@ -16,6 +16,7 @@
         printed = true
         AND IOType = #{IOType}
         AND creatTime BETWEEN #{startTime} AND #{endTime}
+        AND removed = false
         GROUP BY
         date(creatTime)  <!-- 按日期分组 -->
         ORDER BY
