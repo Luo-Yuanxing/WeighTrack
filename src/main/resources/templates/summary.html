@@ -155,17 +155,14 @@
             coalTypes.forEach(function (name) {
                 $gh.append(`<div>${name}</div>`);
             })
-            // if (IOType === '1') {
-            //     $gh.append(`<div class>发货单位</div>`)
-            // } else {
-            //     $gh.append(`<div class>收货单位</div>`)
-            // }
             $gh.append(`<div class>当日车次</div>`)
+            $gh.append(`<div>合计</div>`);
+
         } else {
             if (IOType === '1') {
-                head_length = 1 + 3 + 1 + 1; // 煤种、净原盈、车次、合计
+                head_length = 1 + 3 + 1; // 煤种、净原盈、车次
             } else {
-                head_length = 1 + 2 + 1 + 1; // 煤种、净原、车次、合计
+                head_length = 1 + 2 + 1; // 煤种、净原、车次
             }
 
             $gh.css(
@@ -188,7 +185,6 @@
                 $gh.append(`<div>车次</div>`);
             }
         }
-        $gh.append(`<div>合计</div>`);
 
         // 插入数据
         let $gb = $('#grid-body');
@@ -240,9 +236,6 @@
                     $gb.append(`<div class="profit-loss weight">${parseFloat(row['totalProfitLossWeight']).toFixed(2)}</div>`)
                 }
                 $gb.append(`<div class="trips">${row['totalTrips']}</div>`)
-                // 插入行合计
-                coalTypeSum = parseFloat(row['totalNetWeight']) + parseFloat(row['totalPrimaryWeight']) + parseFloat(row['totalProfitLossWeight'])
-                $gb.append(`<div class="weight row-sum">${coalTypeSum.toFixed(2)}</div>`)
             }
         }
         // 插入列求和
@@ -274,35 +267,19 @@
             $('.net').each(function() {
                 netSum += parseFloat($(this).text());
             });
-            let primary = 0;
-            $('.primary').each(function() {
-                primary += parseFloat($(this).text());
-            });
-            let profitLoss = 0;
-            if (IOType === '1') {
-                $('.profit-loss').each(function () {
-                    profitLoss += parseFloat($(this).text());
-                })
-            }
+
             let trips = 0;
             $('.trips').each(function() {
                 trips += parseFloat($(this).text());
             });
             $gb.append(`<div class="weight">${netSum.toFixed(2)}</div>`);
-            $gb.append(`<div class="weight">${primary.toFixed(2)}</div>`);
+            $gb.append(`<div class="weight">#</div>`);
             if (IOType === '1') {
-                $gb.append(`<div class="weight">${profitLoss.toFixed(2)}</div>`);
+                $gb.append(`<div class="weight">#</div>`);
             }
             $gb.append(`<div class="trips">${trips.toFixed(0)}</div>`);
 
-            // 总和
-            let sumAll = 0;
-            $('.row-sum').each(function() {
-                sumAll += parseFloat($(this).text());
-            });
-            $gb.append(`<div class="all-sum weight">${sumAll.toFixed(2)}</div>`);
         }
-
 
         // css
         $('#grid-body div').css({

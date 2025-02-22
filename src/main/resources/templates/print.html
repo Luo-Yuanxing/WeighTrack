@@ -229,8 +229,9 @@
     });
 
     $(document).ready(function () {
-        let $float_2 = $('.float_2');
-        $float_2.text(parseFloat($float_2.text()).toFixed(2));
+        $('.float_2').each(function() {
+            $(this).text(parseFloat($(this).text()).toFixed(2));
+        });
     });
 
     // 监听回车键
