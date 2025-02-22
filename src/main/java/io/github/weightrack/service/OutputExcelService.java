@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Service
@@ -17,51 +20,56 @@ public class OutputExcelService {
     OutputExcelMapper outputExcelMapper;
 
     public String getTodayPrintedPoundBillModels(String IOType) {
-        PoundBillModel[] poundBillModels = outputExcelMapper.getTodayPrintedPoundBillModels(IOType);
         String rootPath = System.getProperty("user.dir");
 
-        // 获取第一个匹配的 .xlsx 文件
-        File rootDir = new File(rootPath);
-        File excelFile = null;
-
-        File[] files = rootDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".xlsx"));
-        if (files != null && files.length > 0) {
-            for (File file : files) {
-                if (file.getName().startsWith("new")) {
-                    continue;
-                }
-                excelFile = file;
-            }
-        } else {
-            log.error("未找到符合条件的 .xlsx 文件");
-        }
-
-        // 使用 File excelFile 对象
-        if (excelFile == null) {
-            // 示例：打印文件路径
-            log.error("Excel文件对象获取失败");
-            return "error: 找不到默认位置的Excel文件";
-        }
-
-        if (excelFile.exists()) {
-            log.debug("打开文件 过磅明细.xlsx  at: {}", excelFile.getAbsolutePath());
-        } else {
-            log.error("过磅明细.xlsx 找不到  at:{}", excelFile.getAbsolutePath());
-            return "error: 找不到文件： 过磅明细.xlsx";
-        }
-        int modifyLength;
-        try {
-            modifyLength = ExcelUtil.appendExcel(poundBillModels, IOType, excelFile);
-        } catch (ExcelException e) {
-            return "error: " + e.getMessage();
-        }
+        // 获取 IOType 对应的文件名
         String IOTypeName = switch (IOType) {
             case "0" -> "出库记录";
             case "1" -> "入库记录";
             case "2" -> "返仓记录";
             case "3" -> "内部周转记录";
-            default -> "未知记录";
+            default -> throw new IllegalArgumentException("IOType must be 0, 1, 2 or 3");
         };
+
+        // 获取当前日期，格式化为 "yyyy-MM-dd"
+        String today = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now());
+
+        // 拼接路径
+        String filePath = Paths.get(rootPath, "excel", today, IOTypeName + ".xlsx").toString();
+
+        // 创建文件对象
+        File excelFile = new File(filePath);
+
+        // 创建父目录（如果不存在的话）
+        File parentDir = excelFile.getParentFile();
+        if (!parentDir.exists()) {
+            if (parentDir.mkdirs()) {
+                log.debug("目录已创建: {}", parentDir.getAbsolutePath());
+            } else {
+                log.debug("目录创建失败: {}", parentDir.getAbsolutePath());
+            }
+        }
+
+        // 确保文件创建完成
+        if (excelFile.delete()) {
+            log.debug("文件已删除: {}", excelFile.getAbsolutePath());
+        } else {
+            log.debug("文件删除失败: {}", excelFile.getAbsolutePath());
+        }
+
+        if (excelFile.exists()) {
+            log.debug("文件仍然存在: {}", excelFile.getAbsolutePath());
+            throw new RuntimeException("无法删除的文件: " + excelFile.getAbsolutePath());
+        }
+
+        PoundBillModel[] poundBillModels = outputExcelMapper.getTodayPrintedPoundBillModels(IOType);
+        int modifyLength;
+        try {
+            modifyLength = ExcelUtil.appendExcel(poundBillModels, IOType, filePath);
+        } catch (ExcelException e) {
+            return "error: " + e.getMessage();
+        }
+
         log.debug("sheet: {}， 插入了{}行记录", IOTypeName, modifyLength);
         return "ok";
     }
