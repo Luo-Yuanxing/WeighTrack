@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css">
 
     <link rel="stylesheet" href="/css/nav.css">
+    <link rel="stylesheet" href="/css/plate-number.css">
+
 
     <script src="/js/html5shiv.js"></script>
     <script src="/js/respond.js"></script>
@@ -78,6 +80,10 @@
             border-left: 0;
         }
 
+        .input-group .form-control {
+            position: unset;
+        }
+
     </style>
 
 </head>
@@ -120,8 +126,7 @@
 
         <div class="input-group">
             <span class="input-group-addon input-desc">车牌号</span>
-            <input th:value="${poundBillModel.plateNumber}" type="text" class="form-control" name="plate-number"
-                   aria-describedby="basic-addon3">
+            <input name="plate-number" id="plate-number-licensePlate" class="plate-number form-control" th:insert="~{plate-number :: plate-number}">
         </div>
 
         <div class="input-group">
