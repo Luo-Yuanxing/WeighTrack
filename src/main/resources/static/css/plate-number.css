@@ -1,0 +1,50 @@
+/* 添加键盘容器样式 */
+.plate-number-keyboard-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    border-radius: 15px 15px 0 0;
+}
+
+/* 修改原有键盘样式 */
+.plate-number-keyboard {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 0 auto;
+    max-width: 800px;
+    justify-content: center;
+}
+
+/* 调整按钮尺寸适应悬浮状态 */
+.plate-number-button {
+    /* 原button样式 */
+    width: 60px;
+    height: 60px;
+    font-size: 22px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    background: #f0f0f0;
+    cursor: pointer;
+    transition: all 0.2s;
+    /* 新增div必要样式 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+/* 调整删除按钮宽度 */
+.plate-number-delete-btn {
+    width: 120px;
+}
+
+/* 确保输入框不会被遮挡 */
+#plate-number-licensePlate {
+    /*margin-bottom: 200px; !* 根据键盘高度调整 *!*/
+}

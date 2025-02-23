@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div th:fragment="plate-number" class="plate-number">
+
+    <div style="display: none" id="plate-number-flag-show">0</div>
+    <!-- 添加键盘容器 -->
+    <div class="plate-number-keyboard-container">
+        <div class="plate-number-keyboard" id="plate-number-province-keyboard"></div>
+        <div class="plate-number-keyboard" id="plate-number-main-keyboard"></div>
+    </div>
+
+    <script src="/js/plate-number.js"></script>
+
+</div>
+
+</body>
+
+</html>

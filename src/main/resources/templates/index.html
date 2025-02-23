@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css">
 
     <link rel="stylesheet" href="/css/nav.css">
-
+    <link rel="stylesheet" href="/css/plate-number.css">
     <style>
         body {
             height: 100vh;
@@ -22,8 +22,7 @@
         }
 
         a {
-            // 去除所有格式
-            text-decoration: none;
+        / / 去除所有格式 text-decoration: none;
             color: #343a40;
         }
 
@@ -101,7 +100,9 @@
             transform: scale(1.05); /* 悬停时放大效果 */
         }
 
-
+        .input-group .form-control {
+            position: unset;
+        }
     </style>
 
 </head>
@@ -171,8 +172,7 @@
 
             <div class="input-group">
                 <span class="input-group-addon input-desc">车牌号</span>
-                <input type="text" class="plate-number form-control" name="plate-number"
-                       aria-describedby="basic-addon3">
+                <input name="plate-number" id="plate-number-licensePlate" class="plate-number form-control" th:insert="~{plate-number :: plate-number}">
             </div>
             <div class="input-group">
                 <div class="input-group-addon input-desc">毛重</div>
@@ -212,7 +212,7 @@
                 <input type="text" class="creator-id form-control" name="creator-id" aria-describedby="basic-addon3">
             </div>
 
-            <input class="input-group" type="submit" value="提交"/>
+            <input id="submitForm" class="input-group" type="submit" value="提交"/>
             <div style="height: 20px"></div>
 
         </form>
@@ -230,80 +230,10 @@
 </script>
 <!-- 验证-->
 <script>
-    // 初始化实时验证
-    function initializeRealTimeValidation() {
-        const form = document.getElementById('pound_form');
-
-        // 为每个输入框绑定实时验证事件
-        form['plate-number'].addEventListener('input', () => validateField(form['plate-number']));
-        form['gross-weight'].addEventListener('input', () => validateField(form['gross-weight']));
-        form['tare'].addEventListener('input', () => validateField(form['tare']));
-        form['primary-weight'].addEventListener('input', () => validateField(form['primary-weight']));
-        form['output-unit'].addEventListener('input', () => validateField(form['output-unit']));
-        form['input-unit'].addEventListener('input', () => validateField(form['input-unit']));
-        form['coal-type'].addEventListener('change', () => validateField(form['coal-type']));
-        form['other-coal-type'].addEventListener('input', () => validateField(form['other-coal-type']));
-    }
-
-    // 验证单个字段
-    function validateField(field) {
-        resetFieldError(field);  // 清除之前的错误样式
-
-        // 验证毛重、皮重和原发是否为数字（适用于相应字段）
-        if (['gross-weight', 'tare', 'primary-weight'].includes(field.name) && isNaN(field.value)) {
-            markFieldError(field, '必须为数字');
-            return;
-        }
-        // 特定字段的验证（例如煤种选择）
-        if (field.name === 'coal-type' && field.value === '') {
-            markFieldError(field, '请选择煤种');
-        }
-        if (field.name === 'other-coal-type' && document.getElementById('coal-type').value === 'other' && !field.value.trim()) {
-            markFieldError(field, '请输入新煤种');
-        }
-    }
-
-    // 标记错误的输入框并显示错误信息
-    function markFieldError(field) {
-        field.style.borderColor = 'red';  // 给字段添加红色边框
-    }
-
-    // 清除字段的错误样式
-    function resetFieldError(field) {
-        field.style.borderColor = '';  // 清除边框颜色
-        const errorMessages = field.parentNode.querySelectorAll('.error-message');
-        errorMessages.forEach(msg => msg.remove());  // 删除错误信息
-    }
-
-    // 提交前检查所有字段
-    function validateForm() {
-        let isValid = true;
-        const form = document.getElementById('pound_form');
-
-        // 遍历所有字段，进行验证
-        const inputs = form.querySelectorAll('input, select');
-        inputs.forEach(input => {
-            if (input.name !== 'coal-type' && input.name !== 'other-coal-type') {
-                validateField(input);  // 进行实时验证
-                if (input.style.borderColor === 'red') {
-                    isValid = false;  // 如果发现红色边框，表示有错误
-                }
-            }
-        });
-
-        // 如果表单无误，弹出确认框
-        if (!isValid) {
-            return confirm('存在错误的输入，请确认后继续提交。');
-        }
-
-        return true;  // 如果所有字段都通过验证，则允许提交
-    }
-
     // 绑定表单提交事件
-    document.getElementById('pound_form').onsubmit = validateForm;
-
-    // 初始化实时验证
-    initializeRealTimeValidation();
+    $('#submitForm').onclick = function () {
+        $('#pound_form').submit();
+    }
 </script>
 <!-- 自动追加两位小数点-->
 <script>
