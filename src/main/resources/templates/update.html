@@ -330,8 +330,13 @@
     })
 </script>
 
-<!--司磅员-->
-<script>
+<!--填充车牌号-->
+<script th:inline="javascript">
+    $(function () {
+        let plateNumberInput = $('#plate-number-licensePlate');
+        let plateNumber = /*[[${poundBillModel.plateNumber}]]*/ {};
+        plateNumberInput.val(plateNumber);
+    })
 
 </script>
 </html>
