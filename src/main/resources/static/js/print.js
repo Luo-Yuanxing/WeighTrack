@@ -74,7 +74,7 @@ function drawTableTest(printData) {
     // 边距
     var margin = 6;
     // 标题位置, 居中
-    var titleX = (labelWidth - margin * 2) / 2 - 20;
+    var titleX = (labelWidth - margin * 2 - printData.poundTitle.trim().length * 6) / 2;
     var titleY = 0;
     // 第一行
     var firstRowX = margin;
@@ -102,7 +102,7 @@ function drawTableTest(printData) {
             }
 
             api.drawText({
-                text: printData.poundTitle,
+                text: printData.poundTitle.trim(),
                 x: titleX,
                 y: titleY,
                 fontHeight: 6,
