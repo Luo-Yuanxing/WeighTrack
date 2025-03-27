@@ -15,7 +15,7 @@
         <div class="container-fluid">
             <div class="navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="/">鸿聚一号煤场出入库明细</a></li>
+                    <li><a id="poundTitle">鸿聚一号煤场过磅单</a></li>
                     <li><a href="/">添加新纪录</a></li>
                 </ul>
                 <ul class="nav navbar-nav">
@@ -320,6 +320,13 @@
                         window.location.href = '/login';
                     }
                 })
+            })
+
+            $('#poundTitle').on('click', function () {
+                const newTitle = prompt('请输入新的磅单标题:', $(this).text());
+                if (newTitle) {
+                    $(this).text(newTitle);
+                }
             })
         })
     </script>

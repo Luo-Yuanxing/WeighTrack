@@ -722,6 +722,7 @@
                     newPrintData.netWeight = poundBill.netWeight;
                     newPrintData.Weigher = poundBill.weigher;
                     newPrintData.note = poundBill.note;
+                    newPrintData.poundTitle = $('#poundTitle').text().trim();
                     console.log('print id: ' + poundBill.id);
                     drawTableTest(newPrintData);
                 })
@@ -742,6 +743,7 @@
         netWeight: '',
         Weigher: '',
         note: '',
+        poundTitle: '',
     };
 
     $(function () {

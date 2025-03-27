@@ -83,6 +83,8 @@ function drawTableTest(printData) {
     var lastRowX = margin;
     var lastRowY = 55;
 
+    console.log(printData);
+
     api.startPrintJob({
         width: labelWidth,
         height: labelHeight,
@@ -100,7 +102,7 @@ function drawTableTest(printData) {
             }
 
             api.drawText({
-                text: '鸿聚一号煤场过磅单',
+                text: printData.poundTitle,
                 x: titleX,
                 y: titleY,
                 fontHeight: 6,
