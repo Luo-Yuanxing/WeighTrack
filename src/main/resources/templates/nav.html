@@ -15,7 +15,7 @@
         <div class="container-fluid">
             <div class="navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a id="poundTitle">鸿聚一号煤场过磅单</a></li>
+                    <li><a id="poundTitle"></a></li>
                     <li><a href="/">添加新纪录</a></li>
                 </ul>
                 <ul class="nav navbar-nav">
@@ -322,12 +322,37 @@
                 })
             })
 
+            let systemInfo = {
+                poundTitle: ''
+            }
+
+            let infoCookie;
+            let poundTitleCookie;
+
+            try {
+                infoCookie = Cookies.get('systemInfo');
+                poundTitleCookie = JSON.parse(infoCookie).poundTitle;
+            } catch (ignore) {
+            }
+
+
+            if (!infoCookie || !poundTitleCookie) {
+                systemInfo.poundTitle = '鸿聚一号煤场过磅单';
+                $('#poundTitle').text(systemInfo.poundTitle);
+                Cookies.set('systemInfo', JSON.stringify(systemInfo), {expires: 7});
+            } else {
+                $('#poundTitle').text(poundTitleCookie);
+            }
+
             $('#poundTitle').on('click', function () {
                 const newTitle = prompt('请输入新的磅单标题:', $(this).text());
+                systemInfo.poundTitle = newTitle;
                 if (newTitle) {
+                    Cookies.set('systemInfo', JSON.stringify(systemInfo), {expires: 7});
                     $(this).text(newTitle);
                 }
             })
+
         })
     </script>
 
